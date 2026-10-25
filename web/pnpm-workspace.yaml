@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@vezironi/veyra-ui@0.2.2'

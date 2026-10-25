@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* veyra-ui tokens: values come from @vezironi/veyra-ui/style.css, registered here so app utilities resolve */
+@theme reference {
+  --color-bg-base: #0a0a0a;
+  --color-bg-surface: #0f0f0f;
+  --color-bg-muted: #1a1a1a;
+  --color-bg-muted-hover: #252525;
+  --color-bg-muted-active: #2a2a2a;
+  --color-bg-elevated: #262626;
+  --color-bg-inset: #0a0a0a;
+  --color-border: #1f1f1f;
+  --color-text-primary: #ffffff;
+  --color-text-muted: #a3a3a3;
+  --color-text-faint: #525252;
+  --color-ring: #ffffff80;
+  --color-inverse: #ffffff;
+  --color-text-inverse: #0a0a0a;
+  --color-success: #34d399;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+  --color-info: #38bdf8;
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  user-select: none;
+  text-decoration: none;
+  list-style: none;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+  background: transparent;
+  /* font-family: var(--font-mono);
+  color: var(--color-phosphor); */
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-elevated);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-faint);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
