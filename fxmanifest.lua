@@ -47,3 +47,4 @@ ui_page 'web/dist/index.html'
 
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'
+data_file 'DLC_ITYP_REQUEST' 'stream/hype_cargo_box.ytyp'

@@ -31,7 +31,7 @@ UI (`web/`) ile Lua arasındaki bütün iletişim. UI tarafı hazır; Lua taraf�
 | `setView` | `{ view: "vending" \| "purchase" \| "owner" \| "admin" }` | Paneli açar ve o panelin `getData` callback'ini tetikler |
 | `close` | – | Lua'nın UI'yi kapatması (oyuncu uzaklaştı, öldü, makine silindi vb.) |
 | `setAccess` | `OwnerAccess` | Sahip paneli açıkken personelin yetkisi değişirse |
-| `setOrderStatus` | `{ id, status }` | Stok siparişinin durumunu ilerletir: `preparing` → `prepared` → `shipping` → `completed`. `completed` gelince UI ürün stoklarını artırır |
+| `setOrderStatus` | `{ id, status }` | Stok siparişinin durumunu ilerletir: `preparing` → `prepared` → `shipping` → `completed`, ya da `cancelled` (oyuncu teslim alma bölgesinden ayrıldı). Stoku sunucu kutu kutu ekler |
 | `setStaffOnline` | `{ id, online }` | Personelin çevrimiçi rozetini günceller |
 
 ---
@@ -76,6 +76,7 @@ Satılık bir makinenin target'ından açılır. Client önce sunucuya sorar; ma
 | `owner:get-data` | `{}` | `OwnerData` | Panelin bütün verisi |
 | `owner:update-price` | `{ id, price }` | – | Ürünün satış fiyatını değiştirir |
 | `owner:order-stock` | `{ items: [{ productId, quantity }] }` | `{ balance?, orderId? }` | Stok siparişi verir; tutar makine bakiyesinden düşer. Ardından durum `setOrderStatus` ile ilerletilir |
+| `owner:pickup-order` | `{ id }` | – | `prepared` siparişi teslim almaya başlar. Başarılıysa panel kapanır, araba spawn olur |
 | `owner:deposit` | `{ amount }` | `{ balance?, wallet? }` | Oyuncudan makine kasasına para yatırır |
 | `owner:withdraw` | `{ amount }` | `{ balance?, wallet? }` | Makine kasasından oyuncuya para çeker |
 | `owner:save-settings` | `OwnerSettings` | – | Ad, açıklama, açık/kapalı durumu, çalışma saatleri, stok uyarıları ve ödeme yöntemlerini kaydeder |
@@ -95,7 +96,7 @@ Satılık bir makinenin target'ından açılır. Client önce sunucuya sorar; ma
 |---|---|
 | `dashboard.view` | Gösterge paneli |
 | `products.prices` | `owner:update-price` |
-| `restock.order` | `owner:order-stock` |
+| `restock.order` | `owner:order-stock`, `owner:pickup-order` |
 | `transactions.view` | Satış geçmişi |
 | `cash.deposit` | `owner:deposit` |
 | `cash.withdraw` | `owner:withdraw` |
@@ -240,7 +241,7 @@ Satılık bir makinenin target'ından açılır. Client önce sunucuya sorar; ma
     time: number;                // milisaniye
     items: { productId: string; quantity: number }[];
     total: number;
-    status: "preparing" | "prepared" | "shipping" | "completed";
+    status: "preparing" | "prepared" | "shipping" | "completed" | "cancelled";
 }
 ```
 

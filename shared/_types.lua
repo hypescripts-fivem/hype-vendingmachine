@@ -1,7 +1,7 @@
 ---@meta
 
 ---@alias MachineStatus "open" | "closed" | "disabled"
----@alias StockOrderStatus "preparing" | "prepared" | "shipping" | "completed"
+---@alias StockOrderStatus "preparing" | "prepared" | "shipping" | "completed" | "cancelled"
 ---@alias CashMovementType "deposit" | "withdraw" | "order"
 ---@alias View "vending" | "purchase" | "owner" | "admin"
 ---@alias PaymentMethod "cash" | "bank"
@@ -104,6 +104,56 @@
 ---@field textPoint? table ox_lib point for the TextUI, only without a target resource
 ---@field entity? integer
 ---@field inside boolean
+
+---@class CargoBox One box on the cart: an order line
+---@field item string
+---@field quantity integer
+
+---@class CargoJob Server-side state of a player's order pickup
+---@field orderId integer
+---@field machineId integer
+---@field boxes CargoBox[] Delivered in this order
+---@field loaded integer Boxes put in a vehicle straight from the cart
+---@field delivered integer
+---@field shipping boolean The cart was grabbed, the order is `shipping`
+---@field props integer[] Net ids of the client's cart and boxes
+
+---@class CargoState Client-side state of the pickup
+---@field spawn vector4
+---@field arrived boolean The player reached the spawn and the cart was put there
+---@field cart? integer Spawned on arrival, gone once it's brought back or left behind
+---@field cartBoxes integer[] Boxes still on the cart
+---@field carrying? integer Box in the player's hands
+---@field fromCart boolean The carried box came from the cart, not out of the vehicle
+---@field holding boolean Holding the cart
+---@field vehicle? integer Bound by the first box loaded
+---@field inVehicle integer
+---@field total integer
+---@field loaded integer
+---@field delivered integer
+
+---@class CargoOption
+---@field label string
+---@field icon? string
+---@field canInteract fun(): boolean
+---@field onSelect fun()
+
+---@class CargoPoint Something the player uses during the pickup: an entity, or a position
+---@field entity? integer
+---@field coords? vector3 Used instead of an entity
+---@field offset? vector3 From the entity, where the option is
+---@field bones? string[] Entity bones the option is on, e.g. a vehicle's "boot"; the TextUI uses the nearest
+---@field options CargoOption[] TextUI: the first takes the primary key, the second the secondary
+
+---@class CargoAttach
+---@field bone integer Ped bone id
+---@field offset vector3
+---@field rotation vector3
+
+---@class CargoAnim
+---@field dict string
+---@field name string
+---@field time? number 0-1, held still at this point of the animation instead of playing it
 
 ---@class OwnerAccess
 ---@field owner boolean

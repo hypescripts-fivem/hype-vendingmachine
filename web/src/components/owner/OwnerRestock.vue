@@ -168,7 +168,7 @@ const total = computed(() => owner.orderTotal(orderItems.value));
 // In-progress orders first, each group keeps newest-first order
 const sortedOrders = computed(() => [
     ...owner.activeOrders,
-    ...owner.orders.filter((order) => order.status === "completed"),
+    ...owner.orders.filter((order) => !owner.activeOrders.includes(order)),
 ]);
 const insufficient = computed(() => total.value > owner.balance);
 

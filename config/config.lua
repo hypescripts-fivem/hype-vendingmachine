@@ -74,8 +74,29 @@ return {
     -- Percentage of the machine price paid back to the owner on owner:sell
     SellRefund = 50,
 
-    -- `preparing` -> `prepared` -> `shipping` -> `completed`, each step takes deliveryMinutes (admin setting)
-    OrderStatuses = { "preparing", "prepared", "shipping", "completed" },
+    -- Stock orders are `preparing` for deliveryMinutes (admin setting), then `prepared` until a player picks them up.
+    -- The cart spawns at one of `spawns` with one box per product on it; boxes go into any vehicle's trunk, then into the machine
+    Cargo = {
+        model = "hype_cargo_box",
+        boxModel = "prop_cs_cardbox_01",
+        spawns = {
+            vec4(1199.8463, -3245.6299, 5.7318, 0.2289),
+            vec4(1197.4340, -3245.6760, 5.7297, 4.5689),
+        },
+        -- The cart spawns once the player is within Interaction.spawnDistance of its spawn. From then on,
+        -- going further than this from the spawn before every box is loaded cancels the order
+        cancelDistance = 150.0,
+        handleOffset = vec3(-0.6, 0.0, 1.0), -- from the cart, where its grab option is
+        -- Ped bone ids: 24818 = upper spine, 60309 = left hand. The cart and box are attached to them, tune in game.
+        -- The spine moves with the upper body only, so the cart doesn't bob with the legs. On it x is up/down and y forward/back
+        cartAttach = { bone = 24818, offset = vec3(-0.24, 1.6, 0.0), rotation = vec3(88.0, 236.0, 173.0) },
+        -- Upper body only, held still at `time` (0-1 through the animation) so the arms stay in the pushing pose
+        cartAnim = { dict = "missfinale_c2ig_11", name = "pushcar_offcliff_f", time = 0.3 },
+        boxAttach = { bone = 60309, offset = vec3(0.025, 0.08, 0.255), rotation = vec3(-145.0, 290.0, 0.0) },
+        boxAnim = { dict = "anim@heists@box_carry@", name = "idle" },
+        boxOffset = vec3(0.0, 0.0, 0.5), -- first box, from the cart
+        boxStep = vec3(0.0, 0.0, 0.3),   -- each next box is stacked this much further
+    },
 
     StaffPermissions = {
         "dashboard.view",

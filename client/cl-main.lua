@@ -166,6 +166,9 @@ local function showText(machine)
     local data, keys = machine.data, Config.Interaction.keys
     local lines
 
+    -- cl-cargo.lua shows "put the box in" here
+    if IsCarryingCargo() then return end
+
     if data.forSale then
         if data.status == "disabled" then
             exports['hype-core']:HideTextUI()
@@ -187,6 +190,7 @@ end
 --- @param machine MachineEntry
 local function onTextKey(machine)
     local data, keys = machine.data, Config.Interaction.keys
+    if IsCarryingCargo() then return end
 
     if IsControlJustReleased(0, keys.primary.control) then
         if data.forSale then

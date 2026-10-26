@@ -170,6 +170,16 @@ function SyncMachine(machineId)
     Debug("info", "synced machine %s to all players", machineId)
 end
 
+--- Saves an order's status and tells the clients, which forward it to an owner panel open on that machine
+--- @param orderId integer
+--- @param machineId integer
+--- @param status StockOrderStatus
+function SetOrderStatus(orderId, machineId, status)
+    MySQL.update.await(Queries.UpdateOrderStatus, { status, orderId })
+    TriggerClientEvent("hype-vendingmachine:client:order-status", -1, machineId, tostring(orderId), status)
+    Debug("info", "order %s of machine %s is now %s", orderId, machineId, status)
+end
+
 --- @param machineId integer
 function RemoveMachine(machineId)
     TriggerClientEvent("hype-vendingmachine:client:remove-machine", -1, machineId)

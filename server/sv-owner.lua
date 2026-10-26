@@ -419,8 +419,19 @@ lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(sour
     }
 end)
 
---- @type fun(orderId: integer)
-local advanceOrder
+--- `preparing` -> `prepared`. From there the player picks the order up (sv-cargo.lua)
+--- @param orderId integer
+local function advanceOrder(orderId)
+    local order = MySQL.single.await(Queries.GetOrder, { orderId })
+
+    -- Gone with its machine
+    if not order or order.status ~= "preparing" then
+        Debug("info", "order %s is gone or no longer preparing", orderId)
+        return
+    end
+
+    SetOrderStatus(orderId, order.machine_id, "prepared")
+end
 
 --- @param orderId integer
 --- @param delay number Milliseconds
@@ -435,63 +446,10 @@ local function stageDelay()
     return GetSettings().deliveryMinutes * 60000
 end
 
---- Moves an order one stage on and schedules the next. Stock lands in the machine when it reaches `completed`
---- @param orderId integer
-advanceOrder = function(orderId)
-    local order = MySQL.single.await(Queries.GetOrder, { orderId })
-
-    -- Gone with its machine, or already delivered
-    if not order or order.status == "completed" then
-        Debug("info", "order %s is gone or already completed", orderId)
-        return
-    end
-
-    local nextStatus
-    for index, status in ipairs(Config.OrderStatuses) do
-        if status == order.status then
-            nextStatus = Config.OrderStatuses[index + 1]
-            break
-        end
-    end
-
-    if not nextStatus then
-        Debug("warning", "order %s has unknown status '%s'", orderId, order.status)
-        return
-    end
-
-    local queries = { { query = Queries.UpdateOrderStatus, values = { nextStatus, orderId } } }
-
-    if nextStatus == "completed" then
-        local machine = MySQL.single.await(Queries.GetMachine, { order.machine_id })
-        if not machine then
-            Debug("warning", "machine %s of order %s not found", order.machine_id, orderId)
-            return
-        end
-
-        -- Never above capacity, even if the admin lowered it after the order
-        for _, item in ipairs(MySQL.query.await(Queries.GetOrderItems, { { orderId } }) or {}) do
-            queries[#queries + 1] = { query = Queries.AddStock, values = { item.quantity, machine.capacity, order.machine_id, item.item } }
-        end
-    end
-
-    if not MySQL.transaction.await(queries) then
-        Debug("error", "order %s could not move to %s, retrying in 60 seconds", orderId, nextStatus)
-        scheduleOrder(orderId, 60000)
-        return
-    end
-
-    Debug("info", "order %s of machine %s is now %s", orderId, order.machine_id, nextStatus)
-
-    -- Clients forward it to the UI only if they have this machine's owner panel open
-    TriggerClientEvent("hype-vendingmachine:client:order-status", -1, order.machine_id, tostring(orderId), nextStatus)
-
-    if nextStatus ~= "completed" then
-        scheduleOrder(orderId, stageDelay())
-    end
-end
-
--- Orders still on their way when the resource stopped pick up where they left off
+-- Orders still preparing when the resource stopped pick up where they left off
 MySQL.ready(function()
+    MySQL.update.await(Queries.ResetShippingOrders)
+
     local delay, now = stageDelay(), os.time() * 1000
     local orders = MySQL.query.await(Queries.GetPendingOrders) or {}
 
@@ -573,6 +531,20 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
             orderId = tostring(orderId),
         }
     }
+end)
+
+-- Starts picking up a `prepared` order; the rest of the job is in sv-cargo.lua
+lib.callback.register("hype-vendingmachine:server:owner-pickup-order", function(source, machineId, orderId)
+    if not source then return Fail(locale("error_machine_not_found")) end
+    local playerId = source
+
+    local row, err = GetNearbyMachine(playerId, machineId)
+    if not row then return Fail(err --[[@as string]]) end
+
+    local access = getAccess(playerId, row)
+    if not access or not can(access, "restock.order") then return Fail(locale("error_no_permission")) end
+
+    return StartCargo(playerId, row, math.tointeger(tonumber(orderId)))
 end)
 
 lib.callback.register("hype-vendingmachine:server:owner-update-price", function(source, machineId, data)

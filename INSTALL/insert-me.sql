@@ -71,12 +71,12 @@ CREATE TABLE IF NOT EXISTS `hype_vending_cash` (
     CONSTRAINT `fk_hype_vending_cash_machine` FOREIGN KEY (`machine_id`) REFERENCES `hype_vending_machines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Supplier orders. Stock is added to the machine only when the status reaches `completed`
+-- Supplier orders. Stock is added box by box as the player brings the cargo to the machine
 CREATE TABLE IF NOT EXISTS `hype_vending_orders` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `machine_id` INT UNSIGNED NOT NULL,
     `total` INT UNSIGNED NOT NULL,
-    `status` ENUM('preparing', 'prepared', 'shipping', 'completed') NOT NULL DEFAULT 'preparing',
+    `status` ENUM('preparing', 'prepared', 'shipping', 'completed', 'cancelled') NOT NULL DEFAULT 'preparing',
     `ordered_by` VARCHAR(64) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -84,6 +84,9 @@ CREATE TABLE IF NOT EXISTS `hype_vending_orders` (
     KEY `idx_machine_status` (`machine_id`, `status`),
     CONSTRAINT `fk_hype_vending_orders_machine` FOREIGN KEY (`machine_id`) REFERENCES `hype_vending_machines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Databases created before `cancelled` existed
+ALTER TABLE `hype_vending_orders` MODIFY `status` ENUM('preparing', 'prepared', 'shipping', 'completed', 'cancelled') NOT NULL DEFAULT 'preparing';
 
 -- Wholesale price is stored per line so later config changes don't rewrite old orders
 CREATE TABLE IF NOT EXISTS `hype_vending_order_items` (

@@ -16,7 +16,7 @@
             </span>
         </div>
 
-        <ol v-if="order.status !== 'completed'" class="flex items-start" :aria-label="`Order status: ${statusMeta[order.status].label}`">
+        <ol v-if="currentIndex !== -1 && order.status !== 'completed'" class="flex items-start" :aria-label="`Order status: ${statusMeta[order.status].label}`">
             <template v-for="(status, index) in orderStatuses" :key="status">
                 <li
                     v-if="index > 0"
@@ -37,12 +37,24 @@
                 </li>
             </template>
         </ol>
+
+        <div v-if="order.status === 'prepared'" class="flex flex-col gap-2">
+            <p v-if="error" class="flex items-center gap-1.5 text-xs text-danger">
+                <CircleAlert class="size-3.5 shrink-0" />
+                {{ error }}
+            </p>
+            <Button size="sm" class="w-full" :disabled="picking" @click="pickup">
+                <Truck class="size-4" />
+                Pick up
+            </Button>
+        </div>
     </li>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { CircleCheck, Clock, PackageCheck, Truck } from "@lucide/vue";
+import { computed, ref } from "vue";
+import { CircleAlert, CircleCheck, CircleX, Clock, PackageCheck, Truck } from "@lucide/vue";
+import { Button } from "@vezironi/veyra-ui";
 import { orderStatuses, useOwnerStore, type StockOrder } from "@/stores/owner";
 import { formatDateTime, formatMoney } from "@/utils/format";
 
@@ -55,7 +67,22 @@ const statusMeta = {
     prepared: { label: "Prepared", icon: PackageCheck, class: "bg-info/10 text-info" },
     shipping: { label: "On the way", icon: Truck, class: "bg-info/10 text-info" },
     completed: { label: "Completed", icon: CircleCheck, class: "bg-success/10 text-success" },
+    cancelled: { label: "Cancelled", icon: CircleX, class: "bg-danger/10 text-danger" },
 };
 
 const currentIndex = computed(() => orderStatuses.indexOf(props.order.status));
+
+const picking = ref(false);
+const error = ref<string>();
+
+// On success the client closes the panel, so only a failure is shown here
+async function pickup() {
+    picking.value = true;
+    error.value = undefined;
+
+    const response = await owner.pickupOrder(props.order.id);
+    if (!response.success) error.value = response.error;
+
+    picking.value = false;
+}
 </script>

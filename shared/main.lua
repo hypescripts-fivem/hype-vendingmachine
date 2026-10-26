@@ -64,10 +64,13 @@ Queries = {
     GetOrderItems = "SELECT order_id, item, quantity FROM hype_vending_order_items WHERE order_id IN (?)",
     GetOrder = "SELECT id, machine_id, status FROM hype_vending_orders WHERE id = ?",
     -- Units ordered but not delivered yet; they count against capacity
-    GetIncomingStock = "SELECT oi.item, SUM(oi.quantity) AS quantity FROM hype_vending_order_items oi JOIN hype_vending_orders o ON o.id = oi.order_id WHERE o.machine_id = ? AND o.status <> 'completed' GROUP BY oi.item",
-    GetPendingOrders ="SELECT id, machine_id, status, updated_at FROM hype_vending_orders WHERE status <> 'completed'",
+    GetIncomingStock = "SELECT oi.item, SUM(oi.quantity) AS quantity FROM hype_vending_order_items oi JOIN hype_vending_orders o ON o.id = oi.order_id WHERE o.machine_id = ? AND o.status NOT IN ('completed', 'cancelled') GROUP BY oi.item",
+    -- Only `preparing` runs on a timer; from `prepared` on the player brings the order (sv-cargo.lua)
+    GetPendingOrders ="SELECT id, machine_id, status, updated_at FROM hype_vending_orders WHERE status = 'preparing'",
+    -- A pickup in progress when the resource stopped starts over
+    ResetShippingOrders = "UPDATE hype_vending_orders SET status = 'prepared' WHERE status = 'shipping'",
     UpdateOrderStatus = "UPDATE hype_vending_orders SET status = ? WHERE id = ?",
-    DeletePendingOrders = "DELETE FROM hype_vending_orders WHERE machine_id = ? AND status <> 'completed'",
+    DeletePendingOrders = "DELETE FROM hype_vending_orders WHERE machine_id = ? AND status NOT IN ('completed', 'cancelled')",
 
     -- Staff
     GetStaff = "SELECT id, identifier, name, permissions, hired_at, last_online FROM hype_vending_staff WHERE machine_id = ?",

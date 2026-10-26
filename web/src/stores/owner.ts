@@ -75,8 +75,9 @@ export interface StockOrderItem {
     quantity: number;
 };
 
-export type StockOrderStatus = 'preparing' | 'prepared' | 'shipping' | 'completed';
+export type StockOrderStatus = 'preparing' | 'prepared' | 'shipping' | 'completed' | 'cancelled';
 
+// The steps an order goes through; `cancelled` ends it early (the player left the pickup area)
 export const orderStatuses: StockOrderStatus[] = ['preparing', 'prepared', 'shipping', 'completed'];
 
 export interface StockOrder {
@@ -355,13 +356,13 @@ export const useOwnerStore = defineStore("owner", () => {
         return items.reduce((sum, item) => sum + (wholesale.value[item.productId] ?? 0) * item.quantity, 0);
     };
 
+    const activeOrders = computed(() => orders.value.filter((order) => order.status !== "completed" && order.status !== "cancelled"));
+
     // Units already ordered but not delivered yet, so they still count against capacity
     const incoming = computed(() => {
         const result: Record<string, number> = {};
 
-        for (const order of orders.value) {
-            if (order.status === "completed") continue;
-
+        for (const order of activeOrders.value) {
             for (const item of order.items) {
                 result[item.productId] = (result[item.productId] ?? 0) + item.quantity;
             }
@@ -369,8 +370,6 @@ export const useOwnerStore = defineStore("owner", () => {
 
         return result;
     });
-
-    const activeOrders = computed(() => orders.value.filter((order) => order.status !== "completed"));
 
     // Paid from the machine balance up front; stock only lands once the warehouse completes the order.
     // The server must re-check prices, capacity and balance.
@@ -403,19 +402,17 @@ export const useOwnerStore = defineStore("owner", () => {
         }
     };
 
-    // Driven by the server in game (setOrderStatus NUI message)
+    // Driven by the server in game (setOrderStatus NUI message). The stock itself is added by the server, box by box
     function setOrderStatus(orderId: string, status: StockOrderStatus) {
-        const order = orders.value.find((entry) => entry.id === orderId);
-        if (!order || !orderStatuses.includes(status) || order.status === "completed") return;
+        const order = activeOrders.value.find((entry) => entry.id === orderId);
+        if (!order || (!orderStatuses.includes(status) && status !== "cancelled")) return;
 
         order.status = status;
+    };
 
-        if (status === "completed") {
-            for (const item of order.items) {
-                const product = shop.products.find((entry) => entry.id === item.productId);
-                if (product) product.stock = Math.min(capacity.value, product.stock + item.quantity);
-            }
-        }
+    // In game the client closes the panel and spawns the cart
+    async function pickupOrder(orderId: string) {
+        return FetchNUI("owner:pickup-order", { id: orderId });
     };
 
     // Browser-only stand-in for the warehouse so the flow can be previewed without FiveM
@@ -598,6 +595,7 @@ export const useOwnerStore = defineStore("owner", () => {
         orderTotal,
         orderStock,
         setOrderStatus,
+        pickupOrder,
         incoming,
         activeOrders,
         moveCash,
