@@ -119,6 +119,9 @@ lib.callback.register("hype-vendingmachine:server:cargo-deliver", function(sourc
     MySQL.update.await(Queries.AddStock, { box.quantity, row.capacity, row.id, box.item })
     Debug("success", "player %s delivered %sx %s to machine %s (%d/%d)", playerId, box.quantity, box.item, row.id, job.delivered, #job.boxes)
 
+    -- Fills the shelves of arm machines
+    SyncMachine(row.id)
+
     if job.delivered < #job.boxes then return true end
 
     jobs[playerId] = nil

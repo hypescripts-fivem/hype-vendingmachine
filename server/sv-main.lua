@@ -139,9 +139,34 @@ function GetPlayerDisplayName(playerId)
     return exports['hype-core']:GetCharacterName(playerId) or GetPlayerName(playerId) or "Unknown"
 end
 
+--- @param rows { item: string, stock: integer }[] The machine's hype_vending_products rows
+--- @return MachineStock[]
+local function formatStock(rows)
+    local stock = {}
+    for _, row in ipairs(rows) do
+        stock[row.item] = row.stock
+    end
+
+    local products = {}
+    for _, product in ipairs(Config.Products) do
+        if stock[product.id] then
+            products[#products + 1] = { item = product.id, stock = stock[product.id] }
+        end
+    end
+
+    return products
+end
+
+--- @param machineId integer
+--- @return MachineStock[]
+local function getStock(machineId)
+    return formatStock(MySQL.query.await(Queries.GetMachineProducts, { machineId }) or {})
+end
+
 --- @param row MachineRow
+--- @param products MachineStock[]
 --- @return MachineProp
-local function formatMachine(row)
+local function formatMachine(row, products)
     return {
         id = row.id,
         model = row.model,
@@ -154,6 +179,7 @@ local function formatMachine(row)
         forSale = ToBoolean(row.for_sale),
         owner = row.owner,
         status = row.status,
+        products = products,
     }
 end
 
@@ -166,7 +192,7 @@ function SyncMachine(machineId)
         return
     end
 
-    TriggerClientEvent("hype-vendingmachine:client:set-machine", -1, formatMachine(row))
+    TriggerClientEvent("hype-vendingmachine:client:set-machine", -1, formatMachine(row, getStock(machineId)))
     Debug("info", "synced machine %s to all players", machineId)
 end
 
@@ -253,9 +279,15 @@ lib.callback.register("hype-vendingmachine:server:get-machines", function(source
     if not source then return end
     local playerId = source
 
+    local stockRows = {}
+    for _, row in ipairs(MySQL.query.await(Queries.GetAllProducts) or {}) do
+        stockRows[row.machine_id] = stockRows[row.machine_id] or {}
+        table.insert(stockRows[row.machine_id], row)
+    end
+
     local machines = {}
     for index, row in ipairs(MySQL.query.await(Queries.GetMachineProps) or {}) do
-        machines[index] = formatMachine(row)
+        machines[index] = formatMachine(row, formatStock(stockRows[row.id] or {}))
     end
 
     -- nil until the character is loaded; the client asks again on player-loaded
@@ -397,7 +429,7 @@ end)
 --- Tells the owner about the sale and about products that just dropped to the low stock threshold,
 --- if they're online and turned those notifications on
 --- @param row MachineRow
---- @param sold { item: string, quantity: integer, stockBefore: integer }[]
+--- @param sold SaleLine[]
 --- @param paid integer
 local function notifyOwner(row, sold, paid)
     local ownerSource = row.owner and exports['hype-core']:GetPlayerSource(row.owner)
@@ -421,7 +453,67 @@ local function notifyOwner(row, sold, paid)
     end
 end
 
+--- Checkouts on arm machines, by vend id, until the buyer's client says the arm dropped the last unit
+--- @type table<integer, PendingVend>
+local pendingVends = {}
+local lastVendId = 0
+
+--- Gives back stock reserved by a checkout that couldn't finish
+--- @param machineId integer
+--- @param lines SaleLine[]
+local function releaseStock(machineId, lines)
+    for _, line in ipairs(lines) do
+        MySQL.update.await(Queries.RestoreStock, { line.quantity, line.quantity, machineId, line.item })
+    end
+
+    Debug("warning", "released %d reserved line(s) on machine %s", #lines, machineId)
+end
+
+--- Puts paid lines with reserved stock in the buyer's inventory and books the sale.
+--- A line the inventory refuses is given back: stock to the machine, money to the buyer
+--- @param playerId integer
+--- @param row MachineRow
+--- @param lines SaleLine[]
+--- @param account PaymentMethod
+--- @return SaleLine[] sold The lines the buyer got
+local function handOver(playerId, row, lines, account)
+    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId) or tostring(playerId)
+    local buyerName = GetPlayerDisplayName(playerId)
+
+    local sold, sales, paid = {}, {}, 0
+    for _, line in ipairs(lines) do
+        if exports['hype-core']:AddItem(playerId, line.item, line.quantity) then
+            sold[#sold + 1] = line
+            sales[#sales + 1] = { row.id, identifier, buyerName, line.item, line.quantity, line.total, account }
+            paid = paid + line.total
+        else
+            MySQL.update.await(Queries.RestoreStock, { line.quantity, line.quantity, row.id, line.item })
+
+            if line.total > 0 then
+                exports['hype-core']:AddPlayerMoney(playerId, account, line.total)
+            end
+
+            Debug("warning", "player %s could not receive %sx %s from machine %s, refunded %s", playerId, line.quantity, line.item, row.id, line.total)
+        end
+    end
+
+    if #sales == 0 then return sold end
+
+    -- Sales tax comes out of the owner's share, so the buyer pays the price shown
+    local tax = math.floor(paid * GetSettings().salesTax / 100 + 0.5)
+
+    MySQL.update.await(Queries.AddBalance, { paid - tax, row.id })
+    MySQL.prepare.await(Queries.InsertTransaction, sales)
+
+    Debug("success", "player %s bought %d line(s) from machine %s for %s via %s (tax %s)", playerId, #sales, row.id, paid, account, tax)
+
+    notifyOwner(row, sold, paid)
+
+    return sold
+end
+
 -- Stock is reserved first, then the money is taken, then the items are handed over.
+-- On arm machines the money and items wait until the arm dropped every unit (vend-collect).
 -- Anything that fails on the way is undone, so the buyer never pays for what they didn't get
 lib.callback.register("hype-vendingmachine:server:checkout", function(source, machineId, items, payment)
     if not source then return Fail(locale("error_machine_not_found")) end
@@ -442,7 +534,7 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
     end
 
     -- Prices come from the database, never from the UI
-    --- @type { item: string, quantity: integer, total: integer, stockBefore: integer }[]
+    --- @type SaleLine[]
     local lines, total = {}, 0
     for item, quantity in pairs(requested) do
         local product, catalog = stock[item], ProductsById[item]
@@ -471,63 +563,41 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
     end
 
     local reserved = {}
-
-    --- Gives back the stock reserved so far
-    local function release()
-        for _, line in ipairs(reserved) do
-            MySQL.update.await(Queries.RestoreStock, { line.quantity, line.quantity, row.id, line.item })
-        end
-
-        Debug("warning", "released %d reserved line(s) on machine %s", #reserved, row.id)
-    end
-
     for _, line in ipairs(lines) do
         -- Someone else bought the last ones a moment ago
         if MySQL.update.await(Queries.RemoveStock, { line.quantity, line.quantity, row.id, line.item, line.quantity }) == 0 then
-            release()
+            releaseStock(row.id, reserved)
             return Fail(locale("error_out_of_stock", ProductsById[line.item].name))
         end
 
         reserved[#reserved + 1] = line
     end
 
+    -- Every client near the machine plays the arm; the buyer's client collects once the last unit is dropped
+    if ArmModels[row.model] then
+        lastVendId = lastVendId + 1
+        pendingVends[lastVendId] = { playerId = playerId, row = row, lines = lines, account = account, total = total }
+
+        TriggerClientEvent("hype-vendingmachine:client:vend", -1, row.id, lastVendId, playerId, lines, getStock(row.id))
+        Debug("info", "player %s checked out %d line(s) on machine %s as vend %s", playerId, #lines, row.id, lastVendId)
+
+        -- No wallet: nothing is taken yet, the UI takes the total off itself
+        return {
+            success = true,
+            data = {
+                products = GetProducts(row.id),
+            }
+        }
+    end
+
     if total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, account, total) then
-        release()
+        releaseStock(row.id, lines)
         return Fail(locale("error_not_enough_money"))
     end
 
-    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId) or tostring(playerId)
-    local buyerName = GetPlayerDisplayName(playerId)
-
-    -- A line the inventory refuses is given back: stock to the machine, money to the buyer
-    local sold, sales, paid = {}, {}, 0
-    for _, line in ipairs(lines) do
-        if exports['hype-core']:AddItem(playerId, line.item, line.quantity) then
-            sold[#sold + 1] = line
-            sales[#sales + 1] = { row.id, identifier, buyerName, line.item, line.quantity, line.total, account }
-            paid = paid + line.total
-        else
-            MySQL.update.await(Queries.RestoreStock, { line.quantity, line.quantity, row.id, line.item })
-
-            if line.total > 0 then
-                exports['hype-core']:AddPlayerMoney(playerId, account, line.total)
-            end
-
-            Debug("warning", "player %s could not receive %sx %s from machine %s, refunded %s", playerId, line.quantity, line.item, row.id, line.total)
-        end
+    if #handOver(playerId, row, lines, account) == 0 then
+        return Fail(locale("error_cannot_carry", ProductsById[lines[1].item].name))
     end
-
-    if #sales == 0 then return Fail(locale("error_cannot_carry", ProductsById[lines[1].item].name)) end
-
-    -- Sales tax comes out of the owner's share, so the buyer pays the price shown
-    local tax = math.floor(paid * GetSettings().salesTax / 100 + 0.5)
-
-    MySQL.update.await(Queries.AddBalance, { paid - tax, row.id })
-    MySQL.prepare.await(Queries.InsertTransaction, sales)
-
-    Debug("success", "player %s bought %d line(s) from machine %s for %s via %s (tax %s)", playerId, #sales, row.id, paid, account, tax)
-
-    notifyOwner(row, sold, paid)
 
     return {
         success = true,
@@ -536,6 +606,48 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
             wallet = getWallet(playerId),
         }
     }
+end)
+
+-- Sent by the buyer's client when the arm dropped the last unit, or right away when there's no arm to watch
+RegisterNetEvent("hype-vendingmachine:server:vend-collect", function(vendId)
+    local playerId = source
+    local vend = pendingVends[vendId]
+    if not vend or vend.playerId ~= playerId then return end
+
+    pendingVends[vendId] = nil
+    local row = vend.row
+
+    -- Spent in the meantime: the units go back in stock
+    if vend.total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, vend.account, vend.total) then
+        releaseStock(row.id, vend.lines)
+        SyncMachine(row.id)
+        Notify(playerId, locale("error_not_enough_money"), "error")
+        return
+    end
+
+    local sold = handOver(playerId, row, vend.lines, vend.account)
+
+    -- Refused lines went back in stock
+    if #sold < #vend.lines then
+        SyncMachine(row.id)
+    end
+
+    if #sold == 0 then
+        Notify(playerId, locale("error_cannot_carry", ProductsById[vend.lines[1].item].name), "error")
+    end
+end)
+
+-- A buyer who leaves before collecting pays nothing, the stock goes back
+AddEventHandler("playerDropped", function()
+    local playerId = source
+
+    for vendId, vend in pairs(pendingVends) do
+        if vend.playerId == playerId then
+            pendingVends[vendId] = nil
+            releaseStock(vend.row.id, vend.lines)
+            SyncMachine(vend.row.id)
+        end
+    end
 end)
 
 AddEventHandler("onResourceStart", function(resource)

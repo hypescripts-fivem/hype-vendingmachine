@@ -1,0 +1,109 @@
+<style>
+  .vs { background:#0f1115; border:1px solid #2a2e37; border-radius:14px; padding:14px; color:#e8eaee; font-family:Inter,system-ui,sans-serif; }
+  .vs-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .vs-title { font-weight:700; font-size:15px; }
+  .vs-cartbtn { background:#3b82f6; color:#fff; border:none; border-radius:8px; padding:8px 12px; font-weight:600; font-size:13px; }
+  .vs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .vs-card { position:relative; background:#171a21; border:1px solid #2a2e37; border-radius:12px; padding:10px; display:flex; flex-direction:column; }
+  .vs-card.in { border-color:#3b82f6; }
+  .vs-type { position:absolute; top:8px; left:8px; font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:#9aa1ad; background:#20242c; border:1px solid #2a2e37; border-radius:6px; padding:2px 6px; }
+  .vs-act { position:absolute; top:6px; right:6px; display:flex; gap:4px; align-items:center; }
+  .vs-add { background:#3b82f6; color:#fff; border:none; border-radius:7px; width:26px; height:26px; font-weight:700; font-size:15px; }
+  .vs-q { display:flex; align-items:center; background:#20242c; border:1px solid #2a2e37; border-radius:7px; height:26px; }
+  .vs-q button { background:none; border:none; color:#e8eaee; width:22px; font-size:14px; }
+  .vs-q span { min-width:16px; text-align:center; font-size:12px; font-weight:600; }
+  .vs-del { background:#dc2626; color:#fff; border:none; border-radius:7px; width:26px; height:26px; font-size:12px; }
+  .vs-img { height:84px; display:flex; align-items:center; justify-content:center; font-size:46px; margin:20px 0 8px; }
+  .vs-foot { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; }
+  .vs-name { font-weight:600; }
+  .vs-price { font-weight:700; color:#4ade80; }
+  .vs-row { display:flex; align-items:center; gap:10px; background:#171a21; border:1px solid #2a2e37; border-radius:10px; padding:8px 10px; margin-bottom:8px; }
+  .vs-row .ic { font-size:26px; width:36px; text-align:center; }
+  .vs-row .nm { flex:1; font-size:13px; font-weight:600; }
+  .vs-row .nm small { display:block; color:#9aa1ad; font-weight:400; }
+  .vs-row .tot { font-weight:700; width:52px; text-align:right; font-size:13px; }
+  .vs-sum { display:flex; justify-content:space-between; border-top:1px solid #2a2e37; padding-top:10px; margin-top:4px; font-weight:700; }
+  .vs-btns { display:flex; gap:8px; margin-top:12px; }
+  .vs-btns button { flex:1; border:none; border-radius:8px; padding:10px; font-weight:700; font-size:13px; }
+  .vs-back { background:#20242c; color:#e8eaee; }
+  .vs-ok { background:#16a34a; color:#fff; }
+</style>
+
+<h2>vend_screen DUI taslağı</h2>
+<p class="subtitle">Sol: ürün listesi (Cola sepette, Su değil). Sağ: "Sepet" butonuna basınca açılan sepet görünümü.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Ürünler</div>
+    <div class="mockup-body">
+      <div class="vs">
+        <div class="vs-top">
+          <div class="vs-title">Vending Machine</div>
+          <button class="vs-cartbtn">🛒 Sepet (3) · $24</button>
+        </div>
+        <div class="vs-grid">
+          <div class="vs-card">
+            <span class="vs-type">drinks</span>
+            <div class="vs-act"><button class="vs-add">+</button></div>
+            <div class="vs-img">💧</div>
+            <div class="vs-foot"><span class="vs-name">Water</span><span class="vs-price">$5</span></div>
+          </div>
+          <div class="vs-card in">
+            <span class="vs-type">drinks</span>
+            <div class="vs-act">
+              <div class="vs-q"><button>−</button><span>3</span><button>+</button></div>
+              <button class="vs-del">🗑</button>
+            </div>
+            <div class="vs-img">🥤</div>
+            <div class="vs-foot"><span class="vs-name">eCola</span><span class="vs-price">$8</span></div>
+          </div>
+          <div class="vs-card">
+            <span class="vs-type">snacks</span>
+            <div class="vs-act"><button class="vs-add">+</button></div>
+            <div class="vs-img">🍫</div>
+            <div class="vs-foot"><span class="vs-name">Chocolate</span><span class="vs-price">$7</span></div>
+          </div>
+          <div class="vs-card">
+            <span class="vs-type">snacks</span>
+            <div class="vs-act"><button class="vs-add">+</button></div>
+            <div class="vs-img">🍟</div>
+            <div class="vs-foot"><span class="vs-name">Chips</span><span class="vs-price">$6</span></div>
+          </div>
+          <div class="vs-card">
+            <span class="vs-type">food</span>
+            <div class="vs-act"><button class="vs-add">+</button></div>
+            <div class="vs-img">🍩</div>
+            <div class="vs-foot"><span class="vs-name">Donut</span><span class="vs-price">$9</span></div>
+          </div>
+          <div class="vs-card">
+            <span class="vs-type">food</span>
+            <div class="vs-act"><button class="vs-add">+</button></div>
+            <div class="vs-img">🥪</div>
+            <div class="vs-foot"><span class="vs-name">Sandwich</span><span class="vs-price">$15</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Sepet</div>
+    <div class="mockup-body">
+      <div class="vs">
+        <div class="vs-top"><div class="vs-title">Sepetin</div></div>
+        <div class="vs-row">
+          <div class="ic">🥤</div>
+          <div class="nm">eCola<small>$8 / adet</small></div>
+          <div class="vs-q"><button>−</button><span>3</span><button>+</button></div>
+          <div class="tot">$24</div>
+          <button class="vs-del">🗑</button>
+        </div>
+        <div class="vs-sum"><span>Toplam</span><span>$24</span></div>
+        <div class="vs-btns">
+          <button class="vs-back">← Geri</button>
+          <button class="vs-ok">Sepeti onayla</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

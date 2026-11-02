@@ -19,15 +19,21 @@ function NuiMessage(action, payload)
     })
 end
 
+--- Sent to the menu in setConfig, and to the machine screen when it asks
+--- @return UiConfig
+function UiConfig()
+    return {
+        inventoryImagePath = exports['hype-core']:GetImagePath(),
+        currency = Config.Currency,
+        locale = Config.NumberAndDateFormat,
+        debug = Config.Debug,
+    }
+end
+
 --- @return nil
 local function fetchNui()
     CreateThread(function()
-        NuiMessage("setConfig", {
-            inventoryImagePath = exports['hype-core']:GetImagePath(),
-            currency = Config.Currency,
-            locale = Config.NumberAndDateFormat,
-            debug = Config.Debug,
-        })
+        NuiMessage("setConfig", UiConfig())
     end)
 
     while not nuiLoaded do

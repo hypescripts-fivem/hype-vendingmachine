@@ -1,18 +1,31 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { debug, FetchNUI, isNative } from "@/utils";
+import { debug, FetchNUI, isDui, isNative } from "@/utils";
+import { applyConfig, type UiConfig } from "@/utils/events";
 import { useShopStore } from "@/stores";
 import { useOwnerStore } from "@/stores/owner";
 import { usePurchaseStore } from "@/stores/purchase";
 
-export type View = 'vending' | 'purchase' | 'owner' | 'admin';
+export type View = 'vending' | 'purchase' | 'owner' | 'admin' | 'screen' | 'idle';
 
-export const views: View[] = ['vending', 'purchase', 'owner', 'admin'];
+export const views: View[] = ['vending', 'purchase', 'owner', 'admin', 'screen', 'idle'];
 
 const defaultView: View = 'vending';
 
 function isView(value: unknown): value is View {
     return views.includes(value as View);
+};
+
+// The machine's screen gets no setConfig message, so it asks for the config itself
+async function loadScreenConfig() {
+    const response = await FetchNUI<UiConfig>("screen:ready", {}, {
+        inventoryImagePath: "ox_inventory/web/images/",
+        currency: "USD",
+        locale: "en-US",
+        debug: true,
+    });
+
+    if (response.success && response.data) applyConfig(response.data);
 };
 
 function viewFromUrl(): View {
@@ -22,8 +35,8 @@ function viewFromUrl(): View {
 };
 
 export const useAppStore = defineStore("app", () => {
-    // Outside FiveM there is no game to pick the page, so the ?view= query param decides
-    const view = ref<View>(isNative ? defaultView : viewFromUrl());
+    // Outside FiveM there is no game to pick the page, and the machine's screen is opened on its page, so the ?view= query param decides
+    const view = ref<View>(isDui || !isNative ? viewFromUrl() : defaultView);
     // In game nothing is on screen until the client sends setView
     const visible = ref(false);
     // Pages copy store data into their forms when they mount, so they only mount once the data is in
@@ -36,6 +49,12 @@ export const useAppStore = defineStore("app", () => {
         owner: () => useOwnerStore().load(),
         // Imported on demand: the admin store pulls in echarts, which the vending page shouldn't load
         admin: async () => (await import("@/stores/admin")).useAdminStore().load(),
+        screen: async () => {
+            await loadScreenConfig();
+            return useShopStore().load();
+        },
+        // What the machine's screen shows while nobody is using it
+        idle: loadScreenConfig,
     };
 
     async function load(target: View) {
@@ -85,10 +104,13 @@ export const useAppStore = defineStore("app", () => {
         ready.value = false;
     };
 
-    if (!isNative) {
+    // The browser preview and the machine's screen get no setView, so they load right away
+    if (isDui || !isNative) {
         visible.value = true;
         load(view.value);
+    }
 
+    if (!isDui && !isNative) {
         window.addEventListener('popstate', () => {
             view.value = viewFromUrl();
             load(view.value);

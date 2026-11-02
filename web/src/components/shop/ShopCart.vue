@@ -37,7 +37,7 @@
                         <div class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-bg-inset">
                             <img
                                 v-if="item.product.image && !failedImages.has(item.product.id)"
-                                :src="item.product.image"
+                                :src="'nui://' + shop.inventoryImagePath + item.product.image"
                                 :alt="item.product.name"
                                 class="size-8 object-contain"
                                 @error="failedImages.add(item.product.id)"

@@ -40,7 +40,7 @@
             <StatCard label="Stock level" :value="machine.stockLevel" suffix="%" :icon="Package" change-label="Average across products" />
         </div>
 
-        <MachineForm v-model="draft" :owner="owner" />
+        <MachineForm v-model="draft" :owner="owner" :machine-id="machine.id" />
 
         <section class="flex flex-col gap-4 rounded-2xl border border-danger/30 bg-bg-surface p-4">
             <h3 class="flex items-center gap-2 text-sm font-semibold text-danger">

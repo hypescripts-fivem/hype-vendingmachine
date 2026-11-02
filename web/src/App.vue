@@ -12,6 +12,8 @@ const pages: Record<View, Component> = {
   purchase: PurchaseView,
   owner: defineAsyncComponent(() => import('./pages/OwnerView.vue')),
   admin: defineAsyncComponent(() => import('./pages/AdminView.vue')),
+  screen: defineAsyncComponent(() => import('./pages/ScreenView.vue')),
+  idle: defineAsyncComponent(() => import('./pages/IdleView.vue')),
 };
 </script>
 

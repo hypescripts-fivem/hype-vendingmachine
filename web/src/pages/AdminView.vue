@@ -1,5 +1,6 @@
 <template>
-    <main class="flex h-225 w-7xl overflow-hidden rounded-[1rem] border border-border bg-bg-base">
+    <!-- Hidden, not unmounted, while placing a machine: the form keeps everything that was filled in -->
+    <main v-show="!placement.active" class="flex h-225 w-7xl overflow-hidden rounded-[1rem] border border-border bg-bg-base">
         <PanelSidebar
             :model-value="admin.section"
             :icon="ShieldCheck"
@@ -37,20 +38,33 @@
             </section>
         </div>
     </main>
+
+    <template v-if="placement.active">
+        <PlacementOverlay />
+        <PlacementPanel />
+    </template>
 </template>
 
 <script setup lang="ts">
-import { computed, type Component } from "vue";
+import { computed, onBeforeUnmount, watch, type Component } from "vue";
 import { ShieldCheck } from "@lucide/vue";
 import { Separator } from "@vezironi/veyra-ui";
 import PanelSidebar from "@/components/PanelSidebar.vue";
 import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 import AdminMachines from "@/components/admin/AdminMachines.vue";
 import AdminSettings from "@/components/admin/AdminSettings.vue";
+import PlacementOverlay from "@/components/admin/PlacementOverlay.vue";
+import PlacementPanel from "@/components/admin/PlacementPanel.vue";
 import { sections } from "@/components/admin/sections";
 import { useAdminStore, type AdminSection } from "@/stores/admin";
+import { usePlacementStore } from "@/stores/placement";
 
 const admin = useAdminStore();
+const placement = usePlacementStore();
+
+// Modals are teleported to <body>, outside this page: the class hides them (still mounted) while placing
+watch(() => placement.active, (active) => document.body.classList.toggle("placing", active));
+onBeforeUnmount(() => document.body.classList.remove("placing"));
 
 const pages: Record<AdminSection, Component> = {
     dashboard: AdminDashboard,

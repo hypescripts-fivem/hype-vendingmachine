@@ -1,5 +1,14 @@
 lib.locale()
 
+local Config <const> = require "config.config"
+
+--- Machine models with the olentrix_vending arm and shelves
+--- @type table<string, boolean>
+ArmModels = {}
+for _, model in ipairs(Config.Machines) do
+    if model.arm then ArmModels[model.value] = true end
+end
+
 Queries = {
     -- Machines
     GetMachines = "SELECT * FROM hype_vending_machines ORDER BY id DESC",

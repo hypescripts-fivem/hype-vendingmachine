@@ -2,6 +2,9 @@ const resourceName = (): string => (window as any).GetParentResourceName?.() ?? 
 
 export const isNative = !!(window as any).invokeNative;
 
+// The machine's screen: the client opens this build as a DUI with ?dui=1. It still talks to the client through NUI callbacks
+export const isDui = new URLSearchParams(window.location.search).get('dui') === '1';
+
 // Config.Debug, sent by the client in setConfig
 let debugEnabled = false;
 
@@ -15,7 +18,7 @@ export function debug(message: string, ...data: unknown[]) {
     console.log(`[DEBUG:WEB] ${message}`, ...data);
 };
 
-interface NuiResponse<T = unknown> {
+export interface NuiResponse<T = unknown> {
     success: boolean;
     error?: string;
     data?: T;
@@ -24,7 +27,7 @@ interface NuiResponse<T = unknown> {
 export async function FetchNUI<T = unknown>(event: string, data?: unknown, mock?: T): Promise<NuiResponse<T>> {
     debug(`FetchNUI(${event})`, data);
 
-    if (!isNative) {
+    if (!isNative && !isDui) {
         return { success: true, data: mock };
     }
 

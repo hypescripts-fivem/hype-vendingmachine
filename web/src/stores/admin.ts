@@ -71,6 +71,21 @@ export const machineModels = [
     { label: "Water machine", value: "prop_vend_water_01" },
 ];
 
+// olentrix_vending machines, picked in a second menu once "Custom Vending Machine" is the prop model
+export const customMachineModels = [
+    { label: "Glass machine", value: "olentrix_vend" },
+    { label: "Glass machine (eCola)", value: "olentrix_vend_ecola" },
+    { label: "Glass machine (Sprunk)", value: "olentrix_vend_sprunk" },
+    { label: "Glass machine (Raine)", value: "olentrix_vend_raine" },
+    { label: "Glass machine (Junk)", value: "olentrix_vend_junk" },
+    { label: "Glass machine (Bean Machine)", value: "olentrix_vend_beanmachine" },
+    { label: "Glass machine (Phat Chips)", value: "olentrix_vend_phatchips" },
+    { label: "Glass machine (Ego Chaser)", value: "olentrix_vend_egochaser" },
+    { label: "Glass machine (Cluckin' Bell)", value: "olentrix_vend_cluckinbell" },
+    { label: "Glass machine (Burger Shot)", value: "olentrix_vend_burgershot" },
+    { label: "Glass machine (24/7)", value: "olentrix_vend_247" },
+];
+
 const location = (label: string, x: number, y: number, z: number, heading = 0): MachineLocation => ({ label, x, y, z, heading });
 
 const allProducts = ["water", "cola", "sprunk", "coffee", "chips", "chocolate", "candy", "sandwich", "donut"];
@@ -117,6 +132,8 @@ export interface AdminData {
     settings: AdminSettings;
     // Every item a machine can be set to sell. Only id, name, category and image are used
     products: Product[];
+    // olentrix_vending is running, so custom (arm) machines can be picked
+    customMachines: boolean;
 };
 
 export function emptyMachineConfig(settings: AdminSettings): MachineConfig {
@@ -155,6 +172,7 @@ export const useAdminStore = defineStore("admin", () => {
     const revenue = ref<AdminData["revenue"]>([]);
     const settings = ref<AdminSettings>(mockSettings);
     const products = ref<Product[]>([]);
+    const customMachines = ref(true);
     const saving = ref(false);
 
     // Least-used slot first, so new machines spread across the palette
@@ -185,6 +203,7 @@ export const useAdminStore = defineStore("admin", () => {
             revenue: mockRevenue,
             settings: mockSettings,
             products: mockProducts,
+            customMachines: true,
         })));
 
         const data = response.data;
@@ -194,6 +213,7 @@ export const useAdminStore = defineStore("admin", () => {
             revenue.value = asList(data.revenue);
             settings.value = { ...mockSettings, ...asRecord<AdminSettings>(data.settings) };
             products.value = asList(data.products);
+            customMachines.value = data.customMachines === true;
 
             // The machine that was open may have been deleted since
             if (!machines.value.some((machine) => machine.id === editingId.value)) editingId.value = undefined;
@@ -205,10 +225,6 @@ export const useAdminStore = defineStore("admin", () => {
     function openMachine(id: string) {
         editingId.value = id;
         section.value = "machines";
-    };
-
-    async function getPosition() {
-        return FetchNUI<MachineLocation>("admin:get-position", {}, location("Legion Square", 195.4 + Math.random() * 10, -933.2, 30.7, 90));
     };
 
     async function teleport(id: string) {
@@ -343,13 +359,13 @@ export const useAdminStore = defineStore("admin", () => {
         machines,
         revenue,
         settings,
+        customMachines,
         products,
         saving,
         stats,
         topMachines,
         lowStockMachines,
         openMachine,
-        getPosition,
         teleport,
         createMachine,
         importMachines,

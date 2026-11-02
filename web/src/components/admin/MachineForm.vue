@@ -8,7 +8,8 @@
                 Machine name
                 <Inputs :model-value="config.name" placeholder="e.g. Legion Square #2" @update:model-value="config.name = String($event ?? '')" />
             </label>
-            <SelectMenu v-model="config.model" label="Prop model" :options="machineModels" />
+            <SelectMenu v-model="modelChoice" label="Prop model" :options="modelOptions" />
+            <SelectMenu v-if="modelChoice === CUSTOM" v-model="config.model" label="Machine type" :options="customMachineModels" />
         </section>
 
         <section class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
@@ -16,9 +17,9 @@
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <MapPin class="size-4 text-text-muted" /> Location
                 </h3>
-                <Button variant="outline" size="sm" :disabled="locating" @click="useMyPosition">
-                    <Crosshair class="size-3.5" />
-                    {{ locating ? "Locating..." : "Use my position" }}
+                <Button variant="outline" size="sm" :disabled="placing" @click="setPosition">
+                    <Move3d class="size-3.5" />
+                    {{ placing ? "Placing..." : "Set machine position" }}
                 </Button>
             </div>
             <label class="grid gap-1.5 text-sm text-text-muted">
@@ -29,17 +30,15 @@
                     @update:model-value="config.location.label = String($event ?? '')"
                 />
             </label>
-            <div class="grid grid-cols-4 gap-2">
-                <label v-for="axis in axes" :key="axis" class="grid gap-1 text-xs uppercase text-text-faint">
-                    {{ axis }}
-                    <Inputs
-                        :model-value="config.location[axis]"
-                        type="number"
-                        size="sm"
-                        @update:model-value="config.location[axis] = toNumber($event)"
-                    />
-                </label>
-            </div>
+            <p v-if="placeError" class="flex items-center gap-1.5 text-xs text-danger">
+                <CircleAlert class="size-3.5 shrink-0" />
+                {{ placeError }}
+            </p>
+            <p v-else-if="!hasPosition" class="text-xs text-text-faint">No position yet</p>
+            <p v-else class="text-xs tabular-nums text-text-muted">
+                {{ config.location.x.toFixed(2) }}, {{ config.location.y.toFixed(2) }}, {{ config.location.z.toFixed(2) }}
+                · {{ config.location.heading.toFixed(0) }}°
+            </p>
         </section>
 
         <!-- On a machine someone owns, any change here takes it away from them -->
@@ -123,25 +122,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { Crosshair, MapPin, ShoppingBag, Store, TriangleAlert, Users } from "@lucide/vue";
+import { computed, ref } from "vue";
+import { CircleAlert, MapPin, Move3d, ShoppingBag, Store, TriangleAlert, Users } from "@lucide/vue";
 import { Button, Checkbox, Inputs, SelectMenu, Switch } from "@vezironi/veyra-ui";
 import ProductThumb from "@/components/ProductThumb.vue";
 import SettingRow from "@/components/SettingRow.vue";
-import { machineModels, useAdminStore, type MachineConfig } from "@/stores/admin";
+import { customMachineModels, machineModels, useAdminStore, type MachineConfig } from "@/stores/admin";
+import { usePlacementStore } from "@/stores/placement";
 import { currencySymbol } from "@/utils/format";
 
 const config = defineModel<MachineConfig>({ required: true });
 
-defineProps<{
+const props = defineProps<{
     // Name of the player the machine belongs to right now, when editing an owned machine
     owner?: string;
+    // The machine being edited: its position can only be changed next to it
+    machineId?: string;
 }>();
 
 const admin = useAdminStore();
 
-const axes = ["x", "y", "z", "heading"] as const;
-const locating = ref(false);
+// "Custom Vending Machine" stands for every custom model; the type menu under it picks which one is saved
+const CUSTOM = "custom";
+const isCustom = computed(() => customMachineModels.some((model) => model.value === config.value.model));
+
+// Only offered while olentrix_vending runs; a machine that already is custom keeps it, so its form still shows its model
+const modelOptions = computed(() => admin.customMachines || isCustom.value
+    ? [...machineModels, { label: "Custom Vending Machine", value: CUSTOM }]
+    : machineModels);
+
+const modelChoice = computed({
+    get: () => (isCustom.value ? CUSTOM : config.value.model),
+    set: (value: string) => {
+        config.value.model = value === CUSTOM ? customMachineModels[0]!.value : value;
+    },
+});
+
+const placement = usePlacementStore();
+const placing = ref(false);
+const placeError = ref<string>();
+
+const hasPosition = computed(() => !!(config.value.location.x || config.value.location.y || config.value.location.z));
 
 function toNumber(value: string | number | undefined, min = -Infinity): number {
     const number = Number(value);
@@ -154,13 +175,17 @@ function toggleProduct(productId: string, checked: boolean) {
         : config.value.products.filter((id) => id !== productId);
 };
 
-async function useMyPosition() {
-    locating.value = true;
+// The admin page hides while the ghost machine is placed and comes back with the confirmed position
+async function setPosition() {
+    placing.value = true;
+    placeError.value = undefined;
 
     try {
-        const response = await admin.getPosition();
+        const response = await placement.start(config.value.model, props.machineId);
 
-        if (response.success && response.data) {
+        if (!response.success) {
+            placeError.value = response.error;
+        } else if (response.data) {
             const { label, x, y, z, heading } = response.data;
             const round = (value: number) => Math.round(value * 100) / 100;
 
@@ -173,7 +198,7 @@ async function useMyPosition() {
             };
         }
     } finally {
-        locating.value = false;
+        placing.value = false;
     }
 };
 </script>

@@ -1,4 +1,4 @@
-import { machineModels, type AdminSettings, type Machine, type MachineConfig } from "@/stores/admin";
+import { customMachineModels, machineModels, type AdminSettings, type Machine, type MachineConfig } from "@/stores/admin";
 
 const format = "hype-vendingmachine";
 const version = 1;
@@ -63,7 +63,7 @@ export function parseMachineImport(text: string, context: ImportContext): Import
     if (!entries?.length) return { machines: [], skipped: [], error: "No machines found in this JSON." };
 
     const result: ImportResult = { machines: [], skipped: [] };
-    const models = machineModels.map((model) => model.value);
+    const models = [...machineModels, ...customMachineModels].map((model) => model.value);
 
     entries.forEach((entry, index) => {
         const name = isRecord(entry) && typeof entry.name === "string" ? entry.name.trim() : "";

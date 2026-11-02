@@ -48,19 +48,31 @@ end
 --- @param view View
 --- @param callback string Server callback that checks the machine and returns the page's data
 --- @param data MachineProp
-local function openView(view, callback, data)
+--- @return CallbackResponse? response Only when the server agreed
+local function requestView(view, callback, data)
     local response = lib.callback.await(callback, false, data.id)
 
     if not response or not response.success then
         Debug("warning", "server refused to open %s for machine %s: %s", view, data.id, response and response.error)
         notify(response)
-        return
+        return nil
     end
 
     Debug("info", "opened %s for machine %s", view, data.id)
 
     currentMachine = data.id
     currentView = view
+    return response
+end
+
+--- @param view View
+--- @param callback string Server callback that checks the machine and returns the page's data
+--- @param data MachineProp
+--- @return nil
+local function openView(view, callback, data)
+    local response = requestView(view, callback, data)
+    if not response then return end
+
     viewData[view] = response.data
     NuiMessage("setView", { view = view })
     SetNuiFocus(true, true)
@@ -85,9 +97,26 @@ local function openPurchase(data)
     openView("purchase", "hype-vendingmachine:server:get-purchase-data", data)
 end
 
+--- Arm machines show the shop on their own screen, the others open the menu
 --- @param data MachineProp
+--- @return nil
 local function openVending(data)
-    openView("vending", "hype-vendingmachine:server:get-vending-data", data)
+    local machine = machines[data.id]
+
+    if not HasShelf(machine) then
+        openView("vending", "hype-vendingmachine:server:get-vending-data", data)
+        return
+    end
+
+    local response = requestView("screen", "hype-vendingmachine:server:get-vending-data", data)
+    if not response then return end
+
+    -- The screen asks for its products with vending:get-data, like the menu
+    viewData.vending = response.data
+
+    if not OpenScreen(machine --[[@as MachineEntry]]) then
+        currentView = nil
+    end
 end
 
 --- @param data MachineProp
@@ -100,8 +129,8 @@ end
 --- @param action fun(data: MachineProp)
 --- @param data MachineProp
 local function run(action, data)
-    if busy then
-        Debug("info", "ignored input on machine %s, a request is still running", data.id)
+    if busy or IsPlacing() then
+        Debug("info", "ignored input on machine %s, a request is still running or a machine is being placed", data.id)
         return
     end
     busy = true
@@ -207,10 +236,15 @@ end
 local function removeEntity(machine)
     if not machine.entity then return end
 
+    if IsScreenOpen(machine.data.id) then
+        CloseScreen()
+    end
+
     if useTarget then
         exports['hype-core']:RemoveLocalEntity(machine.entity)
     end
 
+    ClearShelf(machine)
     exports['hype-core']:RemoveEntity(machine.entity)
     machine.entity = nil
 
@@ -248,6 +282,8 @@ local function setMachine(data)
         current.data = data
         Debug("info", "updated machine %s (status: %s, for sale: %s)", data.id, data.status, data.forSale)
 
+        RefreshShelf(current)
+
         if textMachine == current then
             showText(current)
         end
@@ -265,7 +301,7 @@ local function setMachine(data)
         distance = Config.Interaction.spawnDistance,
         onEnter = function()
             machine.inside = true
-            if machine.entity then return end
+            if machine.entity or machine.hidden then return end
 
             local entity = exports['hype-core']:CreateLocalProp(data.model, vec4(data.x, data.y, data.z, data.heading))
             if not entity then
@@ -287,6 +323,12 @@ local function setMachine(data)
 
             if useTarget then
                 exports['hype-core']:AddLocalEntity(entity, targetOptions(machine))
+            end
+
+            SetupShelf(machine)
+
+            if ArmModels[data.model] then
+                ShowIdleScreens()
             end
         end,
         onExit = function()
@@ -317,6 +359,31 @@ local function setMachine(data)
 
     machines[data.id] = machine
     Debug("info", "added machine %s (%s)", data.id, data.model)
+end
+
+--- @param machineId integer
+--- @return MachineEntry?
+function GetMachine(machineId)
+    return machines[machineId]
+end
+
+--- While an admin places its ghost, the machine (prop, shelves and arm) is taken away, then built again
+--- @param machineId integer
+--- @param hidden boolean
+--- @return nil
+function SetMachineHidden(machineId, hidden)
+    local machine = machines[machineId]
+    if not machine then return end
+
+    if hidden then
+        machine.hidden = true
+        removeEntity(machine)
+    else
+        -- A fresh entry spawns the prop again as soon as the player is in range
+        local data = machine.data
+        removeMachine(machineId)
+        setMachine(data)
+    end
 end
 
 --- Drops every prop and loads the machines again from the server
@@ -356,7 +423,29 @@ end
 
 RegisterNuiCallback("checkout", function(data, cb)
     Debug("info", "checkout on machine %s with %s", currentMachine, data.payment)
-    cb(lib.callback.await("hype-vendingmachine:server:checkout", false, currentMachine, data.items, data.payment))
+    local machineId = currentMachine
+    local response = lib.callback.await("hype-vendingmachine:server:checkout", false, machineId, data.items, data.payment)
+    cb(response)
+
+    -- The page closes so the buyer can watch the arm
+    if response and response.success and IsScreenOpen(machineId) then
+        CloseScreen()
+    elseif response and response.success and HasShelf(machines[machineId]) then
+        NuiMessage("close", {})
+        SetNuiFocus(false, false)
+        TriggerEvent("hype-vendingmachine:client:ui-closed")
+    end
+end)
+
+-- A checkout on an arm machine, sent to every player so whoever is near sees the arm
+RegisterNetEvent("hype-vendingmachine:client:vend", function(machineId, vendId, buyer, lines, products)
+    local machine = machines[machineId]
+
+    if machine then
+        machine.data.products = products
+    end
+
+    QueueVend(machine, vendId, buyer, lines)
 end)
 
 AddEventHandler("hype-vendingmachine:client:ui-closed", function()

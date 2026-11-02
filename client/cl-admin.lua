@@ -1,4 +1,7 @@
 RegisterNetEvent("hype-vendingmachine:client:open-admin-menu", function()
+    -- Opening the menu again would reload it and lose the form whose machine is being placed
+    if IsPlacing() then return end
+
     Debug("info", "opening the admin menu")
     NuiMessage("setView", {
         view = "admin"
@@ -7,25 +10,14 @@ RegisterNetEvent("hype-vendingmachine:client:open-admin-menu", function()
 end)
 
 RegisterNuiCallback("admin:get-data", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:get-admin-data", false))
-end)
+    local response = lib.callback.await("hype-vendingmachine:server:get-admin-data", false)
 
-RegisterNuiCallback("admin:get-position", function(data, cb)
-    local playerPed = PlayerPedId()
-    local coords = GetEntityCoords(playerPed)
-    local streetHash = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
-    local streetName = GetStreetNameFromHashKey(streetHash)
+    -- Custom (arm) machines need olentrix_vending; without it the panel doesn't offer them
+    if response and response.success and response.data then
+        response.data.customMachines = GetResourceState("olentrix_vending") == "started"
+    end
 
-    cb({
-        success = true,
-        data = {
-            label = streetName,
-            x = coords.x,
-            y = coords.y,
-            z = coords.z,
-            heading = GetEntityHeading(playerPed)
-        }
-    })
+    cb(response)
 end)
 
 RegisterNuiCallback("admin:create-machine", function(data, cb)

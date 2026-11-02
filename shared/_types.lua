@@ -3,7 +3,7 @@
 ---@alias MachineStatus "open" | "closed" | "disabled"
 ---@alias StockOrderStatus "preparing" | "prepared" | "shipping" | "completed" | "cancelled"
 ---@alias CashMovementType "deposit" | "withdraw" | "order"
----@alias View "vending" | "purchase" | "owner" | "admin"
+---@alias View "vending" | "purchase" | "owner" | "admin" | "screen"
 ---@alias PaymentMethod "cash" | "bank"
 
 ---@class CallbackResponse
@@ -75,6 +75,29 @@
 ---@field price integer Starting sale price
 ---@field wholesale integer What the owner pays the supplier per unit
 ---@field image string
+---@field model? string Prop shown on the shelves of machines with an arm
+
+---@class MachineModel A Config.Machines entry
+---@field label string
+---@field value string Prop model
+---@field arm? boolean An olentrix_vending machine: stock is shown on its shelves and the arm vends each unit
+
+---@class MachineStock
+---@field item string
+---@field stock integer
+
+---@class SaleLine One product of a checkout
+---@field item string
+---@field quantity integer
+---@field total integer
+---@field stockBefore integer
+
+---@class PendingVend A paid-for checkout on an arm machine, waiting for the buyer's arm to drop it
+---@field playerId integer
+---@field row MachineRow
+---@field lines SaleLine[] Stock is already reserved
+---@field account PaymentMethod
+---@field total integer Taken when the buyer collects
 
 ---@class Product Product shape the UI uses
 ---@field id string
@@ -97,6 +120,7 @@
 ---@field forSale boolean
 ---@field owner string?
 ---@field status MachineStatus
+---@field products MachineStock[] In Config.Products order, the order the shelves are filled in
 
 ---@class MachineEntry Client-side state of one machine
 ---@field data MachineProp
@@ -104,6 +128,69 @@
 ---@field textPoint? table ox_lib point for the TextUI, only without a target resource
 ---@field entity? integer
 ---@field inside boolean
+---@field shelf? Shelf Only on arm machines while the prop is spawned
+---@field hidden? boolean Taken away while an admin places its ghost
+
+---@class PlacementState The ghost machine an admin is placing
+---@field ghost integer
+---@field machineId? integer The machine being moved, when editing
+---@field cursor boolean The gizmo has the mouse; off while the admin looks around
+
+---@class ScreenCorners Offsets from the machine prop to the corners of its screen
+---@field topLeft vector3
+---@field topRight vector3
+---@field bottomLeft vector3
+
+---@class ScreenCamera
+---@field offset vector3 From the machine prop
+---@field fov number
+
+---@class ScreenConfig Config.Screen: arm machines open their own screen instead of the menu
+---@field texture string Screen texture in the model, its dictionary is the model name
+---@field width integer DUI size in pixels
+---@field height integer
+---@field camera ScreenCamera
+---@field corners ScreenCorners
+
+---@class ScreenState The machine screen this player is using
+---@field machineId integer
+---@field entity integer
+---@field cam integer
+---@field pressed boolean The left button went down on the screen and hasn't been released yet
+---@field position vector3 The camera, in the world
+---@field forward vector3 Where the camera looks, unit length
+---@field right vector3
+---@field up vector3
+---@field topLeft vector3 The screen's corners, in the world
+---@field topRight vector3
+---@field bottomLeft vector3
+
+---@class UiConfig What the UI needs from the config
+---@field inventoryImagePath string
+---@field currency string
+---@field locale string
+---@field debug boolean
+
+---@class ShelfLane One product's lane in an arm machine
+---@field slot string olentrix_vending slot, "A1" to "E4"
+---@field model integer
+---@field front vector3 Offset from the machine of the front position
+---@field lift number Raises the prop so its bottom sits on the belt
+---@field pitch number Distance between two props in the lane
+---@field capacity integer Props that fit in the lane
+---@field entities integer[] Front to back
+
+---@class VendStep
+---@field vendId integer
+---@field item? string A unit for the arm to vend
+---@field collect? boolean The buyer's last step: asks the server for the items
+
+---@class Shelf
+---@field key string The products the lanes were built for
+---@field lanes table<string, ShelfLane> By item
+---@field queue VendStep[]
+---@field pending table<string, integer> Units sold but not vended yet, still shown in their lane
+---@field vending boolean
 
 ---@class CargoBox One box on the cart: an order line
 ---@field item string

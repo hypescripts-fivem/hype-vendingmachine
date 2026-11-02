@@ -114,23 +114,59 @@ return {
         "settings.payments",
     },
 
+    -- `arm` machines come from olentrix_vending: their stock sits on the shelves behind the glass and the arm
+    -- carries each unit sold to the tray. The items reach the buyer's inventory once the arm drops them.
+    -- The admin panel's model lists are in web/src/stores/admin.ts (machineModels, customMachineModels for `arm`), keep them the same
     Machines = {
         { label = "Soda machine", value = "prop_vend_soda_01" },
         { label = "Snack machine", value = "prop_vend_snak_01" },
         { label = "Coffee machine", value = "prop_vend_coffe_01" },
         { label = "Water machine", value = "prop_vend_water_01" },
+        { label = "Glass machine", value = "olentrix_vend", arm = true },
+        { label = "Glass machine (eCola)", value = "olentrix_vend_ecola", arm = true },
+        { label = "Glass machine (Sprunk)", value = "olentrix_vend_sprunk", arm = true },
+        { label = "Glass machine (Raine)", value = "olentrix_vend_raine", arm = true },
+        { label = "Glass machine (Junk)", value = "olentrix_vend_junk", arm = true },
+        { label = "Glass machine (Bean Machine)", value = "olentrix_vend_beanmachine", arm = true },
+        { label = "Glass machine (Phat Chips)", value = "olentrix_vend_phatchips", arm = true },
+        { label = "Glass machine (Ego Chaser)", value = "olentrix_vend_egochaser", arm = true },
+        { label = "Glass machine (Cluckin' Bell)", value = "olentrix_vend_cluckinbell", arm = true },
+        { label = "Glass machine (Burger Shot)", value = "olentrix_vend_burgershot", arm = true },
+        { label = "Glass machine (24/7)", value = "olentrix_vend_247", arm = true },
     },
 
-    -- `price` is the starting sale price, `wholesale` is what the owner pays the supplier per unit
+    -- Admin panel, "Set machine position": an existing machine can only be moved by an admin this close to it
+    Placement = {
+        editDistance = 10.0,
+    },
+
+    -- Arm machines open their own screen instead of the menu: the `vend_screen` texture shows the shop and the camera looks at it.
+    -- Every olentrix model shares the same body, so one set of offsets (from the machine prop) fits all of them. Tune them in game
+    Screen = {
+        texture = "vend_screen", -- texture name in the model; its dictionary is the model name
+        width = 900,             -- DUI size in pixels, 9:16 like the screen
+        height = 1600,
+        -- The front of the machine faces -y (the glass is at y -0.358, see olentrix_vending's config); x is left/right, z is up.
+        -- Move y further negative to pull the camera back, lower fov to zoom in
+        camera = { offset = vec3(0.456, -1.3, 1.361), fov = 30.0 }, -- looks at the middle of the screen
+        corners = {              -- the screen's corners; clicks are mapped from them
+            topLeft = vec3(0.339, -0.37, 1.564),
+            topRight = vec3(0.573, -0.37, 1.564),
+            bottomLeft = vec3(0.339, -0.37, 1.164),
+        },
+    },
+
+    -- `price` is the starting sale price, `wholesale` is what the owner pays the supplier per unit.
+    -- `model` is the prop on the shelves of `arm` machines, one lane per product (20 lanes, in this order)
     Products = {
-        { id = "water", name = "Water", description = "500ml bottled water", category = "drinks", price = 5, wholesale = 2, image = "water.png" },
-        { id = "cola", name = "eCola", description = "Classic fizzy cola", category = "drinks", price = 8, wholesale = 4, image = "cola.png" },
-        { id = "sprunk", name = "Sprunk", description = "Lemon-lime soda", category = "drinks", price = 8, wholesale = 4, image = "sprunk.png" },
-        { id = "coffee", name = "Coffee", description = "Hot black coffee", category = "drinks", price = 10, wholesale = 5, image = "coffee.png" },
-        { id = "chips", name = "Chips", description = "Salted potato chips", category = "snacks", price = 6, wholesale = 3, image = "chips.png" },
-        { id = "chocolate", name = "Chocolate", description = "Milk chocolate bar", category = "snacks", price = 7, wholesale = 3, image = "chocolate.png" },
-        { id = "candy", name = "Candy", description = "Mixed fruit candy", category = "snacks", price = 4, wholesale = 2, image = "candy.png" },
-        { id = "sandwich", name = "Sandwich", description = "Ham and cheese sandwich", category = "food", price = 15, wholesale = 8, image = "sandwich.png" },
-        { id = "donut", name = "Donut", description = "Glazed donut", category = "food", price = 9, wholesale = 4, image = "donut.png" },
+        { id = "water", name = "Water", description = "500ml bottled water", category = "drinks", price = 5, wholesale = 2, image = "water.png", model = "prop_ld_flow_bottle" },
+        { id = "cola", name = "eCola", description = "Classic fizzy cola", category = "drinks", price = 8, wholesale = 4, image = "cola.png", model = "prop_ecola_can" },
+        { id = "sprunk", name = "Sprunk", description = "Lemon-lime soda", category = "drinks", price = 8, wholesale = 4, image = "sprunk.png", model = "prop_ld_can_01" },
+        { id = "coffee", name = "Coffee", description = "Hot black coffee", category = "drinks", price = 10, wholesale = 5, image = "coffee.png", model = "p_amb_coffeecup_01" },
+        { id = "chips", name = "Chips", description = "Salted potato chips", category = "snacks", price = 6, wholesale = 3, image = "chips.png", model = "v_ret_ml_chips4" },
+        { id = "chocolate", name = "Chocolate", description = "Milk chocolate bar", category = "snacks", price = 7, wholesale = 3, image = "chocolate.png", model = "prop_choc_ego" },
+        { id = "candy", name = "Candy", description = "Mixed fruit candy", category = "snacks", price = 4, wholesale = 2, image = "candy.png", model = "prop_candy_pqs" },
+        { id = "sandwich", name = "Sandwich", description = "Ham and cheese sandwich", category = "food", price = 15, wholesale = 8, image = "sandwich.png", model = "prop_sandwich_01" },
+        { id = "donut", name = "Donut", description = "Glazed donut", category = "food", price = 9, wholesale = 4, image = "donut.png", model = "prop_donut_01" },
     }
 }
