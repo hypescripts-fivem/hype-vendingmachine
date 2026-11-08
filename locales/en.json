@@ -29,6 +29,7 @@
     "notify_machine_transferred": "You gave %s to %s.",
     "notify_machine_received": "%s gave you %s.",
     "notify_machine_sold": "You sold %s for $%s.",
+    "auto_restock": "Auto restock",
 
     "log_title_purchase": "Machine purchase",
     "log_title_admin": "Admin action",

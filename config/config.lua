@@ -89,12 +89,12 @@ return {
         handleOffset = vec3(-0.6, 0.0, 1.0), -- from the cart, where its grab option is
         -- Ped bone ids: 24818 = upper spine, 60309 = left hand. The cart and box are attached to them, tune in game.
         -- The spine moves with the upper body only, so the cart doesn't bob with the legs. On it x is up/down and y forward/back
-        cartAttach = { bone = 24818, offset = vec3(-0.24, 1.6, 0.0), rotation = vec3(88.0, 236.0, 173.0) },
+        cartAttach = { bone = 24818, offset = vec3(-0.2107, 1.7693, -0.2852), rotation = vec3(79.47, 73.39, -21.31) },
         -- Upper body only, held still at `time` (0-1 through the animation) so the arms stay in the pushing pose
         cartAnim = { dict = "missfinale_c2ig_11", name = "pushcar_offcliff_f", time = 0.3 },
         boxAttach = { bone = 60309, offset = vec3(0.025, 0.08, 0.255), rotation = vec3(-145.0, 290.0, 0.0) },
         boxAnim = { dict = "anim@heists@box_carry@", name = "idle" },
-        boxOffset = vec3(0.0, 0.0, 0.5), -- first box, from the cart
+        boxOffset = vec3(-0.2, 0.0, 0.4), -- first box, from the cart
         boxStep = vec3(0.0, 0.0, 0.3),   -- each next box is stacked this much further
     },
 

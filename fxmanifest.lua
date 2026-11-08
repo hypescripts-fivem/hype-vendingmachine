@@ -9,6 +9,8 @@ version '1.0.0'
 
 dependencies {
     'ox_lib',
+    'oxmysql',
+    'hype-core',
 }
 
 shared_scripts {

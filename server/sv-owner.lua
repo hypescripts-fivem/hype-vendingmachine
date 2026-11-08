@@ -237,6 +237,73 @@ local function isTime(value)
     return hours ~= nil and tonumber(hours) < 24 and tonumber(minutes) < 60
 end
 
+--- @param value string "HH:MM", checked with isTime when it was saved
+--- @return integer minutes Since midnight
+local function toMinutes(value)
+    local hours, minutes = value:match("^(%d%d):(%d%d)$")
+    return tonumber(hours) * 60 + tonumber(minutes)
+end
+
+--- Whether `time` comes after `from` and no later than `to`, going round midnight. All in minutes since midnight
+--- @param time integer
+--- @param from integer
+--- @param to integer
+--- @return boolean
+local function passedBetween(time, from, to)
+    local offset = (time - from) % 1440
+    return offset > 0 and offset <= (to - from) % 1440
+end
+
+--- Opens or closes the scheduled machines whose opening or closing time came between two checks of the in-game time.
+--- In between, the owner's open switch still decides
+--- @param from integer Minutes since midnight at the last check
+--- @param to integer Minutes since midnight now
+--- @return nil
+local function applySchedules(from, to)
+    for _, row in ipairs(MySQL.query.await(Queries.GetScheduledMachines) or {}) do
+        local schedule = GetOwnerSettings(row).schedule
+        local opensAt, closesAt = toMinutes(schedule.opensAt), toMinutes(schedule.closesAt)
+
+        if passedBetween(opensAt, from, to) or passedBetween(closesAt, from, to) then
+            -- Open from opensAt until closesAt, which can be past midnight
+            local status = (to - opensAt) % 1440 < (closesAt - opensAt) % 1440 and "open" or "closed"
+
+            if MySQL.update.await(Queries.SetScheduledStatus, { status, row.id, status }) > 0 then
+                Debug("info", "machine %s is now %s by its schedule", row.id, status)
+                SyncMachine(row.id)
+            end
+        end
+    end
+end
+
+-- Checks the in-game time from hype-core; an in-game minute is only a few seconds
+CreateThread(function()
+    local last, warned
+
+    while true do
+        Wait(1000)
+
+        local time = exports['hype-core']:GetGameTime() --[[@as GameTime?]]
+
+        if not time then
+            if not warned then
+                print("^3[WARNING] hype-core has no in-game time, so machine operating hours are not applied^0")
+                warned = true
+            end
+
+            last = nil
+        else
+            local now = time.hour * 60 + time.minute
+
+            if last and now ~= last then
+                applySchedules(last, now)
+            end
+
+            last = now
+        end
+    end
+end)
+
 -- Each group is only taken from the request if the viewer has its permission; the rest keeps its current value
 lib.callback.register("hype-vendingmachine:server:save-owner-settings", function(source, machineId, data)
     if not source then return Fail(locale("error_machine_not_found")) end
@@ -461,6 +528,98 @@ MySQL.ready(function()
     Debug("info", "resumed %d pending order(s)", #orders)
 end)
 
+--- Pays a stock order from the machine balance, saves it and starts its timer
+--- @param row MachineRow
+--- @param lines StockOrderLine[]
+--- @param total integer
+--- @param orderedBy string Identifier saved on the order and its cash movement
+--- @param byName string Shown in the cash history
+--- @return integer? orderId
+--- @return string? error
+local function placeOrder(row, lines, total, orderedBy, byName)
+    if MySQL.update.await(Queries.RemoveBalance, { total, row.id, total }) == 0 then
+        return nil, locale("error_not_enough_balance")
+    end
+
+    local orderId = MySQL.insert.await(Queries.InsertOrder, { row.id, total, orderedBy })
+
+    if not orderId then
+        MySQL.update.await(Queries.AddBalance, { total, row.id })
+        Debug("error", "could not insert the stock order for machine %s, balance restored", row.id)
+        return nil, locale("error_database")
+    end
+
+    local values = {}
+    for index, line in ipairs(lines) do
+        values[index] = { orderId, line.item, line.quantity, line.unitPrice }
+    end
+
+    MySQL.prepare.await(Queries.InsertOrderItem, values)
+    MySQL.insert(Queries.InsertCashMovement, { row.id, "order", total, orderedBy, byName })
+
+    scheduleOrder(orderId, stageDelay())
+
+    return orderId
+end
+
+--- Units ordered but not delivered yet, by item
+--- @param machineId integer
+--- @return table<string, integer>
+local function getIncomingStock(machineId)
+    local incoming = {}
+    for _, line in ipairs(MySQL.query.await(Queries.GetIncomingStock, { machineId }) or {}) do
+        incoming[line.item] = tonumber(line.quantity) or 0
+    end
+
+    return incoming
+end
+
+--- Machines placing an automatic order right now, so two sales at once don't both order
+--- @type table<integer, boolean>
+local restocking = {}
+
+--- Called after every sale. With autoRestock on, every product at or below the low stock threshold is ordered
+--- up to capacity, paid from the machine balance. Products with an order on its way are left out
+--- @param row MachineRow
+--- @return nil
+function AutoRestock(row)
+    if not row.owner or restocking[row.id] then return end
+
+    local settings = GetOwnerSettings(row)
+    if not settings.autoRestock then return end
+
+    restocking[row.id] = true
+
+    local incoming = getIncomingStock(row.id)
+    local multiplier = GetSettings().wholesaleMultiplier
+    --- @type StockOrderLine[]
+    local lines, total = {}, 0
+
+    for _, product in ipairs(MySQL.query.await(Queries.GetMachineProducts, { row.id }) or {}) do
+        local catalog = ProductsById[product.item]
+
+        if catalog and not incoming[product.item] and product.stock <= settings.lowStockThreshold and product.stock < row.capacity then
+            local quantity = math.min(row.capacity - product.stock, Config.Limits.maxOrderQuantity)
+            local unitPrice = wholesalePrice(catalog, multiplier)
+
+            lines[#lines + 1] = { item = product.item, quantity = quantity, unitPrice = unitPrice }
+            total = total + unitPrice * quantity
+        end
+    end
+
+    if #lines > 0 then
+        local orderId, err = placeOrder(row, lines, total, row.owner, locale("auto_restock"))
+
+        if orderId then
+            Debug("success", "auto restock placed order %s for machine %s (total %s)", orderId, row.id, total)
+        else
+            Debug("warning", "auto restock of machine %s failed: %s", row.id, err)
+        end
+    end
+
+    restocking[row.id] = nil
+end
+
 -- Paid from the machine balance up front. Units already on their way count against capacity
 lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(source, machineId, items)
     if not source then return Fail(locale("error_machine_not_found")) end
@@ -480,12 +639,10 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
         stock[product.item] = product.stock
     end
 
-    local incoming = {}
-    for _, line in ipairs(MySQL.query.await(Queries.GetIncomingStock, { row.id }) or {}) do
-        incoming[line.item] = tonumber(line.quantity) or 0
-    end
+    local incoming = getIncomingStock(row.id)
 
     local multiplier = GetSettings().wholesaleMultiplier
+    --- @type StockOrderLine[]
     local lines, total = {}, 0
 
     for item, quantity in pairs(requested) do
@@ -501,27 +658,9 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
         total = total + unitPrice * quantity
     end
 
-    if MySQL.update.await(Queries.RemoveBalance, { total, row.id, total }) == 0 then
-        return Fail(locale("error_not_enough_balance"))
-    end
+    local orderId, orderError = placeOrder(row, lines, total, identifier --[[@as string]], GetPlayerDisplayName(playerId))
+    if not orderId then return Fail(orderError --[[@as string]]) end
 
-    local orderId = MySQL.insert.await(Queries.InsertOrder, { row.id, total, identifier })
-
-    if not orderId then
-        MySQL.update.await(Queries.AddBalance, { total, row.id })
-        Debug("error", "could not insert the stock order for machine %s, balance restored", row.id)
-        return Fail(locale("error_database"))
-    end
-
-    local values = {}
-    for index, line in ipairs(lines) do
-        values[index] = { orderId, line.item, line.quantity, line.unitPrice }
-    end
-
-    MySQL.prepare.await(Queries.InsertOrderItem, values)
-    MySQL.insert(Queries.InsertCashMovement, { row.id, "order", total, identifier, GetPlayerDisplayName(playerId) })
-
-    scheduleOrder(orderId, stageDelay())
     Debug("success", "player %s placed order %s for machine %s (total %s)", playerId, orderId, row.id, total)
 
     return {

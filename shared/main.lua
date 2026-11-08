@@ -27,6 +27,10 @@ Queries = {
     -- An admin's `disabled` stays; the owner can still save everything else
     UpdateMachineSettings = "UPDATE hype_vending_machines SET name = ?, description = ?, status = IF(status = 'disabled', 'disabled', ?), settings = ? WHERE id = ?",
     SetMachineStatus = "UPDATE hype_vending_machines SET status = ? WHERE id = ?",
+    -- Owned, not disabled machines with operating hours on. JSON_UNQUOTE makes the boolean 'true' on both MySQL and MariaDB
+    GetScheduledMachines = "SELECT id, settings FROM hype_vending_machines WHERE for_sale = 0 AND status <> 'disabled' AND JSON_UNQUOTE(JSON_EXTRACT(settings, '$.schedule.enabled')) = 'true'",
+    -- Pass the status twice. Never touches an admin's `disabled`; affectedRows = 0 means nothing changed
+    SetScheduledStatus = "UPDATE hype_vending_machines SET status = ? WHERE id = ? AND for_sale = 0 AND status NOT IN ('disabled', ?)",
     SetMachineOwner = "UPDATE hype_vending_machines SET owner = ?, owner_name = ?, for_sale = 0 WHERE id = ?",
     -- affectedRows = 0 means someone else bought it first or an admin changed it
     BuyMachine = "UPDATE hype_vending_machines SET owner = ?, owner_name = ?, for_sale = 0 WHERE id = ? AND for_sale = 1 AND status <> 'disabled'",

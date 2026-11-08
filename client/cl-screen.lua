@@ -51,6 +51,16 @@ local function getDui()
     return dui
 end
 
+--- Points every arm model's screen texture at the DUI. A model the game unloads and loads again comes back
+--- with its own texture, so this is redone on every spawn; removed first so the swaps don't pile up
+--- @return nil
+local function replaceTextures()
+    for model in pairs(ArmModels) do
+        RemoveReplaceTexture(model, Config.Screen.texture)
+        AddReplaceTexture(model, Config.Screen.texture, TXD, TXN)
+    end
+end
+
 --- Puts the DUI on every arm model's screen, showing the idle page. Waits for the DUI, so it runs in a thread or a callback
 --- @return boolean
 local function startScreens()
@@ -58,10 +68,7 @@ local function startScreens()
     if not getDui() then return false end
 
     SetDuiUrl(dui, IDLE_URL)
-
-    for model in pairs(ArmModels) do
-        AddReplaceTexture(model, Config.Screen.texture, TXD, TXN)
-    end
+    replaceTextures()
 
     started = true
     Debug("info", "machine screens show the idle page")
@@ -71,7 +78,13 @@ end
 --- Called when an arm machine spawns. The DUI loads in the background, so the caller isn't held up
 --- @return nil
 function ShowIdleScreens()
-    if started or starting then return end
+    if starting then return end
+
+    if started then
+        replaceTextures()
+        return
+    end
+
     starting = true
 
     CreateThread(function()

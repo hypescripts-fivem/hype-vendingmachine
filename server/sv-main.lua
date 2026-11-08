@@ -458,6 +458,28 @@ end
 local pendingVends = {}
 local lastVendId = 0
 
+-- A vend the buyer's client hasn't collected by then is completed by the server. The arm takes a few seconds
+-- per unit, and the units of earlier checkouts on the same machine are vended first
+local VEND_SECONDS_PER_UNIT <const> = 15
+local VEND_GRACE_SECONDS <const> = 30
+
+--- Units still waiting for the arm on a machine, over every pending vend
+--- @param machineId integer
+--- @return integer
+local function pendingUnits(machineId)
+    local units = 0
+
+    for _, vend in pairs(pendingVends) do
+        if vend.row.id == machineId then
+            for _, line in ipairs(vend.lines) do
+                units = units + line.quantity
+            end
+        end
+    end
+
+    return units
+end
+
 --- Gives back stock reserved by a checkout that couldn't finish
 --- @param machineId integer
 --- @param lines SaleLine[]
@@ -508,12 +530,43 @@ local function handOver(playerId, row, lines, account)
     Debug("success", "player %s bought %d line(s) from machine %s for %s via %s (tax %s)", playerId, #sales, row.id, paid, account, tax)
 
     notifyOwner(row, sold, paid)
+    AutoRestock(row)
 
     return sold
 end
 
+--- Takes the buyer's money and hands the items over for a pending vend: on the buyer's collect, or when it times out
+--- @param vendId integer
+--- @return nil
+local function completeVend(vendId)
+    local vend = pendingVends[vendId]
+    if not vend then return end
+
+    pendingVends[vendId] = nil
+    local playerId, row = vend.playerId, vend.row
+
+    -- Spent in the meantime: the units go back in stock
+    if vend.total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, vend.account, vend.total) then
+        releaseStock(row.id, vend.lines)
+        SyncMachine(row.id)
+        Notify(playerId, locale("error_not_enough_money"), "error")
+        return
+    end
+
+    local sold = handOver(playerId, row, vend.lines, vend.account)
+
+    -- Refused lines went back in stock
+    if #sold < #vend.lines then
+        SyncMachine(row.id)
+    end
+
+    if #sold == 0 then
+        Notify(playerId, locale("error_cannot_carry", ProductsById[vend.lines[1].item].name), "error")
+    end
+end
+
 -- Stock is reserved first, then the money is taken, then the items are handed over.
--- On arm machines the money and items wait until the arm dropped every unit (vend-collect).
+-- On arm machines the money and items wait until the arm dropped every unit (vend-collect), or until the vend times out.
 -- Anything that fails on the way is undone, so the buyer never pays for what they didn't get
 lib.callback.register("hype-vendingmachine:server:checkout", function(source, machineId, items, payment)
     if not source then return Fail(locale("error_machine_not_found")) end
@@ -576,10 +629,19 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
     -- Every client near the machine plays the arm; the buyer's client collects once the last unit is dropped
     if ArmModels[row.model] then
         lastVendId = lastVendId + 1
-        pendingVends[lastVendId] = { playerId = playerId, row = row, lines = lines, account = account, total = total }
+        local vendId = lastVendId
+        pendingVends[vendId] = { playerId = playerId, row = row, lines = lines, account = account, total = total }
 
-        TriggerClientEvent("hype-vendingmachine:client:vend", -1, row.id, lastVendId, playerId, lines, getStock(row.id))
-        Debug("info", "player %s checked out %d line(s) on machine %s as vend %s", playerId, #lines, row.id, lastVendId)
+        -- Counted with this vend's own units, so a big checkout gets the time its arm needs
+        SetTimeout((pendingUnits(row.id) * VEND_SECONDS_PER_UNIT + VEND_GRACE_SECONDS) * 1000, function()
+            if not pendingVends[vendId] then return end
+
+            Debug("warning", "vend %s was not collected in time, completing it on the server", vendId)
+            completeVend(vendId)
+        end)
+
+        TriggerClientEvent("hype-vendingmachine:client:vend", -1, row.id, vendId, playerId, lines, getStock(row.id))
+        Debug("info", "player %s checked out %d line(s) on machine %s as vend %s", playerId, #lines, row.id, vendId)
 
         -- No wallet: nothing is taken yet, the UI takes the total off itself
         return {
@@ -610,31 +672,10 @@ end)
 
 -- Sent by the buyer's client when the arm dropped the last unit, or right away when there's no arm to watch
 RegisterNetEvent("hype-vendingmachine:server:vend-collect", function(vendId)
-    local playerId = source
     local vend = pendingVends[vendId]
-    if not vend or vend.playerId ~= playerId then return end
+    if not vend or vend.playerId ~= source then return end
 
-    pendingVends[vendId] = nil
-    local row = vend.row
-
-    -- Spent in the meantime: the units go back in stock
-    if vend.total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, vend.account, vend.total) then
-        releaseStock(row.id, vend.lines)
-        SyncMachine(row.id)
-        Notify(playerId, locale("error_not_enough_money"), "error")
-        return
-    end
-
-    local sold = handOver(playerId, row, vend.lines, vend.account)
-
-    -- Refused lines went back in stock
-    if #sold < #vend.lines then
-        SyncMachine(row.id)
-    end
-
-    if #sold == 0 then
-        Notify(playerId, locale("error_cannot_carry", ProductsById[vend.lines[1].item].name), "error")
-    end
+    completeVend(vendId)
 end)
 
 -- A buyer who leaves before collecting pays nothing, the stock goes back

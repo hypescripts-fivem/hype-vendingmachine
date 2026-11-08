@@ -294,6 +294,15 @@
 ---@field amount integer
 ---@field by string
 
+---@class StockOrderLine One product of a stock order being placed
+---@field item string
+---@field quantity integer
+---@field unitPrice integer Wholesale price per unit
+
+---@class GameTime The in-game time, from hype-core's GetGameTime
+---@field hour integer
+---@field minute integer
+
 ---@class StockOrderItem
 ---@field productId string
 ---@field quantity integer
