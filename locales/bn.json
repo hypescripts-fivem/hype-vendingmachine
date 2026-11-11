@@ -1,0 +1,703 @@
+{
+    "notify_title": "ভেন্ডিং মেশিন",
+
+    "target_buy": "মেশিন কিনুন",
+    "target_open": "ভেন্ডিং মেশিন ব্যবহার করুন",
+    "target_manage": "মেশিন পরিচালনা করুন",
+    "textui_buy": "[%s] মেশিন কিনুন ($%s)",
+    "textui_open": "[%s] ভেন্ডিং মেশিন ব্যবহার করুন",
+    "textui_manage": "[%s] মেশিন পরিচালনা করুন",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "ট্রলি ধরুন",
+    "target_cargo_drop": "ট্রলি ছাড়ুন",
+    "target_cargo_take": "বাক্স নিন",
+    "target_cargo_load": "বাক্স লোড করুন",
+    "target_cargo_unload": "বাক্স বের করুন",
+    "target_cargo_deliver": "বাক্স মেশিনে রাখুন",
+    "notify_cargo_started": "আপনার অর্ডার প্রস্তুত। চিহ্নিত স্থান থেকে সংগ্রহ করুন।",
+    "notify_cargo_cancelled": "আপনি পিকআপ এলাকা ছেড়ে গেছেন। অর্ডার বাতিল করা হয়েছে।",
+    "notify_cargo_delivered": "সব বাক্স %s-এ রাখা হয়েছে।",
+    "error_order_not_ready": "এই অর্ডারটি এখন সংগ্রহ করা যাবে না।",
+    "error_cargo_busy": "আপনি ইতিমধ্যে একটি অর্ডার সংগ্রহ করছেন।",
+
+    "success_machine_bought": "আপনি %s কিনেছেন $%s দিয়ে।",
+    "notify_sale": "%s একটি বিক্রি করেছে: $%s।",
+    "notify_low_stock": "%s, %s-এ কমে আসছে (%s বাকি)।",
+    "notify_hired": "আপনি এখন %s-এ কাজ করেন।",
+    "notify_staff_removed": "আপনি আর %s-এ কাজ করেন না।",
+    "notify_machine_transferred": "আপনি %s দিয়েছেন %s-কে।",
+    "notify_machine_received": "%s আপনাকে %s দিয়েছে।",
+    "notify_machine_sold": "আপনি %s বিক্রি করেছেন $%s-এ।",
+    "auto_restock": "অটো রিস্টক",
+
+    "log_title_purchase": "মেশিন ক্রয়",
+    "log_title_admin": "অ্যাডমিন কার্যক্রম",
+    "log_machine_bought": "%s **%s** (#%s) কিনেছে $%s দিয়ে।",
+    "log_machine_created": "%s **%s** (#%s) তৈরি করেছে।",
+    "log_machine_updated": "%s **%s** (#%s) সম্পাদনা করেছে।",
+    "log_machine_deleted": "%s **%s** (#%s) মুছে ফেলেছে।",
+    "log_machines_imported": "%s %sটি মেশিন ইমপোর্ট করেছে।",
+    "log_machine_status": "%s **%s** (#%s)-কে %s করেছে।",
+    "log_balance_reset": "%s **%s** (#%s)-এর ব্যালেন্স রিসেট করেছে, $%s।",
+    "log_settings_saved": "%s অ্যাডমিন সেটিংস পরিবর্তন করেছে।",
+
+    "error_no_permission": "এটি করার অনুমতি আপনার নেই।",
+    "error_invalid_machine": "অবৈধ মেশিন ডেটা।",
+    "error_invalid_name": "মেশিনের নাম 1 থেকে %s অক্ষরের হতে হবে।",
+    "error_invalid_model": "অজানা মেশিন মডেল।",
+    "error_invalid_location": "মেশিনের জন্য একটি অবস্থান নির্ধারণ করুন।",
+    "error_invalid_price": "বিক্রয় মূল্য 0 থেকে %s-এর মধ্যে একটি পূর্ণ সংখ্যা হতে হবে।",
+    "error_invalid_capacity": "ধারণক্ষমতা 1 থেকে %s-এর মধ্যে একটি পূর্ণ সংখ্যা হতে হবে।",
+    "error_invalid_products": "অন্তত একটি বৈধ পণ্য বেছে নিন।",
+    "error_owner_not_found": "এই সার্ভার ID বা citizen ID-তে কোনো অনলাইন খেলোয়াড় পাওয়া যায়নি।",
+    "error_machine_not_found": "এই মেশিনটি আর নেই।",
+    "error_machine_too_close": "এই অবস্থানে ইতিমধ্যে একটি মেশিন আছে।",
+    "error_database": "মেশিনটি সংরক্ষণ করা যায়নি। সার্ভার কনসোল দেখুন।",
+    "error_not_for_sale": "এই মেশিনটি বিক্রির জন্য নয়।",
+    "error_purchase_disabled": "এখন মেশিন কেনা যাবে না।",
+    "error_max_machines": "আপনি %sটির বেশি মেশিনের মালিক হতে পারবেন না।",
+    "error_not_enough_money": "আপনার কাছে যথেষ্ট টাকা নেই।",
+    "error_payment_not_accepted": "এই মেশিন সেই পেমেন্ট পদ্ধতি গ্রহণ করে না।",
+    "error_too_far": "আপনি মেশিন থেকে অনেক দূরে।",
+    "error_machine_closed": "এই মেশিনটি বন্ধ।",
+    "error_machine_disabled": "একজন অ্যাডমিন এই মেশিনটি নিষ্ক্রিয় করেছেন। এটি খোলা যাবে না।",
+    "error_invalid_description": "বিবরণ সর্বোচ্চ %s অক্ষরের হতে পারে।",
+    "error_invalid_schedule": "খোলা ও বন্ধের সময় আলাদা এবং HH:MM ফরম্যাটে হতে হবে।",
+    "error_invalid_threshold": "কম স্টকের সীমা 0 থেকে %s-এর মধ্যে হতে হবে।",
+    "error_invalid_payments": "অন্তত একটি পেমেন্ট পদ্ধতি গ্রহণ করুন।",
+    "error_invalid_amount": "$1 থেকে $%s-এর মধ্যে একটি পূর্ণ পরিমাণ লিখুন।",
+    "error_not_enough_balance": "মেশিনে এত টাকা নেই।",
+    "error_invalid_status": "এখানে একটি মেশিন শুধু নিষ্ক্রিয় বা সক্রিয় করা যায়।",
+    "error_invalid_settings": "%s-এর জন্য অবৈধ মান।",
+    "error_import_empty": "ইমপোর্ট করার মতো কোনো মেশিন নেই।",
+    "error_import_too_many": "আপনি একবারে সর্বোচ্চ %sটি মেশিন ইমপোর্ট করতে পারবেন।",
+    "error_import_entry": "মেশিন #%s: %s",
+    "error_import_duplicate": "একই জায়গায় দুবার তালিকাভুক্ত।",
+    "error_invalid_items": "অবৈধ আইটেম তালিকা।",
+    "error_too_many_items": "প্রতি অর্ডারে একটি আইটেমের সর্বোচ্চ %sটি।",
+    "error_over_capacity": "%s মেশিনের %s ধারণক্ষমতা ছাড়িয়ে যাবে।",
+    "error_out_of_stock": "স্টকে যথেষ্ট %s নেই।",
+    "error_cannot_carry": "আপনি এত %s বহন করতে পারবেন না।",
+    "error_player_not_found": "এই ID-র কোনো খেলোয়াড় মেশিনের কাছে নেই।",
+    "error_already_staff": "এই খেলোয়াড় ইতিমধ্যে এখানে কাজ করে।",
+    "error_invalid_permissions": "অন্তত একটি অনুমতি বেছে নিন যা আপনার নিজের আছে।",
+    "error_staff_not_found": "এই কর্মী আর এখানে কাজ করে না।",
+    "error_transfer_self": "এই মেশিনটি ইতিমধ্যে আপনার।",
+    "error_target_max_machines": "এই খেলোয়াড় %sটির বেশি মেশিনের মালিক হতে পারবে না।",
+    "error_machine_changed": "এর মধ্যে মেশিনটি পরিবর্তিত হয়েছে, আবার চেষ্টা করুন।",
+
+    "ui": {
+        "common": {
+            "cancel": "বাতিল",
+            "close": "বন্ধ করুন",
+            "clear": "মুছুন",
+            "back": "ফিরে যান",
+            "done": "সম্পন্ন",
+            "reset": "রিসেট",
+            "total": "মোট",
+            "decrease_quantity": "পরিমাণ কমান",
+            "increase_quantity": "পরিমাণ বাড়ান",
+            "save_bar": {
+                "unsaved": "আপনার কিছু পরিবর্তন সংরক্ষণ করা হয়নি।",
+                "saving": "সংরক্ষণ হচ্ছে...",
+                "save_changes": "পরিবর্তন সংরক্ষণ করুন"
+            },
+            "time_picker": {
+                "title": "সময় বেছে নিন",
+                "hour": "ঘণ্টা",
+                "minute": "মিনিট"
+            },
+            "errors": {
+                "no_response": "সার্ভার থেকে কোনো সাড়া নেই।"
+            }
+        },
+        "shop": {
+            "default_name": "ভেন্ডিং মেশিন",
+            "navbar": {
+                "products": "%sটি পণ্য",
+                "all": "সব",
+                "search": "পণ্য খুঁজুন..."
+            },
+            "empty": {
+                "title": "কোনো পণ্য পাওয়া যায়নি",
+                "description": "অন্য কোনো বিভাগ বা সার্চ শব্দ চেষ্টা করুন।"
+            },
+            "item": {
+                "out_of_stock": "স্টক শেষ",
+                "in_stock": "স্টকে %sটি",
+                "add": "যোগ করুন",
+                "remove": "সরান"
+            },
+            "cart": {
+                "title": "কার্ট",
+                "empty_title": "আপনার কার্ট খালি",
+                "empty_description": "পণ্য যোগ করলে এখানে দেখা যাবে।",
+                "each": "প্রতিটি %s",
+                "remove_item": "আইটেম সরান",
+                "checkout": "চেকআউট"
+            },
+            "checkout": {
+                "title": "চেকআউট",
+                "payment_method": "পেমেন্ট পদ্ধতি",
+                "cash": "নগদ",
+                "bank": "ব্যাংক",
+                "available": "উপলব্ধ",
+                "not_accepted": "এখানে গ্রহণযোগ্য নয়",
+                "not_enough_money": "যথেষ্ট টাকা নেই",
+                "processing": "প্রক্রিয়া চলছে...",
+                "pay": "%s পরিশোধ করুন"
+            }
+        },
+        "screen": {
+            "subtitle": "একটি পণ্য বেছে কার্টে যোগ করুন",
+            "remove_from_cart": "কার্ট থেকে সরান",
+            "empty": {
+                "title": "কোনো পণ্য নেই",
+                "description": "এই মেশিনে এখনো বিক্রির জন্য কিছু নেই।"
+            },
+            "bar": {
+                "items_one": "%sটি আইটেম",
+                "items_other": "%sটি আইটেম",
+                "cart": "কার্ট",
+                "quick_order": "দ্রুত অর্ডার"
+            },
+            "cart": {
+                "title": "কার্ট",
+                "summary": "%sটি পণ্য · %sটি আইটেম",
+                "each": "প্রতিটি %s",
+                "confirm": "কার্ট নিশ্চিত করুন"
+            },
+            "item": {
+                "add_to_cart": "কার্টে যোগ করুন",
+                "out_of_stock": "স্টক শেষ"
+            }
+        },
+        "idle": {
+            "use_to_order": "অর্ডার করতে ব্যবহার করুন"
+        },
+        "purchase": {
+            "title": "মেশিন কিনুন",
+            "unknown_area": "অজানা এলাকা",
+            "type": "ধরন",
+            "capacity": "ধারণক্ষমতা",
+            "capacity_value": "প্রতি পণ্যে %sটি",
+            "sells_one": "%sটি পণ্য বিক্রি করে",
+            "sells_other": "%sটি পণ্য বিক্রি করে",
+            "price": "দাম",
+            "cash_balance": "নগদ ব্যালেন্স",
+            "bank_balance": "ব্যাংক ব্যালেন্স",
+            "not_enough_money": "আপনার কাছে যথেষ্ট টাকা নেই।",
+            "buying": "কেনা হচ্ছে...",
+            "buy": "মেশিন কিনুন",
+            "placement": {
+                "start_failed": "স্থাপন শুরু করা যায়নি।"
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "বাতিল",
+                "import": "ইমপোর্ট",
+                "new_machine": "নতুন মেশিন",
+                "for_sale": "বিক্রির জন্য",
+                "no_area": "কোনো এলাকা নেই",
+                "teleport": "টেলিপোর্ট",
+                "player_fallback": "খেলোয়াড় %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "সারসংক্ষেপ",
+                    "description": "সার্ভারজুড়ে ভেন্ডিং পরিসংখ্যান।"
+                },
+                "machines": {
+                    "label": "মেশিন",
+                    "description": "সার্ভারের প্রতিটি ভেন্ডিং মেশিন।"
+                },
+                "settings": {
+                    "label": "সেটিংস",
+                    "description": "সব ভেন্ডিং মেশিনের জন্য সাধারণ নিয়ম।"
+                }
+            },
+            "header": {
+                "machine_settings": "মেশিন সেটিংস",
+                "editing": "%s সম্পাদনা করা হচ্ছে",
+                "machines": "মেশিন",
+                "open_count": "%sটি খোলা",
+                "badge": "অ্যাডমিন"
+            },
+            "status": {
+                "open": "খোলা",
+                "closed": "বন্ধ",
+                "for_sale": "বিক্রির জন্য",
+                "disabled": "নিষ্ক্রিয়"
+            },
+            "models": {
+                "soda": "সোডা মেশিন",
+                "snack": "স্ন্যাক মেশিন",
+                "coffee": "কফি মেশিন",
+                "water": "পানির মেশিন",
+                "custom": "কাস্টম ভেন্ডিং মেশিন",
+                "glass": "গ্লাস মেশিন",
+                "glass_ecola": "গ্লাস মেশিন (eCola)",
+                "glass_sprunk": "গ্লাস মেশিন (Sprunk)",
+                "glass_raine": "গ্লাস মেশিন (Raine)",
+                "glass_junk": "গ্লাস মেশিন (Junk)",
+                "glass_beanmachine": "গ্লাস মেশিন (Bean Machine)",
+                "glass_phatchips": "গ্লাস মেশিন (Phat Chips)",
+                "glass_egochaser": "গ্লাস মেশিন (Ego Chaser)",
+                "glass_cluckinbell": "গ্লাস মেশিন (Cluckin' Bell)",
+                "glass_burgershot": "গ্লাস মেশিন (Burger Shot)",
+                "glass_247": "গ্লাস মেশিন (24/7)"
+            },
+            "validation": {
+                "name_empty": "মেশিনের নাম খালি রাখা যাবে না।",
+                "location_missing": "মেশিনের জন্য একটি অবস্থান নির্ধারণ করুন।",
+                "products_empty": "অন্তত একটি পণ্য বেছে নিন।"
+            },
+            "create": {
+                "title": "নতুন মেশিন",
+                "creating": "তৈরি হচ্ছে...",
+                "submit": "মেশিন তৈরি করুন",
+                "error": "মেশিনটি তৈরি করা যায়নি।"
+            },
+            "dashboard": {
+                "empty_title": "এখনো কোনো মেশিন নেই",
+                "empty_description": "আপনার প্রথম ভেন্ডিং মেশিন তৈরি করুন, অথবা অন্য সার্ভার থেকে এক্সপোর্ট করা মেশিন ইমপোর্ট করুন।",
+                "stat_machines": "মেশিন",
+                "stat_machines_open": "এখন %sটি খোলা",
+                "stat_revenue": "আয়",
+                "stat_items_sold": "বিক্রি হওয়া আইটেম",
+                "stat_all_machines": "গত 7 দিন, সব মেশিন",
+                "stat_owners": "মালিক",
+                "stat_for_sale_one": "%sটি মেশিন বিক্রির জন্য",
+                "stat_for_sale_other": "%sটি মেশিন বিক্রির জন্য",
+                "server_revenue": "সার্ভারের আয়",
+                "last_7_days": "গত 7 দিন",
+                "no_sales": "গত 7 দিনে কোনো বিক্রি নেই",
+                "top_machines": "শীর্ষ মেশিন",
+                "revenue_currency": "আয় (%s)",
+                "no_top_machines": "এখনো কোনো মেশিন বিক্রি করেনি",
+                "needs_attention": "মনোযোগ প্রয়োজন",
+                "machine_count": "%sটি মেশিন",
+                "all_fine": "সব মেশিন ঠিকঠাক চলছে।",
+                "open": "খুলুন",
+                "newest_machines": "নতুন মেশিন",
+                "view_all": "সব দেখুন",
+                "reason_disabled": "একজন অ্যাডমিন নিষ্ক্রিয় করেছেন",
+                "reason_low_stock": "স্টক %s%%",
+                "series_revenue": "আয়",
+                "tooltip_sales": "%sটি বিক্রি"
+            },
+            "detail": {
+                "back": "মেশিনে ফিরে যান",
+                "machines": "মেশিন",
+                "created": "তৈরি %s",
+                "enable": "সক্রিয় করুন",
+                "disable": "নিষ্ক্রিয় করুন",
+                "stat_balance": "ব্যালেন্স",
+                "stat_balance_hint": "মেশিনে থাকা টাকা",
+                "stat_revenue": "আয়",
+                "stat_items_sold": "বিক্রি হওয়া আইটেম",
+                "last_7_days": "গত 7 দিন",
+                "stat_stock": "স্টকের মাত্রা",
+                "stat_stock_hint": "সব পণ্যের গড়",
+                "danger_zone": "বিপজ্জনক এলাকা",
+                "reset_balance": "ব্যালেন্স রিসেট করুন",
+                "reset_balance_description": "মেশিনে বর্তমানে থাকা %s সরিয়ে দিন।",
+                "reset": "রিসেট",
+                "delete_machine": "মেশিন মুছুন",
+                "delete_machine_description": "প্রপ, এর স্টক, অর্ডার এবং ইতিহাস স্থায়ীভাবে মুছে ফেলে।",
+                "delete": "মুছুন",
+                "confirm_delete": "এটি %s স্থায়ীভাবে মুছে ফেলবে। এটি আর ফেরানো যাবে না।",
+                "confirm_reset": "এটি %s, %s থেকে সরিয়ে দেবে।",
+                "working": "কাজ চলছে...",
+                "owner_fallback": "একজন খেলোয়াড়",
+                "error": "কিছু একটা ভুল হয়েছে।"
+            },
+            "machines": {
+                "search_placeholder": "নাম, মালিক বা এলাকা খুঁজুন...",
+                "empty_search": "আপনার সার্চের সাথে কোনো মেশিন মেলেনি",
+                "empty": "এখনো কোনো মেশিন নেই। একটি তৈরি করুন বা ইমপোর্ট করুন।",
+                "show_on_map": "ম্যাপে দেখান",
+                "manage": "পরিচালনা",
+                "map": "ম্যাপ",
+                "map_hint": "মেশিন পরিচালনা করতে একটি ব্লিপে ক্লিক করুন",
+                "column_machine": "মেশিন",
+                "column_owner": "মালিক",
+                "column_status": "অবস্থা",
+                "column_balance": "ব্যালেন্স"
+            },
+            "settings": {
+                "economy": "অর্থনীতি",
+                "wholesale_multiplier": "পাইকারি দামের গুণক",
+                "wholesale_hint": "মালিকরা সরবরাহকারীর মূল দামের %s%% পরিশোধ করেন।",
+                "sales_tax": "বিক্রয় কর (%)",
+                "max_machines": "প্রতি খেলোয়াড়ের মেশিন",
+                "max_machines_description": "একজন খেলোয়াড় কতগুলো মেশিনের মালিক হতে পারবে।",
+                "stock_orders": "স্টক অর্ডার",
+                "delivery_minutes": "প্রতি অর্ডার ধাপে মিনিট",
+                "delivery_hint": "একটি অর্ডার প্রস্তুত থেকে ডেলিভারি পর্যন্ত প্রায় %s মিনিট সময় নেয়।",
+                "defaults": "নতুন মেশিনের ডিফল্ট",
+                "default_capacity": "প্রতি পণ্যের ধারণক্ষমতা",
+                "default_price": "ডিফল্ট বিক্রয় মূল্য",
+                "default_price_description": "মেশিন তৈরির সময় ব্যবহৃত হয়।",
+                "allow_purchase": "খেলোয়াড়রা মেশিন কিনতে পারবে",
+                "allow_purchase_description": "বিক্রির জন্য চিহ্নিত মেশিন গেমের মধ্যে কেনা যাবে।",
+                "logging": "লগিং",
+                "webhook": "Discord webhook URL",
+                "log_purchases": "ক্রয় লগ করুন",
+                "log_purchases_description": "প্রতিটি মেশিন ক্রয় webhook-এ পাঠান।",
+                "log_admin_actions": "অ্যাডমিন কার্যক্রম লগ করুন",
+                "log_admin_actions_description": "মেশিন তৈরি, সম্পাদনা এবং মুছে ফেলা।",
+                "share": "মেশিন শেয়ার করুন",
+                "export": "মেশিন এক্সপোর্ট করুন",
+                "export_description": "নাম, মডেল, অবস্থান, দাম এবং পণ্য JSON হিসেবে। অন্য সার্ভারের মেশিন পেজ থেকে এটি ইমপোর্ট করুন।",
+                "export_button": "এক্সপোর্ট",
+                "error_webhook_invalid": "webhook অবশ্যই একটি Discord webhook URL হতে হবে।",
+                "error_webhook_missing": "একটি webhook URL যোগ করুন অথবা লগিং বন্ধ করুন।"
+            },
+            "export": {
+                "title": "মেশিন এক্সপোর্ট করুন",
+                "summary_one": "%sটি মেশিন। শুধু নাম, মডেল, অবস্থান, দাম এবং পণ্য অন্তর্ভুক্ত; মালিক, ব্যালেন্স এবং স্টক এই সার্ভারেই থাকে।",
+                "summary_other": "%sটি মেশিন। শুধু নাম, মডেল, অবস্থান, দাম এবং পণ্য অন্তর্ভুক্ত; মালিক, ব্যালেন্স এবং স্টক এই সার্ভারেই থাকে।",
+                "output_label": "এক্সপোর্ট করা মেশিন",
+                "copy_failed": "স্বয়ংক্রিয়ভাবে কপি করা যায়নি। টেক্সটে ক্লিক করে Ctrl+C চাপুন।",
+                "download": "ডাউনলোড",
+                "copied": "কপি হয়েছে",
+                "copy": "JSON কপি করুন"
+            },
+            "import": {
+                "title": "মেশিন ইমপোর্ট করুন",
+                "description": "অন্য সার্ভারের সেটিংস থেকে এক্সপোর্ট করা মেশিন এখানে পেস্ট করুন। মেশিনগুলো মালিক, টাকা বা স্টক ছাড়া বিক্রির জন্য আসে।",
+                "load_file": "ফাইল লোড করুন",
+                "ready": "%sটি ইমপোর্টের জন্য প্রস্তুত",
+                "skipped": "%sটি বাদ দেওয়া হয়েছে",
+                "importing": "ইমপোর্ট হচ্ছে...",
+                "submit_one": "%sটি মেশিন ইমপোর্ট করুন",
+                "submit_other": "%sটি মেশিন ইমপোর্ট করুন",
+                "error": "মেশিনগুলো ইমপোর্ট করা যায়নি।",
+                "error_invalid_json": "এটি বৈধ JSON নয়।",
+                "error_empty": "এই JSON-এ কোনো মেশিন পাওয়া যায়নি।",
+                "unnamed": "মেশিন %s",
+                "skip_name": "নাম নেই।",
+                "skip_location": "অবস্থান নেই।",
+                "skip_occupied": "এখানে ইতিমধ্যে একটি মেশিন আছে।",
+                "skip_duplicate": "এই JSON-এ দুবার তালিকাভুক্ত।",
+                "skip_products": "এর কোনো পণ্যই এই সার্ভারে নেই।"
+            },
+            "form": {
+                "details": "বিস্তারিত",
+                "name": "মেশিনের নাম",
+                "name_placeholder": "যেমন Legion Square #2",
+                "prop_model": "প্রপ মডেল",
+                "machine_type": "মেশিনের ধরন",
+                "location": "অবস্থান",
+                "placing": "স্থাপন হচ্ছে...",
+                "set_position": "মেশিনের অবস্থান ঠিক করুন",
+                "area": "এলাকার লেবেল",
+                "area_placeholder": "যেমন Legion Square",
+                "no_position": "এখনো কোনো অবস্থান নেই",
+                "ownership": "মালিকানা",
+                "owned_warning": "মালিক %s। নতুন মালিক দিলে বা বিক্রির জন্য রাখলে এটি তার কাছ থেকে চলে যাবে।",
+                "for_sale": "বিক্রির জন্য",
+                "for_sale_description": "কোনো মালিকের বদলে খেলোয়াড়রা এই মেশিনটি কিনতে পারবে।",
+                "transfer_to": "কাকে হস্তান্তর করবেন",
+                "owner_id": "মালিকের ID",
+                "transfer_placeholder": "নতুন মালিকের সার্ভার ID বা citizen ID",
+                "owner_placeholder": "বিক্রির জন্য রাখতে খালি রাখুন",
+                "price": "বিক্রয় মূল্য (%s)",
+                "products": "পণ্য",
+                "selected": "%sটি নির্বাচিত",
+                "select_all": "সব নির্বাচন",
+                "clear": "মুছুন",
+                "sell_product": "%s বিক্রি করুন"
+            },
+            "placement": {
+                "title": "মেশিনের অবস্থান",
+                "heading": "দিক",
+                "move": "সরান",
+                "rotate": "ঘোরান",
+                "snap": "মাটিতে বসান",
+                "key_left_alt": "বাম Alt",
+                "walk": "হাঁটুন ও চারপাশে দেখুন",
+                "cursor": "কার্সরে ফিরে যান",
+                "confirm": "নিশ্চিত করুন"
+            },
+            "map": {
+                "zoom_in": "জুম ইন",
+                "zoom_out": "জুম আউট"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "বাতিল",
+                "save": "সংরক্ষণ",
+                "saving": "সংরক্ষণ হচ্ছে...",
+                "working": "কাজ চলছে...",
+                "player_id": "খেলোয়াড়ের ID",
+                "error": "কিছু একটা ভুল হয়েছে।"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "ড্যাশবোর্ড",
+                    "description": "এই মেশিনের আয় ও বিক্রির সারসংক্ষেপ।"
+                },
+                "products": {
+                    "label": "পণ্য",
+                    "description": "স্টকের মাত্রা এবং দাম।"
+                },
+                "restock": {
+                    "label": "রিস্টক",
+                    "description": "সরবরাহকারীর কাছ থেকে নতুন স্টক অর্ডার করুন।"
+                },
+                "transactions": {
+                    "label": "লেনদেন",
+                    "description": "এই মেশিনে করা প্রতিটি ক্রয়।"
+                },
+                "cash": {
+                    "label": "নগদ",
+                    "description": "মেশিন থেকে টাকা তুলুন ও জমা দিন।"
+                },
+                "staff": {
+                    "label": "কর্মী",
+                    "description": "কর্মী নিয়োগ করুন এবং তারা কী করতে পারবে বেছে নিন।"
+                },
+                "settings": {
+                    "label": "সেটিংস",
+                    "description": "মেশিনের নাম এবং প্রাপ্যতা।"
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "পরিসংখ্যান দেখুন",
+                    "description": "আয়, বিক্রি এবং শীর্ষ পণ্য দেখুন।"
+                },
+                "products_prices": {
+                    "label": "দাম পরিবর্তন",
+                    "description": "গ্রাহকরা যে দাম দেবে তা নির্ধারণ করুন।"
+                },
+                "restock_order": {
+                    "label": "স্টক অর্ডার",
+                    "description": "মেশিনের ব্যালেন্স দিয়ে সরবরাহকারীর কাছ থেকে স্টক কিনুন।"
+                },
+                "transactions_view": {
+                    "label": "বিক্রি দেখুন",
+                    "description": "মেশিনে করা প্রতিটি ক্রয় দেখুন।"
+                },
+                "cash_deposit": {
+                    "label": "টাকা জমা",
+                    "description": "নিজের নগদ টাকা মেশিনে রাখুন।"
+                },
+                "cash_withdraw": {
+                    "label": "টাকা তোলা",
+                    "description": "মেশিনের ব্যালেন্স থেকে টাকা তুলুন।"
+                },
+                "cash_history": {
+                    "label": "ইতিহাস দেখুন",
+                    "description": "ব্যালেন্স এবং আগের নগদ লেনদেন দেখুন।"
+                },
+                "staff_view": {
+                    "label": "কর্মী দেখুন",
+                    "description": "এখানে কে কাজ করে এবং তাদের ভূমিকা দেখুন।"
+                },
+                "staff_manage": {
+                    "label": "কর্মী পরিচালনা",
+                    "description": "নিয়োগ, বরখাস্ত এবং নিজের থাকা অনুমতিগুলো পরিবর্তন করুন।"
+                },
+                "settings_general": {
+                    "label": "সাধারণ",
+                    "description": "মেশিনের নাম বদলান এবং এটি খুলুন বা বন্ধ করুন।"
+                },
+                "settings_hours": {
+                    "label": "চালুর সময়",
+                    "description": "খোলা ও বন্ধের সময়সূচি পরিবর্তন করুন।"
+                },
+                "settings_stock": {
+                    "label": "স্টক ও সতর্কতা",
+                    "description": "কম স্টকের সীমা, অটো রিস্টক এবং নোটিফিকেশন।"
+                },
+                "settings_payments": {
+                    "label": "পেমেন্ট",
+                    "description": "কোন পেমেন্ট পদ্ধতি গ্রহণ করা হবে তা বেছে নিন।"
+                }
+            },
+            "roles": {
+                "owner": "মালিক",
+                "employee": "কর্মী",
+                "supervisor": "সুপারভাইজার",
+                "manager": "ম্যানেজার",
+                "custom": "কাস্টম"
+            },
+            "header": {
+                "open": "খোলা",
+                "closed": "বন্ধ",
+                "balance": "ব্যালেন্স",
+                "no_access_title": "অ্যাক্সেস নেই",
+                "no_access_description": "এই মেশিনের অনুমতি দিতে মালিককে বলুন।"
+            },
+            "no_products": {
+                "title": "এখনো কোনো পণ্য নেই",
+                "description": "এই মেশিনে বিক্রির মতো কিছু নেই। একজন অ্যাডমিন পণ্য যোগ করলে বিক্রি, স্টক এবং অর্ডার এখানে দেখা যাবে।"
+            },
+            "dashboard": {
+                "today_revenue": "আজকের আয়",
+                "vs_yesterday": "গতকালের তুলনায়",
+                "weekly_revenue": "সাপ্তাহিক আয়",
+                "last_7_days": "গত 7 দিন",
+                "items_sold": "বিক্রি হওয়া আইটেম",
+                "low_stock": "কম স্টক",
+                "products_suffix": "পণ্য",
+                "low_stock_hint": "%sটি বা তার কম বাকি",
+                "revenue": "আয়",
+                "no_sales_week": "গত 7 দিনে কোনো বিক্রি নেই",
+                "top_products": "শীর্ষ পণ্য",
+                "units_sold": "বিক্রি হওয়া ইউনিট",
+                "units_sold_tooltip": "ইউনিট বিক্রি",
+                "nothing_sold": "এখনো কিছু বিক্রি হয়নি",
+                "recent_sales": "সাম্প্রতিক বিক্রি",
+                "view_all": "সব দেখুন",
+                "no_sales": "এখনো কোনো বিক্রি নেই।",
+                "sales_count": "%sটি বিক্রি"
+            },
+            "products": {
+                "empty": "কোনো পণ্য নেই",
+                "product": "পণ্য",
+                "category": "বিভাগ",
+                "sold": "বিক্রি",
+                "stock": "স্টক",
+                "price": "দাম (%s)",
+                "low_stock": "কম স্টক"
+            },
+            "restock": {
+                "catalog": "সরবরাহকারীর ক্যাটালগ",
+                "low_stock_only": "শুধু কম স্টক",
+                "all_stocked_title": "সব স্টকে আছে",
+                "all_stocked_description": "এখন কোনো পণ্যের স্টক কম নেই।",
+                "incoming": "+%sটি আসছে",
+                "per_unit": "প্রতি ইউনিট %s",
+                "decrease": "পরিমাণ কমান",
+                "increase": "পরিমাণ বাড়ান",
+                "fill": "পূর্ণ করুন",
+                "summary": "অর্ডারের সারসংক্ষেপ",
+                "clear": "মুছুন",
+                "summary_empty": "অর্ডার তৈরি করতে ক্যাটালগ থেকে পরিমাণ বেছে নিন।",
+                "machine_balance": "মেশিনের ব্যালেন্স",
+                "order_total": "অর্ডারের মোট",
+                "balance_after": "পরে ব্যালেন্স",
+                "ordering": "অর্ডার হচ্ছে...",
+                "place_order": "অর্ডার দিন",
+                "orders": "অর্ডার",
+                "in_progress": "%sটি চলমান",
+                "insufficient": "এই অর্ডারের জন্য মেশিনে যথেষ্ট টাকা নেই।",
+                "failed": "অর্ডার ব্যর্থ হয়েছে।"
+            },
+            "orders": {
+                "preparing": "প্রস্তুত হচ্ছে",
+                "prepared": "প্রস্তুত",
+                "shipping": "পথে আছে",
+                "completed": "সম্পন্ন",
+                "cancelled": "বাতিল",
+                "status_aria": "অর্ডারের অবস্থা: %s",
+                "pick_up": "সংগ্রহ করুন"
+            },
+            "transactions": {
+                "empty": "এখনো কোনো বিক্রি নেই",
+                "time": "সময়",
+                "buyer": "ক্রেতা",
+                "product": "পণ্য",
+                "quantity": "পরিমাণ",
+                "total": "মোট"
+            },
+            "cash": {
+                "balance": "ব্যালেন্স",
+                "balance_hint": "মেশিনে উপলব্ধ",
+                "deposited": "জমা",
+                "withdrawn": "তোলা",
+                "all_time": "সর্বমোট",
+                "amount": "পরিমাণ (%s)",
+                "all": "সব",
+                "withdraw_hint": "আপনি সর্বোচ্চ %s তুলতে পারবেন।",
+                "deposit_hint": "টাকা আপনার হাতের নগদ থেকে নেওয়া হবে। আপনার কাছে %s আছে।",
+                "processing": "প্রক্রিয়া চলছে...",
+                "withdraw": "তুলুন",
+                "deposit": "জমা দিন",
+                "stock_order": "স্টক অর্ডার",
+                "history": "নগদ ইতিহাস",
+                "movements": "%sটি লেনদেন",
+                "no_movements": "এখনো কোনো নগদ লেনদেন নেই",
+                "not_enough_balance": "মেশিনে যথেষ্ট টাকা নেই।",
+                "not_enough_cash": "আপনার কাছে এত নগদ টাকা নেই।",
+                "failed": "লেনদেন ব্যর্থ হয়েছে।",
+                "by_you": "আপনি"
+            },
+            "staff": {
+                "search": "খুঁজুন...",
+                "hire": "নিয়োগ",
+                "empty": "এখনো কোনো কর্মী নেই",
+                "online": "অনলাইন",
+                "offline": "অফলাইন",
+                "you": "আপনি",
+                "now": "এখন",
+                "never": "কখনো না",
+                "edit_permissions": "অনুমতি সম্পাদনা",
+                "fire": "বরখাস্ত",
+                "hire_title": "কর্মী নিয়োগ",
+                "edit_title": "অনুমতি সম্পাদনা",
+                "server_id": "সার্ভার ID",
+                "edit_description": "%s, %s-এ কী করতে পারবে।",
+                "role": "ভূমিকা",
+                "role_hint": "একে একে অনুমতি বেছে নিতে কাস্টম নির্বাচন করুন।",
+                "all": "সব",
+                "none": "কোনোটি না",
+                "hire_hint": "খেলোয়াড়কে কাছাকাছি থাকতে হবে। কর্মীরা এই প্যানেল খুলতে পারে কিন্তু কখনো মেশিন বিক্রি বা হস্তান্তর করতে পারে না।",
+                "fire_title": "কর্মী বরখাস্ত",
+                "fire_description": "%s সঙ্গে সঙ্গে %s-এর অ্যাক্সেস হারাবে।",
+                "employee": "কর্মী",
+                "hired": "নিয়োগের তারিখ",
+                "last_online": "শেষ অনলাইন",
+                "player_fallback": "খেলোয়াড় %s"
+            },
+            "settings": {
+                "general": "সাধারণ",
+                "name": "মেশিনের নাম",
+                "description": "বিবরণ",
+                "description_placeholder": "গ্রাহকদের দেখানো হয়",
+                "open": "গ্রাহকদের জন্য খোলা",
+                "open_description": "বন্ধ মেশিন অন্য খেলোয়াড়রা ব্যবহার করতে পারবে না।",
+                "hours": "চালুর সময়",
+                "schedule": "সময়সূচি ব্যবহার করুন",
+                "schedule_description": "গেমের সময় অনুযায়ী স্বয়ংক্রিয়ভাবে খুলবে ও বন্ধ হবে।",
+                "opens_at": "খোলার সময়",
+                "closes_at": "বন্ধের সময়",
+                "schedule_on": "%s থেকে %s পর্যন্ত খোলা।",
+                "schedule_off": "শুধু খোলার সুইচ প্রাপ্যতা নিয়ন্ত্রণ করে।",
+                "stock": "স্টক ও সতর্কতা",
+                "low_stock_threshold": "কম স্টকের সীমা",
+                "auto_restock": "অটো রিস্টক",
+                "auto_restock_description": "কোনো পণ্য সীমায় পৌঁছালে ধারণক্ষমতা পর্যন্ত অর্ডার করুন।",
+                "low_stock_alerts": "কম স্টক সতর্কতা",
+                "low_stock_alerts_description": "স্টক কমে গেলে নোটিফিকেশন পান।",
+                "sale_notifications": "বিক্রির নোটিফিকেশন",
+                "sale_notifications_description": "প্রতিটি ক্রয়ের জন্য নোটিফিকেশন পান।",
+                "payments": "পেমেন্ট",
+                "cash": "নগদ",
+                "cash_description": "গ্রাহকরা হাতের নগদ টাকায় পরিশোধ করে।",
+                "accept_cash": "নগদ গ্রহণ করুন",
+                "bank": "ব্যাংক কার্ড",
+                "bank_description": "গ্রাহকরা তাদের ব্যাংক অ্যাকাউন্ট থেকে পরিশোধ করে।",
+                "accept_bank": "ব্যাংক কার্ড গ্রহণ করুন",
+                "danger_zone": "বিপজ্জনক এলাকা",
+                "transfer_title": "মালিকানা হস্তান্তর",
+                "transfer_description": "এই মেশিনটি অন্য খেলোয়াড়কে দিন। আপনার সব অ্যাক্সেস চলে যাবে।",
+                "transfer": "হস্তান্তর",
+                "sell": "মেশিন বিক্রি করুন",
+                "sell_description": "মেশিনটি ফেরত বিক্রি করুন। স্টক এবং চলমান অর্ডার হারিয়ে যাবে।",
+                "sell_confirm": "এটি %s স্থায়ীভাবে বিক্রি করে দেবে। এটি আর ফেরানো যাবে না।",
+                "transfer_prompt": "যে খেলোয়াড় এই মেশিনের মালিক হবে তার সার্ভার ID লিখুন।",
+                "name_empty": "মেশিনের নাম খালি রাখা যাবে না।",
+                "payment_required": "অন্তত একটি পেমেন্ট পদ্ধতি গ্রহণ করুন।",
+                "same_times": "খোলা ও বন্ধের সময় একই হতে পারবে না।"
+            }
+        }
+    }
+}

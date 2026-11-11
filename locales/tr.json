@@ -1,0 +1,703 @@
+{
+    "notify_title": "Otomat",
+
+    "target_buy": "Otomatı satın al",
+    "target_open": "Otomatı kullan",
+    "target_manage": "Otomatı yönet",
+    "textui_buy": "[%s] Otomatı satın al ($%s)",
+    "textui_open": "[%s] Otomatı kullan",
+    "textui_manage": "[%s] Otomatı yönet",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "Arabayı tut",
+    "target_cargo_drop": "Arabayı bırak",
+    "target_cargo_take": "Kutuyu al",
+    "target_cargo_load": "Kutuyu yükle",
+    "target_cargo_unload": "Kutuyu çıkar",
+    "target_cargo_deliver": "Kutuyu otomata koy",
+    "notify_cargo_started": "Siparişin hazır. İşaretli noktadan teslim al.",
+    "notify_cargo_cancelled": "Teslim alma alanından ayrıldın. Sipariş iptal edildi.",
+    "notify_cargo_delivered": "Tüm kutular %s otomatına yerleştirildi.",
+    "error_order_not_ready": "Bu sipariş şu anda teslim alınamaz.",
+    "error_cargo_busy": "Zaten bir sipariş teslim alıyorsun.",
+
+    "success_machine_bought": "%s otomatını $%s karşılığında satın aldın.",
+    "notify_sale": "%s satış yaptı: $%s.",
+    "notify_low_stock": "%s, %s otomatında azalıyor (%s kaldı).",
+    "notify_hired": "Artık %s otomatında çalışıyorsun.",
+    "notify_staff_removed": "Artık %s otomatında çalışmıyorsun.",
+    "notify_machine_transferred": "%s otomatını %s adlı oyuncuya verdin.",
+    "notify_machine_received": "%s sana %s otomatını verdi.",
+    "notify_machine_sold": "%s otomatını $%s karşılığında sattın.",
+    "auto_restock": "Otomatik stok yenileme",
+
+    "log_title_purchase": "Otomat satın alımı",
+    "log_title_admin": "Admin işlemi",
+    "log_machine_bought": "%s, **%s** (#%s) otomatını $%s karşılığında satın aldı.",
+    "log_machine_created": "%s, **%s** (#%s) otomatını oluşturdu.",
+    "log_machine_updated": "%s, **%s** (#%s) otomatını düzenledi.",
+    "log_machine_deleted": "%s, **%s** (#%s) otomatını sildi.",
+    "log_machines_imported": "%s, %s otomatı içe aktardı.",
+    "log_machine_status": "%s, **%s** (#%s) otomatını %s olarak ayarladı.",
+    "log_balance_reset": "%s, **%s** (#%s) otomatının bakiyesini sıfırladı, $%s.",
+    "log_settings_saved": "%s admin ayarlarını değiştirdi.",
+
+    "error_no_permission": "Bunu yapmaya yetkin yok.",
+    "error_invalid_machine": "Geçersiz otomat verisi.",
+    "error_invalid_name": "Otomat adı 1 ile %s karakter arasında olmalı.",
+    "error_invalid_model": "Bilinmeyen otomat modeli.",
+    "error_invalid_location": "Otomat için bir konum belirle.",
+    "error_invalid_price": "Satış fiyatı 0 ile %s arasında bir tam sayı olmalı.",
+    "error_invalid_capacity": "Kapasite 1 ile %s arasında bir tam sayı olmalı.",
+    "error_invalid_products": "En az bir geçerli ürün seç.",
+    "error_owner_not_found": "Bu sunucu ID'si veya citizen ID ile çevrimiçi oyuncu bulunamadı.",
+    "error_machine_not_found": "Bu otomat artık mevcut değil.",
+    "error_machine_too_close": "Bu konumda zaten bir otomat var.",
+    "error_database": "Otomat kaydedilemedi. Sunucu konsolunu kontrol et.",
+    "error_not_for_sale": "Bu otomat satılık değil.",
+    "error_purchase_disabled": "Şu anda otomat satın alınamaz.",
+    "error_max_machines": "En fazla %s otomata sahip olabilirsin.",
+    "error_not_enough_money": "Yeterli paran yok.",
+    "error_payment_not_accepted": "Bu otomat bu ödeme yöntemini kabul etmiyor.",
+    "error_too_far": "Otomata çok uzaksın.",
+    "error_machine_closed": "Bu otomat kapalı.",
+    "error_machine_disabled": "Bu otomat bir admin tarafından devre dışı bırakıldı. Açılamaz.",
+    "error_invalid_description": "Açıklama en fazla %s karakter olabilir.",
+    "error_invalid_schedule": "Açılış ve kapanış saatleri SS:DD formatında ve birbirinden farklı olmalı.",
+    "error_invalid_threshold": "Düşük stok eşiği 0 ile %s arasında olmalı.",
+    "error_invalid_payments": "En az bir ödeme yöntemini kabul et.",
+    "error_invalid_amount": "$1 ile $%s arasında bir tam tutar gir.",
+    "error_not_enough_balance": "Otomatta bu kadar para yok.",
+    "error_invalid_status": "Burada bir otomat yalnızca devre dışı bırakılabilir veya etkinleştirilebilir.",
+    "error_invalid_settings": "%s için geçersiz değer.",
+    "error_import_empty": "İçe aktarılacak otomat yok.",
+    "error_import_too_many": "Tek seferde en fazla %s otomat içe aktarabilirsin.",
+    "error_import_entry": "Otomat #%s: %s",
+    "error_import_duplicate": "Aynı noktada iki kez listelenmiş.",
+    "error_invalid_items": "Geçersiz ürün listesi.",
+    "error_too_many_items": "Sipariş başına bir üründen en fazla %s adet.",
+    "error_over_capacity": "%s, otomatın %s olan kapasitesini aşar.",
+    "error_out_of_stock": "Stokta yeterli %s kalmadı.",
+    "error_cannot_carry": "Bu kadar %s taşıyamazsın.",
+    "error_player_not_found": "Otomatın yakınında bu ID'ye sahip oyuncu yok.",
+    "error_already_staff": "Bu oyuncu zaten burada çalışıyor.",
+    "error_invalid_permissions": "Kendinde olan en az bir yetkiyi seç.",
+    "error_staff_not_found": "Bu çalışan artık burada çalışmıyor.",
+    "error_transfer_self": "Bu otomat zaten senin.",
+    "error_target_max_machines": "Bu oyuncu en fazla %s otomata sahip olabilir.",
+    "error_machine_changed": "Otomat bu sırada değişti, tekrar dene.",
+
+    "ui": {
+        "common": {
+            "cancel": "İptal",
+            "close": "Kapat",
+            "clear": "Temizle",
+            "back": "Geri",
+            "done": "Tamam",
+            "reset": "Sıfırla",
+            "total": "Toplam",
+            "decrease_quantity": "Miktarı azalt",
+            "increase_quantity": "Miktarı artır",
+            "save_bar": {
+                "unsaved": "Kaydedilmemiş değişikliklerin var.",
+                "saving": "Kaydediliyor...",
+                "save_changes": "Değişiklikleri kaydet"
+            },
+            "time_picker": {
+                "title": "Saat seç",
+                "hour": "Saat",
+                "minute": "Dakika"
+            },
+            "errors": {
+                "no_response": "Sunucudan yanıt gelmedi."
+            }
+        },
+        "shop": {
+            "default_name": "Otomat",
+            "navbar": {
+                "products": "%s ürün",
+                "all": "Tümü",
+                "search": "Ürün ara..."
+            },
+            "empty": {
+                "title": "Ürün bulunamadı",
+                "description": "Farklı bir kategori veya arama terimi dene."
+            },
+            "item": {
+                "out_of_stock": "Stokta yok",
+                "in_stock": "Stokta %s adet",
+                "add": "Ekle",
+                "remove": "Çıkar"
+            },
+            "cart": {
+                "title": "Sepet",
+                "empty_title": "Sepetin boş",
+                "empty_description": "Burada görmek için ürün ekle.",
+                "each": "Tanesi %s",
+                "remove_item": "Ürünü çıkar",
+                "checkout": "Ödemeye geç"
+            },
+            "checkout": {
+                "title": "Ödeme",
+                "payment_method": "Ödeme yöntemi",
+                "cash": "Nakit",
+                "bank": "Banka",
+                "available": "Kullanılabilir",
+                "not_accepted": "Burada kabul edilmiyor",
+                "not_enough_money": "Yeterli para yok",
+                "processing": "İşleniyor...",
+                "pay": "%s öde"
+            }
+        },
+        "screen": {
+            "subtitle": "Bir ürün seç ve sepete ekle",
+            "remove_from_cart": "Sepetten çıkar",
+            "empty": {
+                "title": "Ürün yok",
+                "description": "Bu otomatta henüz satılık bir şey yok."
+            },
+            "bar": {
+                "items_one": "%s ürün",
+                "items_other": "%s ürün",
+                "cart": "Sepet",
+                "quick_order": "Hızlı sipariş"
+            },
+            "cart": {
+                "title": "Sepet",
+                "summary": "%s ürün · %s adet",
+                "each": "Tanesi %s",
+                "confirm": "Sepeti onayla"
+            },
+            "item": {
+                "add_to_cart": "Sepete ekle",
+                "out_of_stock": "Stokta yok"
+            }
+        },
+        "idle": {
+            "use_to_order": "Sipariş için kullan"
+        },
+        "purchase": {
+            "title": "Otomat satın al",
+            "unknown_area": "Bilinmeyen bölge",
+            "type": "Tür",
+            "capacity": "Kapasite",
+            "capacity_value": "Ürün başına %s",
+            "sells_one": "%s ürün satar",
+            "sells_other": "%s ürün satar",
+            "price": "Fiyat",
+            "cash_balance": "Nakit bakiye",
+            "bank_balance": "Banka bakiyesi",
+            "not_enough_money": "Yeterli paran yok.",
+            "buying": "Satın alınıyor...",
+            "buy": "Otomatı satın al",
+            "placement": {
+                "start_failed": "Yerleştirme başlatılamadı."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "İptal",
+                "import": "İçe aktar",
+                "new_machine": "Yeni otomat",
+                "for_sale": "Satılık",
+                "no_area": "Bölge yok",
+                "teleport": "Işınlan",
+                "player_fallback": "Oyuncu %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Genel bakış",
+                    "description": "Sunucu genelindeki otomat istatistikleri."
+                },
+                "machines": {
+                    "label": "Otomatlar",
+                    "description": "Sunucudaki tüm otomatlar."
+                },
+                "settings": {
+                    "label": "Ayarlar",
+                    "description": "Tüm otomatlar için genel kurallar."
+                }
+            },
+            "header": {
+                "machine_settings": "Otomat ayarları",
+                "editing": "%s düzenleniyor",
+                "machines": "Otomatlar",
+                "open_count": "%s açık",
+                "badge": "Admin"
+            },
+            "status": {
+                "open": "Açık",
+                "closed": "Kapalı",
+                "for_sale": "Satılık",
+                "disabled": "Devre dışı"
+            },
+            "models": {
+                "soda": "İçecek otomatı",
+                "snack": "Atıştırmalık otomatı",
+                "coffee": "Kahve otomatı",
+                "water": "Su otomatı",
+                "custom": "Özel otomat",
+                "glass": "Camlı otomat",
+                "glass_ecola": "Camlı otomat (eCola)",
+                "glass_sprunk": "Camlı otomat (Sprunk)",
+                "glass_raine": "Camlı otomat (Raine)",
+                "glass_junk": "Camlı otomat (Junk)",
+                "glass_beanmachine": "Camlı otomat (Bean Machine)",
+                "glass_phatchips": "Camlı otomat (Phat Chips)",
+                "glass_egochaser": "Camlı otomat (Ego Chaser)",
+                "glass_cluckinbell": "Camlı otomat (Cluckin' Bell)",
+                "glass_burgershot": "Camlı otomat (Burger Shot)",
+                "glass_247": "Camlı otomat (24/7)"
+            },
+            "validation": {
+                "name_empty": "Otomat adı boş olamaz.",
+                "location_missing": "Otomat için bir konum belirle.",
+                "products_empty": "En az bir ürün seç."
+            },
+            "create": {
+                "title": "Yeni otomat",
+                "creating": "Oluşturuluyor...",
+                "submit": "Otomatı oluştur",
+                "error": "Otomat oluşturulamadı."
+            },
+            "dashboard": {
+                "empty_title": "Henüz otomat yok",
+                "empty_description": "İlk otomatını oluştur ya da başka bir sunucudan dışa aktarılan otomatları içe aktar.",
+                "stat_machines": "Otomatlar",
+                "stat_machines_open": "Şu anda %s açık",
+                "stat_revenue": "Gelir",
+                "stat_items_sold": "Satılan ürün",
+                "stat_all_machines": "Son 7 gün, tüm otomatlar",
+                "stat_owners": "Sahipler",
+                "stat_for_sale_one": "%s otomat satılık",
+                "stat_for_sale_other": "%s otomat satılık",
+                "server_revenue": "Sunucu geliri",
+                "last_7_days": "Son 7 gün",
+                "no_sales": "Son 7 günde satış yok",
+                "top_machines": "En iyi otomatlar",
+                "revenue_currency": "Gelir (%s)",
+                "no_top_machines": "Henüz hiçbir otomat satış yapmadı",
+                "needs_attention": "İlgi bekleyenler",
+                "machine_count": "%s otomat",
+                "all_fine": "Tüm otomatlar sorunsuz çalışıyor.",
+                "open": "Aç",
+                "newest_machines": "En yeni otomatlar",
+                "view_all": "Tümünü gör",
+                "reason_disabled": "Bir admin tarafından devre dışı bırakıldı",
+                "reason_low_stock": "Stok %%%s",
+                "series_revenue": "Gelir",
+                "tooltip_sales": "%s satış"
+            },
+            "detail": {
+                "back": "Otomatlara dön",
+                "machines": "Otomatlar",
+                "created": "Oluşturulma: %s",
+                "enable": "Etkinleştir",
+                "disable": "Devre dışı bırak",
+                "stat_balance": "Bakiye",
+                "stat_balance_hint": "Otomattaki para",
+                "stat_revenue": "Gelir",
+                "stat_items_sold": "Satılan ürün",
+                "last_7_days": "Son 7 gün",
+                "stat_stock": "Stok seviyesi",
+                "stat_stock_hint": "Tüm ürünlerin ortalaması",
+                "danger_zone": "Tehlikeli bölge",
+                "reset_balance": "Bakiyeyi sıfırla",
+                "reset_balance_description": "Otomatta şu anda bulunan %s tutarını kaldırır.",
+                "reset": "Sıfırla",
+                "delete_machine": "Otomatı sil",
+                "delete_machine_description": "Prop'u, stoğunu, siparişlerini ve geçmişini kalıcı olarak siler.",
+                "delete": "Sil",
+                "confirm_delete": "Bu işlem %s otomatını kalıcı olarak siler. Geri alınamaz.",
+                "confirm_reset": "Bu işlem %s tutarını %s otomatından kaldırır.",
+                "working": "İşleniyor...",
+                "owner_fallback": "bir oyuncu",
+                "error": "Bir şeyler ters gitti."
+            },
+            "machines": {
+                "search_placeholder": "Ad, sahip veya bölge ara...",
+                "empty_search": "Aramana uyan otomat yok",
+                "empty": "Henüz otomat yok. Bir tane oluştur ya da içe aktar.",
+                "show_on_map": "Haritada göster",
+                "manage": "Yönet",
+                "map": "Harita",
+                "map_hint": "Otomatı yönetmek için bir işarete tıkla",
+                "column_machine": "Otomat",
+                "column_owner": "Sahip",
+                "column_status": "Durum",
+                "column_balance": "Bakiye"
+            },
+            "settings": {
+                "economy": "Ekonomi",
+                "wholesale_multiplier": "Toptan fiyat çarpanı",
+                "wholesale_hint": "Sahipler temel tedarikçi fiyatının %%%s kadarını öder.",
+                "sales_tax": "Satış vergisi (%)",
+                "max_machines": "Oyuncu başına otomat",
+                "max_machines_description": "Bir oyuncunun sahip olabileceği otomat sayısı.",
+                "stock_orders": "Stok siparişleri",
+                "delivery_minutes": "Sipariş aşaması başına dakika",
+                "delivery_hint": "Bir sipariş hazırlanmadan teslimata kadar yaklaşık %s dakika sürer.",
+                "defaults": "Yeni otomat varsayılanları",
+                "default_capacity": "Ürün başına kapasite",
+                "default_price": "Varsayılan satış fiyatı",
+                "default_price_description": "Otomat oluşturulurken kullanılır.",
+                "allow_purchase": "Oyuncular otomat satın alabilir",
+                "allow_purchase_description": "Satılık olarak işaretlenen otomatlar oyun içinde satın alınabilir.",
+                "logging": "Kayıt",
+                "webhook": "Discord webhook URL'si",
+                "log_purchases": "Satın alımları kaydet",
+                "log_purchases_description": "Her otomat satın alımını webhook'a gönder.",
+                "log_admin_actions": "Admin işlemlerini kaydet",
+                "log_admin_actions_description": "Otomat oluşturma, düzenleme ve silme.",
+                "share": "Otomatları paylaş",
+                "export": "Otomatları dışa aktar",
+                "export_description": "Adlar, modeller, konumlar, fiyatlar ve ürünler JSON olarak. Başka bir sunucuda Otomatlar sayfasından içe aktar.",
+                "export_button": "Dışa aktar",
+                "error_webhook_invalid": "Webhook bir Discord webhook URL'si olmalı.",
+                "error_webhook_missing": "Bir webhook URL'si ekle ya da kaydı kapat."
+            },
+            "export": {
+                "title": "Otomatları dışa aktar",
+                "summary_one": "%s otomat. Yalnızca adlar, modeller, konumlar, fiyatlar ve ürünler dahildir; sahipler, bakiyeler ve stok bu sunucuda kalır.",
+                "summary_other": "%s otomat. Yalnızca adlar, modeller, konumlar, fiyatlar ve ürünler dahildir; sahipler, bakiyeler ve stok bu sunucuda kalır.",
+                "output_label": "Dışa aktarılan otomatlar",
+                "copy_failed": "Otomatik kopyalanamadı. Metne tıkla ve Ctrl+C'ye bas.",
+                "download": "İndir",
+                "copied": "Kopyalandı",
+                "copy": "JSON'u kopyala"
+            },
+            "import": {
+                "title": "Otomatları içe aktar",
+                "description": "Başka bir sunucunun Ayarlar sayfasından alınan otomat dışa aktarımını yapıştır. Otomatlar sahipsiz, parasız ve stoksuz olarak satılık gelir.",
+                "load_file": "Dosya yükle",
+                "ready": "%s içe aktarmaya hazır",
+                "skipped": "%s atlandı",
+                "importing": "İçe aktarılıyor...",
+                "submit_one": "%s otomatı içe aktar",
+                "submit_other": "%s otomatı içe aktar",
+                "error": "Otomatlar içe aktarılamadı.",
+                "error_invalid_json": "Bu geçerli bir JSON değil.",
+                "error_empty": "Bu JSON'da otomat bulunamadı.",
+                "unnamed": "Otomat %s",
+                "skip_name": "Adı eksik.",
+                "skip_location": "Konumu eksik.",
+                "skip_occupied": "Burada zaten bir otomat var.",
+                "skip_duplicate": "Bu JSON'da iki kez listelenmiş.",
+                "skip_products": "Ürünlerinin hiçbiri bu sunucuda yok."
+            },
+            "form": {
+                "details": "Detaylar",
+                "name": "Otomat adı",
+                "name_placeholder": "örn. Legion Square #2",
+                "prop_model": "Prop modeli",
+                "machine_type": "Otomat türü",
+                "location": "Konum",
+                "placing": "Yerleştiriliyor...",
+                "set_position": "Otomat konumunu belirle",
+                "area": "Bölge etiketi",
+                "area_placeholder": "örn. Legion Square",
+                "no_position": "Henüz konum yok",
+                "ownership": "Sahiplik",
+                "owned_warning": "Sahibi: %s. Yeni bir sahip girmek veya satışa çıkarmak otomatı ondan alır.",
+                "for_sale": "Satılık",
+                "for_sale_description": "Bir sahibi olmak yerine oyuncular bu otomatı satın alabilir.",
+                "transfer_to": "Devredilecek kişi",
+                "owner_id": "Sahip ID",
+                "transfer_placeholder": "Yeni sahibin sunucu ID'si veya citizen ID'si",
+                "owner_placeholder": "Satışa çıkarmak için boş bırak",
+                "price": "Satış fiyatı (%s)",
+                "products": "Ürünler",
+                "selected": "%s seçili",
+                "select_all": "Tümünü seç",
+                "clear": "Temizle",
+                "sell_product": "%s sat"
+            },
+            "placement": {
+                "title": "Otomat konumu",
+                "heading": "Yön",
+                "move": "Taşı",
+                "rotate": "Döndür",
+                "snap": "Yere hizala",
+                "key_left_alt": "Sol Alt",
+                "walk": "yürü ve etrafa bak",
+                "cursor": "imlece dön",
+                "confirm": "Onayla"
+            },
+            "map": {
+                "zoom_in": "Yakınlaştır",
+                "zoom_out": "Uzaklaştır"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "İptal",
+                "save": "Kaydet",
+                "saving": "Kaydediliyor...",
+                "working": "İşleniyor...",
+                "player_id": "Oyuncu ID",
+                "error": "Bir şeyler ters gitti."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Panel",
+                    "description": "Bu otomatın gelir ve satış özeti."
+                },
+                "products": {
+                    "label": "Ürünler",
+                    "description": "Stok seviyeleri ve fiyatlar."
+                },
+                "restock": {
+                    "label": "Stok yenile",
+                    "description": "Tedarikçiden yeni stok sipariş et."
+                },
+                "transactions": {
+                    "label": "İşlemler",
+                    "description": "Bu otomatta yapılan tüm satın alımlar."
+                },
+                "cash": {
+                    "label": "Kasa",
+                    "description": "Otomattan para çek veya otomata para yatır."
+                },
+                "staff": {
+                    "label": "Personel",
+                    "description": "Çalışan işe al ve neler yapabileceklerini seç."
+                },
+                "settings": {
+                    "label": "Ayarlar",
+                    "description": "Otomat adı ve erişilebilirlik."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "İstatistikleri gör",
+                    "description": "Geliri, satışları ve en çok satan ürünleri görebilir."
+                },
+                "products_prices": {
+                    "label": "Fiyatları değiştir",
+                    "description": "Müşterilerin ödediği fiyatı belirleyebilir."
+                },
+                "restock_order": {
+                    "label": "Stok sipariş et",
+                    "description": "Otomat bakiyesiyle tedarikçiden stok alabilir."
+                },
+                "transactions_view": {
+                    "label": "Satışları gör",
+                    "description": "Otomatta yapılan tüm satın alımları görebilir."
+                },
+                "cash_deposit": {
+                    "label": "Para yatır",
+                    "description": "Kendi nakdini otomata koyabilir."
+                },
+                "cash_withdraw": {
+                    "label": "Para çek",
+                    "description": "Otomat bakiyesinden para çekebilir."
+                },
+                "cash_history": {
+                    "label": "Geçmişi gör",
+                    "description": "Bakiyeyi ve geçmiş para hareketlerini görebilir."
+                },
+                "staff_view": {
+                    "label": "Personeli gör",
+                    "description": "Burada kimlerin çalıştığını ve rollerini görebilir."
+                },
+                "staff_manage": {
+                    "label": "Personeli yönet",
+                    "description": "İşe alabilir, kovabilir ve kendinde olan yetkileri değiştirebilir."
+                },
+                "settings_general": {
+                    "label": "Genel",
+                    "description": "Otomatın adını değiştirebilir, açıp kapatabilir."
+                },
+                "settings_hours": {
+                    "label": "Çalışma saatleri",
+                    "description": "Açılış ve kapanış programını değiştirebilir."
+                },
+                "settings_stock": {
+                    "label": "Stok ve uyarılar",
+                    "description": "Düşük stok eşiği, otomatik stok yenileme ve bildirimler."
+                },
+                "settings_payments": {
+                    "label": "Ödemeler",
+                    "description": "Hangi ödeme yöntemlerinin kabul edileceğini seçebilir."
+                }
+            },
+            "roles": {
+                "owner": "Sahip",
+                "employee": "Çalışan",
+                "supervisor": "Süpervizör",
+                "manager": "Müdür",
+                "custom": "Özel"
+            },
+            "header": {
+                "open": "Açık",
+                "closed": "Kapalı",
+                "balance": "Bakiye",
+                "no_access_title": "Erişim yok",
+                "no_access_description": "Bu otomat için sana yetki vermesini sahibinden iste."
+            },
+            "no_products": {
+                "title": "Henüz ürün yok",
+                "description": "Bu otomatın satacak bir şeyi yok. Bir admin ürün eklediğinde satışlar, stok ve siparişler burada görünür."
+            },
+            "dashboard": {
+                "today_revenue": "Bugünkü gelir",
+                "vs_yesterday": "düne göre",
+                "weekly_revenue": "Haftalık gelir",
+                "last_7_days": "Son 7 gün",
+                "items_sold": "Satılan ürün",
+                "low_stock": "Düşük stok",
+                "products_suffix": "ürün",
+                "low_stock_hint": "%s veya daha az kaldı",
+                "revenue": "Gelir",
+                "no_sales_week": "Son 7 günde satış yok",
+                "top_products": "En çok satanlar",
+                "units_sold": "Satılan adet",
+                "units_sold_tooltip": "adet satıldı",
+                "nothing_sold": "Henüz bir şey satılmadı",
+                "recent_sales": "Son satışlar",
+                "view_all": "Tümünü gör",
+                "no_sales": "Henüz satış yok.",
+                "sales_count": "%s satış"
+            },
+            "products": {
+                "empty": "Ürün yok",
+                "product": "Ürün",
+                "category": "Kategori",
+                "sold": "Satılan",
+                "stock": "Stok",
+                "price": "Fiyat (%s)",
+                "low_stock": "Düşük stok"
+            },
+            "restock": {
+                "catalog": "Tedarikçi kataloğu",
+                "low_stock_only": "Yalnızca düşük stok",
+                "all_stocked_title": "Her şey stokta",
+                "all_stocked_description": "Şu anda azalan ürün yok.",
+                "incoming": "+%s yolda",
+                "per_unit": "Adet başı %s",
+                "decrease": "Miktarı azalt",
+                "increase": "Miktarı artır",
+                "fill": "Doldur",
+                "summary": "Sipariş özeti",
+                "clear": "Temizle",
+                "summary_empty": "Sipariş oluşturmak için katalogdan miktar seç.",
+                "machine_balance": "Otomat bakiyesi",
+                "order_total": "Sipariş toplamı",
+                "balance_after": "Sonraki bakiye",
+                "ordering": "Sipariş veriliyor...",
+                "place_order": "Sipariş ver",
+                "orders": "Siparişler",
+                "in_progress": "%s devam ediyor",
+                "insufficient": "Bu sipariş için otomatta yeterli para yok.",
+                "failed": "Sipariş başarısız oldu."
+            },
+            "orders": {
+                "preparing": "Hazırlanıyor",
+                "prepared": "Hazırlandı",
+                "shipping": "Yolda",
+                "completed": "Tamamlandı",
+                "cancelled": "İptal edildi",
+                "status_aria": "Sipariş durumu: %s",
+                "pick_up": "Teslim al"
+            },
+            "transactions": {
+                "empty": "Henüz satış yok",
+                "time": "Zaman",
+                "buyer": "Alıcı",
+                "product": "Ürün",
+                "quantity": "Adet",
+                "total": "Toplam"
+            },
+            "cash": {
+                "balance": "Bakiye",
+                "balance_hint": "Otomatta kullanılabilir",
+                "deposited": "Yatırılan",
+                "withdrawn": "Çekilen",
+                "all_time": "Tüm zamanlar",
+                "amount": "Tutar (%s)",
+                "all": "Tümü",
+                "withdraw_hint": "En fazla %s çekebilirsin.",
+                "deposit_hint": "Para üzerindeki nakitten alınır. %s nakdin var.",
+                "processing": "İşleniyor...",
+                "withdraw": "Çek",
+                "deposit": "Yatır",
+                "stock_order": "Stok siparişi",
+                "history": "Kasa geçmişi",
+                "movements": "%s hareket",
+                "no_movements": "Henüz para hareketi yok",
+                "not_enough_balance": "Otomatta yeterli para yok.",
+                "not_enough_cash": "Üzerinde o kadar nakit yok.",
+                "failed": "İşlem başarısız oldu.",
+                "by_you": "Sen"
+            },
+            "staff": {
+                "search": "Ara...",
+                "hire": "İşe al",
+                "empty": "Henüz personel yok",
+                "online": "Çevrimiçi",
+                "offline": "Çevrimdışı",
+                "you": "Sen",
+                "now": "Şimdi",
+                "never": "Hiç",
+                "edit_permissions": "Yetkileri düzenle",
+                "fire": "Kov",
+                "hire_title": "Personel işe al",
+                "edit_title": "Yetkileri düzenle",
+                "server_id": "Sunucu ID",
+                "edit_description": "%s, %s otomatında neler yapabilir.",
+                "role": "Rol",
+                "role_hint": "Yetkileri tek tek seçmek için Özel'i seç.",
+                "all": "Tümü",
+                "none": "Hiçbiri",
+                "hire_hint": "Oyuncu yakında olmalı. Personel bu paneli açabilir ama otomatı asla satamaz veya devredemez.",
+                "fire_title": "Çalışanı kov",
+                "fire_description": "%s, %s otomatına erişimini hemen kaybeder.",
+                "employee": "Çalışan",
+                "hired": "İşe alınma",
+                "last_online": "Son görülme",
+                "player_fallback": "Oyuncu %s"
+            },
+            "settings": {
+                "general": "Genel",
+                "name": "Otomat adı",
+                "description": "Açıklama",
+                "description_placeholder": "Müşterilere gösterilir",
+                "open": "Müşterilere açık",
+                "open_description": "Kapalı otomatlar diğer oyuncular tarafından kullanılamaz.",
+                "hours": "Çalışma saatleri",
+                "schedule": "Program kullan",
+                "schedule_description": "Oyun içi saate göre otomatik olarak açılır ve kapanır.",
+                "opens_at": "Açılış",
+                "closes_at": "Kapanış",
+                "schedule_on": "%s ile %s arası açık.",
+                "schedule_off": "Erişilebilirliği yalnızca açık anahtarı belirler.",
+                "stock": "Stok ve uyarılar",
+                "low_stock_threshold": "Düşük stok eşiği",
+                "auto_restock": "Otomatik stok yenileme",
+                "auto_restock_description": "Bir ürün eşiğe ulaştığında kapasiteye kadar sipariş ver.",
+                "low_stock_alerts": "Düşük stok uyarıları",
+                "low_stock_alerts_description": "Stok azaldığında bildirim al.",
+                "sale_notifications": "Satış bildirimleri",
+                "sale_notifications_description": "Her satın alımda bildirim al.",
+                "payments": "Ödemeler",
+                "cash": "Nakit",
+                "cash_description": "Müşteriler üzerlerindeki nakitle öder.",
+                "accept_cash": "Nakit kabul et",
+                "bank": "Banka kartı",
+                "bank_description": "Müşteriler banka hesaplarından öder.",
+                "accept_bank": "Banka kartı kabul et",
+                "danger_zone": "Tehlikeli bölge",
+                "transfer_title": "Sahipliği devret",
+                "transfer_description": "Bu otomatı başka bir oyuncuya ver. Tüm erişimini kaybedersin.",
+                "transfer": "Devret",
+                "sell": "Otomatı sat",
+                "sell_description": "Otomatı geri sat. Stok ve devam eden siparişler kaybolur.",
+                "sell_confirm": "Bu işlem %s otomatını kalıcı olarak satar. Geri alınamaz.",
+                "transfer_prompt": "Bu otomatın sahibi olacak oyuncunun sunucu ID'sini gir.",
+                "name_empty": "Otomat adı boş olamaz.",
+                "payment_required": "En az bir ödeme yöntemini kabul et.",
+                "same_times": "Açılış ve kapanış saatleri aynı olamaz."
+            }
+        }
+    }
+}

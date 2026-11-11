@@ -1,14 +1,14 @@
 <template>
     <div class="flex flex-col gap-3">
         <section class="flex w-full gap-3">
-            <Inputs v-model="search" type="text" placeholder="Search..." />
+            <Inputs v-model="search" type="text" :placeholder="t('owner.staff.search')" />
             <Button v-if="owner.can('staff.manage')" class="w-[200px]" variant="solid" @click="openHire">
                 <UserPlus class="size-4" />
-                Hire
+                {{ t("owner.staff.hire") }}
             </Button>
         </section>
 
-        <DataTable v-model:sort="sort" :columns="columns" :rows="rows" :page-size="10" empty-text="No staff yet">
+        <DataTable v-model:sort="sort" :columns="columns" :rows="rows" :page-size="10" :empty-text="t('owner.staff.empty')">
             <template #cell="{ column, row }">
                 <template v-if="row.id === OWNER_ROW || memberOf(row)">
                     <div v-if="column.key === 'name'" class="flex items-center gap-3">
@@ -18,10 +18,10 @@
                             badge
                             badge-tooltip
                             :badge-variant="row.online ? 'active' : 'inactive'"
-                            :badge-label="row.online ? 'Online' : 'Offline'"
+                            :badge-label="row.online ? t('owner.staff.online') : t('owner.staff.offline')"
                         />
                         <span class="truncate font-medium text-text-primary">{{ row.name }}</span>
-                        <Badge v-if="row.id === owner.selfId" variant="outline">You</Badge>
+                        <Badge v-if="row.id === owner.selfId" variant="outline">{{ t("owner.staff.you") }}</Badge>
                     </div>
 
                     <Badge v-else-if="column.key === 'role'" :variant="row.custom ? 'outline' : 'default'">{{ row.role }}</Badge>
@@ -29,18 +29,18 @@
                     <span v-else-if="column.key === 'hiredAt'" class="tabular-nums text-text-faint">{{ row.hiredAt ? formatDate(Number(row.hiredAt)) : "—" }}</span>
 
                     <span v-else-if="column.key === 'lastOnline'" class="tabular-nums" :class="row.lastOnline ? 'text-text-muted' : 'text-text-faint'">
-                        {{ row.id === OWNER_ROW ? (row.online ? "Now" : "—") : row.lastOnline ? formatDateTime(Number(row.lastOnline)) : "Never" }}
+                        {{ row.id === OWNER_ROW ? (row.online ? t("owner.staff.now") : "—") : row.lastOnline ? formatDateTime(Number(row.lastOnline)) : t("owner.staff.never") }}
                     </span>
 
                     <!-- The owner row has no actions: the owner can't be edited or fired -->
                     <div v-else-if="column.key === 'actions' && memberOf(row) && canManage(memberOf(row)!)" class="flex items-center justify-end gap-1.5">
-                        <Tooltip content="Edit Permissions" side="top">
-                            <Button variant="secondary" size="sm" class="p-2.5" aria-label="Edit Permissions" @click="openEdit(memberOf(row)!)">
+                        <Tooltip :content="t('owner.staff.edit_permissions')" side="top">
+                            <Button variant="secondary" size="sm" class="p-2.5" :aria-label="t('owner.staff.edit_permissions')" @click="openEdit(memberOf(row)!)">
                                 <Pencil class="size-3.5" />
                             </Button>
                         </Tooltip>
-                        <Tooltip content="Fire" side="top">
-                            <Button variant="danger" size="sm" class="p-2.5" aria-label="Fire" @click="openFire(memberOf(row)!)">
+                        <Tooltip :content="t('owner.staff.fire')" side="top">
+                            <Button variant="danger" size="sm" class="p-2.5" :aria-label="t('owner.staff.fire')" @click="openFire(memberOf(row)!)">
                                 <UserMinus class="size-3.5" />
                             </Button>
                         </Tooltip>
@@ -51,20 +51,25 @@
 
         <Modal
             v-if="modal?.type === 'hire' || modal?.type === 'edit'"
-            :title="modal.type === 'hire' ? 'Hire staff' : 'Edit permissions'"
+            :title="modal.type === 'hire' ? t('owner.staff.hire_title') : t('owner.staff.edit_title')"
             :icon="modal.type === 'hire' ? UserPlus : Pencil"
             @close="modal = undefined"
         >
             <div class="flex flex-col gap-4 px-5 py-4 text-sm text-text-muted">
                 <label v-if="modal.type === 'hire'" class="grid gap-1.5">
-                    Player ID
-                    <Inputs v-model="playerId" type="number" :min="1" placeholder="Server ID" />
+                    {{ t("owner.common.player_id") }}
+                    <Inputs v-model="playerId" type="number" :min="1" :placeholder="t('owner.staff.server_id')" />
                 </label>
-                <p v-else>What <b class="text-text-primary">{{ modal.member.name }}</b> can do at {{ owner.settings.name }}.</p>
+                <p v-else>
+                    <LocaleText :text="t('owner.staff.edit_description')">
+                        <template #p0><b class="text-text-primary">{{ modal.member.name }}</b></template>
+                        <template #p1>{{ owner.settings.name }}</template>
+                    </LocaleText>
+                </p>
 
                 <SelectMenu
-                    label="Role"
-                    hint="Choose Custom to pick permissions one by one."
+                    :label="t('owner.staff.role')"
+                    :hint="t('owner.staff.role_hint')"
                     :options="roleOptions"
                     :model-value="custom ? 'custom' : staffRoleOf(draft) ?? 'custom'"
                     @update:model-value="applyRole"
@@ -79,7 +84,7 @@
                         <header class="flex items-center justify-between gap-3">
                             <h4 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
                                 <component :is="group.icon" class="size-4 text-text-muted" />
-                                {{ group.label }}
+                                {{ t(group.label) }}
                                 <span class="text-xs font-normal tabular-nums text-text-faint">
                                     {{ group.permissions.filter((permission) => draft.includes(permission.value)).length }}/{{ group.permissions.length }}
                                 </span>
@@ -90,18 +95,18 @@
                                 size="sm"
                                 @click="draft = toggleGroup(draft, group, !groupEnabled(group))"
                             >
-                                {{ groupEnabled(group) ? "None" : "All" }}
+                                {{ groupEnabled(group) ? t("owner.staff.none") : t("owner.staff.all") }}
                             </Button>
                         </header>
                         <SettingRow
                             v-for="permission in group.permissions"
                             :key="permission.value"
-                            :label="permission.label"
-                            :description="permission.description"
+                            :label="t(permission.label)"
+                            :description="t(permission.description)"
                         >
                             <Checkbox
                                 :model-value="draft.includes(permission.value)"
-                                :aria-label="`${group.label}: ${permission.label}`"
+                                :aria-label="`${t(group.label)}: ${t(permission.label)}`"
                                 :disabled="!owner.can(permission.value)"
                                 @update:model-value="draft = toggle(draft, [permission.value], $event)"
                             />
@@ -114,29 +119,34 @@
                     {{ error }}
                 </p>
                 <p v-else-if="modal.type === 'hire'" class="text-xs text-text-faint">
-                    The player must be nearby. Staff can open this panel but never sell or transfer the machine.
+                    {{ t("owner.staff.hire_hint") }}
                 </p>
             </div>
             <template #footer>
-                <Button variant="outline" size="sm" @click="modal = undefined">Cancel</Button>
+                <Button variant="outline" size="sm" @click="modal = undefined">{{ t("owner.common.cancel") }}</Button>
                 <Button size="sm" :disabled="!canConfirm || busy" @click="confirm">
-                    {{ busy ? "Working..." : modal.type === "hire" ? "Hire" : "Save" }}
+                    {{ busy ? t("owner.common.working") : modal.type === "hire" ? t("owner.staff.hire") : t("owner.common.save") }}
                 </Button>
             </template>
         </Modal>
 
-        <Modal v-if="modal?.type === 'fire'" title="Fire employee" :icon="TriangleAlert" @close="modal = undefined">
+        <Modal v-if="modal?.type === 'fire'" :title="t('owner.staff.fire_title')" :icon="TriangleAlert" @close="modal = undefined">
             <div class="flex flex-col gap-3 px-5 py-4 text-sm text-text-muted">
-                <p><b class="text-text-primary">{{ modal.member.name }}</b> loses access to {{ owner.settings.name }} right away.</p>
+                <p>
+                    <LocaleText :text="t('owner.staff.fire_description')">
+                        <template #p0><b class="text-text-primary">{{ modal.member.name }}</b></template>
+                        <template #p1>{{ owner.settings.name }}</template>
+                    </LocaleText>
+                </p>
                 <p v-if="error" class="flex items-center gap-1.5 text-xs text-danger">
                     <CircleAlert class="size-3.5 shrink-0" />
                     {{ error }}
                 </p>
             </div>
             <template #footer>
-                <Button variant="outline" size="sm" @click="modal = undefined">Cancel</Button>
+                <Button variant="outline" size="sm" @click="modal = undefined">{{ t("owner.common.cancel") }}</Button>
                 <Button variant="danger" size="sm" :disabled="busy" @click="confirm">
-                    {{ busy ? "Working..." : "Fire" }}
+                    {{ busy ? t("owner.common.working") : t("owner.staff.fire") }}
                 </Button>
             </template>
         </Modal>
@@ -147,10 +157,12 @@
 import { computed, ref } from "vue";
 import { CircleAlert, Pencil, TriangleAlert, UserMinus, UserPlus } from "@lucide/vue";
 import { Avatar, Badge, Button, Checkbox, DataTable, Inputs, Modal, SelectMenu, Tooltip, type DataTableColumn, type DataTableRow } from "@vezironi/veyra-ui";
+import LocaleText from "@/components/LocaleText.vue";
 import SettingRow from "@/components/SettingRow.vue";
 import { permissionGroups, type PermissionGroup } from "@/components/owner/permissions";
 import { staffPermissions, staffRoleOf, staffRoles, useOwnerStore, type StaffMember, type StaffPermission } from "@/stores/owner";
 import { formatDate, formatDateTime } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const owner = useOwnerStore();
 
@@ -182,12 +194,13 @@ const grantableRoles = computed(() => staffRoles.filter((role) => role.permissio
 
 // "Custom" keeps the current permissions and opens the list to edit them one by one
 const roleOptions = computed(() => [
-    ...grantableRoles.value.map((role) => ({ label: role.label, value: role.value })),
-    { label: "Custom", value: "custom" },
+    ...grantableRoles.value.map((role) => ({ label: t(role.label), value: role.value })),
+    { label: t("owner.roles.custom"), value: "custom" },
 ]);
 
 function roleLabel(permissions: StaffPermission[]): string {
-    return staffRoles.find((role) => role.value === staffRoleOf(permissions))?.label ?? "Custom";
+    const role = staffRoles.find((entry) => entry.value === staffRoleOf(permissions));
+    return role ? t(role.label) : t("owner.roles.custom");
 };
 
 function applyRole(value: string | undefined) {
@@ -205,10 +218,10 @@ const search = ref<string | number | undefined>("");
 const sort = ref<{ key: string; direction: "asc" | "desc" } | null>(null);
 
 const columns = computed<DataTableColumn[]>(() => [
-    { key: "name", label: "Employee", sortable: true },
-    { key: "role", label: "Role", sortable: true },
-    { key: "hiredAt", label: "Hired", sortable: true },
-    { key: "lastOnline", label: "Last Online", sortable: true },
+    { key: "name", label: t("owner.staff.employee"), sortable: true },
+    { key: "role", label: t("owner.staff.role"), sortable: true },
+    { key: "hiredAt", label: t("owner.staff.hired"), sortable: true },
+    { key: "lastOnline", label: t("owner.staff.last_online"), sortable: true },
     ...(owner.can("staff.manage") ? [{ key: "actions", label: "", align: "right" as const }] : []),
 ]);
 
@@ -224,7 +237,7 @@ const rows = computed(() => {
         ? [{
             id: OWNER_ROW,
             name: owner.ownerMember.name,
-            role: "Owner",
+            role: t("owner.roles.owner"),
             custom: false,
             hiredAt: null,
             lastOnline: null,
@@ -300,7 +313,7 @@ async function confirm() {
         if (response?.success) {
             modal.value = undefined;
         } else {
-            error.value = response?.error ?? "Something went wrong.";
+            error.value = response?.error ?? t("owner.common.error");
         }
     } finally {
         busy.value = false;

@@ -4,33 +4,33 @@
     <div v-else class="flex flex-col gap-4">
         <div class="grid grid-cols-4 gap-3">
             <StatCard
-                label="Today's revenue"
+                :label="t('owner.dashboard.today_revenue')"
                 :value="formatMoney(owner.todayRevenue)"
                 :icon="DollarSign"
                 :change="owner.revenueChange"
-                change-label="vs yesterday"
+                :change-label="t('owner.dashboard.vs_yesterday')"
             />
-            <StatCard label="Weekly revenue" :value="formatMoney(owner.weekRevenue)" :icon="TrendingUp" change-label="Last 7 days" />
-            <StatCard label="Items sold" :value="owner.weekSales" :icon="ShoppingBag" change-label="Last 7 days" />
-            <StatCard label="Low stock" :value="owner.lowStock.length" suffix="products" :icon="TriangleAlert" :change-label="`${owner.settings.lowStockThreshold} or fewer left`" />
+            <StatCard :label="t('owner.dashboard.weekly_revenue')" :value="formatMoney(owner.weekRevenue)" :icon="TrendingUp" :change-label="t('owner.dashboard.last_7_days')" />
+            <StatCard :label="t('owner.dashboard.items_sold')" :value="owner.weekSales" :icon="ShoppingBag" :change-label="t('owner.dashboard.last_7_days')" />
+            <StatCard :label="t('owner.dashboard.low_stock')" :value="owner.lowStock.length" :suffix="t('owner.dashboard.products_suffix')" :icon="TriangleAlert" :change-label="t('owner.dashboard.low_stock_hint', owner.settings.lowStockThreshold)" />
         </div>
 
         <div class="grid grid-cols-3 gap-3">
             <section class="col-span-2 rounded-2xl border border-border bg-bg-surface p-4">
                 <header class="flex items-baseline justify-between">
-                    <h3 class="text-sm font-semibold text-text-primary">Revenue</h3>
-                    <span class="text-xs text-text-faint">Last 7 days</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.dashboard.revenue") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("owner.dashboard.last_7_days") }}</span>
                 </header>
                 <div class="mt-2 h-56">
                     <EChart v-if="hasRevenue" :option="revenueOption" />
-                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">No sales in the last 7 days</p>
+                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">{{ t("owner.dashboard.no_sales_week") }}</p>
                 </div>
             </section>
 
             <section class="rounded-2xl border border-border bg-bg-surface p-4">
                 <header class="flex items-baseline justify-between">
-                    <h3 class="text-sm font-semibold text-text-primary">Top products</h3>
-                    <span class="text-xs text-text-faint">Units sold</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.dashboard.top_products") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("owner.dashboard.units_sold") }}</span>
                 </header>
                 <ul v-if="ranked.length" class="mt-2 flex flex-wrap gap-x-3 gap-y-1">
                     <li v-for="category in topCategories" :key="category" class="flex items-center gap-1.5 text-xs capitalize text-text-muted">
@@ -40,25 +40,25 @@
                 </ul>
                 <div class="mt-1 h-50">
                     <EChart v-if="ranked.length" :option="topProductsOption" />
-                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">Nothing sold yet</p>
+                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">{{ t("owner.dashboard.nothing_sold") }}</p>
                 </div>
             </section>
         </div>
 
         <section class="rounded-2xl border border-border bg-bg-surface">
             <header class="flex items-center justify-between px-4 py-3">
-                <h3 class="text-sm font-semibold text-text-primary">Recent sales</h3>
+                <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.dashboard.recent_sales") }}</h3>
                 <button
                     v-if="owner.canSection('transactions')"
                     type="button"
                     class="text-xs text-text-faint transition-colors hover:text-text-primary"
                     @click="owner.section = 'transactions'"
                 >
-                    View all
+                    {{ t("owner.dashboard.view_all") }}
                 </button>
             </header>
             <p v-if="!owner.transactions.length" class="border-t border-border px-4 py-6 text-center text-xs text-text-faint">
-                No sales yet.
+                {{ t("owner.dashboard.no_sales") }}
             </p>
             <ul v-else class="divide-y divide-border border-t border-border">
                 <li
@@ -91,6 +91,7 @@ import { useOwnerStore } from "@/stores/owner";
 import { alpha, categoryColor, chartTheme, tooltipStyle } from "@/utils/chart";
 import NoProducts from "./NoProducts.vue";
 import { formatDateTime, formatDay, formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 const owner = useOwnerStore();
@@ -112,7 +113,7 @@ const revenueOption = computed<ChartOption>(() => ({
         formatter: (params: any) => {
             const day = owner.revenue[params[0].dataIndex]!;
             return `<div style="color:${theme.muted}">${formatDay(day.date)}</div>`
-                + `<b>${formatMoney(day.revenue)}</b> <span style="color:${theme.muted}">· ${day.sales} sales</span>`;
+                + `<b>${formatMoney(day.revenue)}</b> <span style="color:${theme.muted}">· ${t("owner.dashboard.sales_count", day.sales)}</span>`;
         },
     },
     xAxis: {
@@ -131,7 +132,7 @@ const revenueOption = computed<ChartOption>(() => ({
     },
     series: [{
         type: "line",
-        name: "Revenue",
+        name: t("owner.dashboard.revenue"),
         data: owner.revenue.map((day) => day.revenue),
         smooth: 0.3,
         symbol: "circle",
@@ -162,7 +163,7 @@ const topProductsOption = computed<ChartOption>(() => ({
         formatter: (params: any) => {
             const { product } = ranked.value[params.dataIndex]!;
             return `${product.name} <span style="color:${theme.muted};text-transform:capitalize">· ${product.category}</span>`
-                + `<br/><b>${params.value}</b> <span style="color:${theme.muted}">units sold</span>`;
+                + `<br/><b>${params.value}</b> <span style="color:${theme.muted}">${t("owner.dashboard.units_sold_tooltip")}</span>`;
         },
     },
     xAxis: { type: "value", show: false },
@@ -176,7 +177,7 @@ const topProductsOption = computed<ChartOption>(() => ({
     },
     series: [{
         type: "bar",
-        name: "Units sold",
+        name: t("owner.dashboard.units_sold"),
         data: ranked.value.map(({ product, units }) => ({
             value: units,
             itemStyle: { color: categoryColor(product.category, theme) },

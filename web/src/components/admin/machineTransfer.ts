@@ -1,4 +1,5 @@
 import { customMachineModels, machineModels, type AdminSettings, type Machine, type MachineConfig } from "@/stores/admin";
+import { t } from "@/utils/locale";
 
 const format = "hype-vendingmachine";
 const version = 1;
@@ -55,34 +56,34 @@ export function parseMachineImport(text: string, context: ImportContext): Import
     try {
         data = JSON.parse(text);
     } catch {
-        return { machines: [], skipped: [], error: "This isn't valid JSON." };
+        return { machines: [], skipped: [], error: t("admin.import.error_invalid_json") };
     }
 
     // A bare array is accepted too, in case someone trimmed the file down by hand
     const entries = Array.isArray(data) ? data : isRecord(data) && Array.isArray(data.machines) ? data.machines : undefined;
-    if (!entries?.length) return { machines: [], skipped: [], error: "No machines found in this JSON." };
+    if (!entries?.length) return { machines: [], skipped: [], error: t("admin.import.error_empty") };
 
     const result: ImportResult = { machines: [], skipped: [] };
     const models = [...machineModels, ...customMachineModels].map((model) => model.value);
 
     entries.forEach((entry, index) => {
         const name = isRecord(entry) && typeof entry.name === "string" ? entry.name.trim() : "";
-        const label = name || `Machine ${index + 1}`;
+        const label = name || t("admin.import.unnamed", index + 1);
         const skip = (reason: string) => result.skipped.push({ name: label, reason });
 
-        if (!isRecord(entry) || !name) return skip("Missing a name.");
+        if (!isRecord(entry) || !name) return skip(t("admin.import.skip_name"));
 
         const location = isRecord(entry.location) ? entry.location : undefined;
-        if (!location || !isNumber(location.x) || !isNumber(location.y) || !isNumber(location.z)) return skip("Missing a location.");
+        if (!location || !isNumber(location.x) || !isNumber(location.y) || !isNumber(location.z)) return skip(t("admin.import.skip_location"));
 
         const spot = { x: location.x, y: location.y, z: location.z };
-        if (context.existing.some((machine) => sameSpot(machine.location, spot))) return skip("A machine already stands here.");
-        if (result.machines.some((machine) => sameSpot(machine.location, spot))) return skip("Listed twice in this JSON.");
+        if (context.existing.some((machine) => sameSpot(machine.location, spot))) return skip(t("admin.import.skip_occupied"));
+        if (result.machines.some((machine) => sameSpot(machine.location, spot))) return skip(t("admin.import.skip_duplicate"));
 
         const products = Array.isArray(entry.products)
             ? [...new Set(entry.products.filter((id): id is string => typeof id === "string" && context.products.includes(id)))]
             : [];
-        if (!products.length) return skip("None of its products exist on this server.");
+        if (!products.length) return skip(t("admin.import.skip_products"));
 
         result.machines.push({
             name,

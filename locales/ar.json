@@ -1,0 +1,703 @@
+{
+    "notify_title": "آلة البيع",
+
+    "target_buy": "شراء الآلة",
+    "target_open": "استخدام آلة البيع",
+    "target_manage": "إدارة الآلة",
+    "textui_buy": "[%s] شراء الآلة ($%s)",
+    "textui_open": "[%s] استخدام آلة البيع",
+    "textui_manage": "[%s] إدارة الآلة",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "إمساك العربة",
+    "target_cargo_drop": "ترك العربة",
+    "target_cargo_take": "أخذ الصندوق",
+    "target_cargo_load": "تحميل الصندوق",
+    "target_cargo_unload": "إخراج الصندوق",
+    "target_cargo_deliver": "وضع الصندوق في الآلة",
+    "notify_cargo_started": "طلبك جاهز. استلمه من المكان المحدد.",
+    "notify_cargo_cancelled": "غادرت منطقة الاستلام. تم إلغاء الطلب.",
+    "notify_cargo_delivered": "جميع الصناديق داخل %s.",
+    "error_order_not_ready": "لا يمكن استلام هذا الطلب الآن.",
+    "error_cargo_busy": "أنت تستلم طلبًا بالفعل.",
+
+    "success_machine_bought": "اشتريت %s مقابل $%s.",
+    "notify_sale": "حققت %s عملية بيع: $%s.",
+    "notify_low_stock": "مخزون %s ينفد في %s (المتبقي %s).",
+    "notify_hired": "أنت تعمل الآن في %s.",
+    "notify_staff_removed": "لم تعد تعمل في %s.",
+    "notify_machine_transferred": "أعطيت %s إلى %s.",
+    "notify_machine_received": "أعطاك %s الآلة %s.",
+    "notify_machine_sold": "بعت %s مقابل $%s.",
+    "auto_restock": "إعادة التخزين التلقائي",
+
+    "log_title_purchase": "شراء آلة",
+    "log_title_admin": "إجراء إداري",
+    "log_machine_bought": "%s اشترى **%s** (#%s) مقابل $%s.",
+    "log_machine_created": "%s أنشأ **%s** (#%s).",
+    "log_machine_updated": "%s عدّل **%s** (#%s).",
+    "log_machine_deleted": "%s حذف **%s** (#%s).",
+    "log_machines_imported": "%s استورد %s آلات.",
+    "log_machine_status": "%s غيّر حالة **%s** (#%s) إلى %s.",
+    "log_balance_reset": "%s صفّر رصيد **%s** (#%s)، $%s.",
+    "log_settings_saved": "%s غيّر إعدادات الإدارة.",
+
+    "error_no_permission": "ليس لديك صلاحية للقيام بذلك.",
+    "error_invalid_machine": "بيانات الآلة غير صالحة.",
+    "error_invalid_name": "يجب أن يتكون اسم الآلة من 1 إلى %s حرفًا.",
+    "error_invalid_model": "طراز آلة غير معروف.",
+    "error_invalid_location": "حدد موقعًا للآلة.",
+    "error_invalid_price": "يجب أن يكون سعر البيع رقمًا صحيحًا بين 0 و %s.",
+    "error_invalid_capacity": "يجب أن تكون السعة رقمًا صحيحًا بين 1 و %s.",
+    "error_invalid_products": "اختر منتجًا صالحًا واحدًا على الأقل.",
+    "error_owner_not_found": "لم يتم العثور على لاعب متصل بهذا المعرّف أو citizen ID.",
+    "error_machine_not_found": "هذه الآلة لم تعد موجودة.",
+    "error_machine_too_close": "توجد آلة بالفعل في هذا الموقع.",
+    "error_database": "تعذّر حفظ الآلة. تحقق من وحدة تحكم الخادم.",
+    "error_not_for_sale": "هذه الآلة ليست للبيع.",
+    "error_purchase_disabled": "لا يمكن شراء الآلات حاليًا.",
+    "error_max_machines": "لا يمكنك امتلاك أكثر من %s آلات.",
+    "error_not_enough_money": "ليس لديك مال كافٍ.",
+    "error_payment_not_accepted": "هذه الآلة لا تقبل طريقة الدفع هذه.",
+    "error_too_far": "أنت بعيد جدًا عن الآلة.",
+    "error_machine_closed": "هذه الآلة مغلقة.",
+    "error_machine_disabled": "قام أحد المشرفين بتعطيل هذه الآلة. لا يمكن فتحها.",
+    "error_invalid_description": "يمكن أن يتكون الوصف من %s حرفًا كحد أقصى.",
+    "error_invalid_schedule": "يجب أن يكون وقتا الفتح والإغلاق مختلفين وبصيغة HH:MM.",
+    "error_invalid_threshold": "يجب أن يكون حد المخزون المنخفض بين 0 و %s.",
+    "error_invalid_payments": "اقبل طريقة دفع واحدة على الأقل.",
+    "error_invalid_amount": "أدخل مبلغًا صحيحًا بين $1 و $%s.",
+    "error_not_enough_balance": "لا تملك الآلة هذا القدر من المال.",
+    "error_invalid_status": "يمكن هنا فقط تعطيل الآلة أو تفعيلها.",
+    "error_invalid_settings": "قيمة غير صالحة لـ %s.",
+    "error_import_empty": "لا توجد آلات للاستيراد.",
+    "error_import_too_many": "يمكنك استيراد %s آلات كحد أقصى في المرة الواحدة.",
+    "error_import_entry": "الآلة #%s: %s",
+    "error_import_duplicate": "مُدرجة مرتين في نفس المكان.",
+    "error_invalid_items": "قائمة عناصر غير صالحة.",
+    "error_too_many_items": "%s كحد أقصى من العنصر الواحد في كل طلب.",
+    "error_over_capacity": "%s سيتجاوز سعة الآلة البالغة %s.",
+    "error_out_of_stock": "لا يتوفر ما يكفي من %s في المخزون.",
+    "error_cannot_carry": "لا يمكنك حمل هذه الكمية من %s.",
+    "error_player_not_found": "لا يوجد لاعب بهذا المعرّف بالقرب من الآلة.",
+    "error_already_staff": "هذا اللاعب يعمل هنا بالفعل.",
+    "error_invalid_permissions": "اختر صلاحية واحدة على الأقل تملكها أنت.",
+    "error_staff_not_found": "هذا الموظف لم يعد يعمل هنا.",
+    "error_transfer_self": "أنت تملك هذه الآلة بالفعل.",
+    "error_target_max_machines": "لا يمكن لهذا اللاعب امتلاك أكثر من %s آلات.",
+    "error_machine_changed": "تغيّرت الآلة في هذه الأثناء، حاول مرة أخرى.",
+
+    "ui": {
+        "common": {
+            "cancel": "إلغاء",
+            "close": "إغلاق",
+            "clear": "مسح",
+            "back": "رجوع",
+            "done": "تم",
+            "reset": "إعادة ضبط",
+            "total": "الإجمالي",
+            "decrease_quantity": "تقليل الكمية",
+            "increase_quantity": "زيادة الكمية",
+            "save_bar": {
+                "unsaved": "لديك تغييرات غير محفوظة.",
+                "saving": "جارٍ الحفظ...",
+                "save_changes": "حفظ التغييرات"
+            },
+            "time_picker": {
+                "title": "اختر الوقت",
+                "hour": "الساعة",
+                "minute": "الدقيقة"
+            },
+            "errors": {
+                "no_response": "لا يوجد رد من الخادم."
+            }
+        },
+        "shop": {
+            "default_name": "آلة البيع",
+            "navbar": {
+                "products": "%s منتجات",
+                "all": "الكل",
+                "search": "ابحث عن منتجات..."
+            },
+            "empty": {
+                "title": "لم يتم العثور على منتجات",
+                "description": "جرّب فئة أو كلمة بحث مختلفة."
+            },
+            "item": {
+                "out_of_stock": "نفد المخزون",
+                "in_stock": "%s متوفر",
+                "add": "إضافة",
+                "remove": "إزالة"
+            },
+            "cart": {
+                "title": "السلة",
+                "empty_title": "سلتك فارغة",
+                "empty_description": "أضف منتجات لتظهر هنا.",
+                "each": "%s للقطعة",
+                "remove_item": "إزالة العنصر",
+                "checkout": "الدفع"
+            },
+            "checkout": {
+                "title": "الدفع",
+                "payment_method": "طريقة الدفع",
+                "cash": "نقدًا",
+                "bank": "البنك",
+                "available": "المتاح",
+                "not_accepted": "غير مقبولة هنا",
+                "not_enough_money": "المال غير كافٍ",
+                "processing": "جارٍ المعالجة...",
+                "pay": "ادفع %s"
+            }
+        },
+        "screen": {
+            "subtitle": "اختر منتجًا وأضفه إلى السلة",
+            "remove_from_cart": "إزالة من السلة",
+            "empty": {
+                "title": "لا توجد منتجات",
+                "description": "لا تعرض هذه الآلة أي شيء للبيع بعد."
+            },
+            "bar": {
+                "items_one": "%s عنصر",
+                "items_other": "%s عناصر",
+                "cart": "السلة",
+                "quick_order": "طلب سريع"
+            },
+            "cart": {
+                "title": "السلة",
+                "summary": "%s منتجات · %s عناصر",
+                "each": "%s للقطعة",
+                "confirm": "تأكيد السلة"
+            },
+            "item": {
+                "add_to_cart": "أضف إلى السلة",
+                "out_of_stock": "نفد المخزون"
+            }
+        },
+        "idle": {
+            "use_to_order": "استخدمها للطلب"
+        },
+        "purchase": {
+            "title": "شراء الآلة",
+            "unknown_area": "منطقة غير معروفة",
+            "type": "النوع",
+            "capacity": "السعة",
+            "capacity_value": "%s لكل منتج",
+            "sells_one": "تبيع %s منتج",
+            "sells_other": "تبيع %s منتجات",
+            "price": "السعر",
+            "cash_balance": "الرصيد النقدي",
+            "bank_balance": "الرصيد البنكي",
+            "not_enough_money": "ليس لديك مال كافٍ.",
+            "buying": "جارٍ الشراء...",
+            "buy": "شراء الآلة",
+            "placement": {
+                "start_failed": "تعذّر بدء وضع الآلة."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "إلغاء",
+                "import": "استيراد",
+                "new_machine": "آلة جديدة",
+                "for_sale": "للبيع",
+                "no_area": "بدون منطقة",
+                "teleport": "انتقال فوري",
+                "player_fallback": "اللاعب %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "نظرة عامة",
+                    "description": "إحصائيات آلات البيع على مستوى الخادم."
+                },
+                "machines": {
+                    "label": "الآلات",
+                    "description": "جميع آلات البيع على الخادم."
+                },
+                "settings": {
+                    "label": "الإعدادات",
+                    "description": "قواعد عامة لجميع آلات البيع."
+                }
+            },
+            "header": {
+                "machine_settings": "إعدادات الآلة",
+                "editing": "تعديل %s",
+                "machines": "الآلات",
+                "open_count": "%s مفتوحة",
+                "badge": "مشرف"
+            },
+            "status": {
+                "open": "مفتوحة",
+                "closed": "مغلقة",
+                "for_sale": "للبيع",
+                "disabled": "معطّلة"
+            },
+            "models": {
+                "soda": "آلة مشروبات غازية",
+                "snack": "آلة وجبات خفيفة",
+                "coffee": "آلة قهوة",
+                "water": "آلة مياه",
+                "custom": "آلة بيع مخصصة",
+                "glass": "آلة زجاجية",
+                "glass_ecola": "آلة زجاجية (eCola)",
+                "glass_sprunk": "آلة زجاجية (Sprunk)",
+                "glass_raine": "آلة زجاجية (Raine)",
+                "glass_junk": "آلة زجاجية (Junk)",
+                "glass_beanmachine": "آلة زجاجية (Bean Machine)",
+                "glass_phatchips": "آلة زجاجية (Phat Chips)",
+                "glass_egochaser": "آلة زجاجية (Ego Chaser)",
+                "glass_cluckinbell": "آلة زجاجية (Cluckin' Bell)",
+                "glass_burgershot": "آلة زجاجية (Burger Shot)",
+                "glass_247": "آلة زجاجية (24/7)"
+            },
+            "validation": {
+                "name_empty": "لا يمكن ترك اسم الآلة فارغًا.",
+                "location_missing": "حدد موقعًا للآلة.",
+                "products_empty": "اختر منتجًا واحدًا على الأقل."
+            },
+            "create": {
+                "title": "آلة جديدة",
+                "creating": "جارٍ الإنشاء...",
+                "submit": "إنشاء الآلة",
+                "error": "تعذّر إنشاء الآلة."
+            },
+            "dashboard": {
+                "empty_title": "لا توجد آلات بعد",
+                "empty_description": "أنشئ أول آلة بيع، أو استورد آلات مُصدّرة من خادم آخر.",
+                "stat_machines": "الآلات",
+                "stat_machines_open": "%s مفتوحة الآن",
+                "stat_revenue": "الإيرادات",
+                "stat_items_sold": "العناصر المباعة",
+                "stat_all_machines": "آخر 7 أيام، جميع الآلات",
+                "stat_owners": "المالكون",
+                "stat_for_sale_one": "%s آلة للبيع",
+                "stat_for_sale_other": "%s آلات للبيع",
+                "server_revenue": "إيرادات الخادم",
+                "last_7_days": "آخر 7 أيام",
+                "no_sales": "لا مبيعات في آخر 7 أيام",
+                "top_machines": "أفضل الآلات",
+                "revenue_currency": "الإيرادات (%s)",
+                "no_top_machines": "لم تحقق أي آلة مبيعات بعد",
+                "needs_attention": "تحتاج إلى انتباه",
+                "machine_count": "%s آلات",
+                "all_fine": "جميع الآلات تعمل بشكل جيد.",
+                "open": "فتح",
+                "newest_machines": "أحدث الآلات",
+                "view_all": "عرض الكل",
+                "reason_disabled": "عطّلها أحد المشرفين",
+                "reason_low_stock": "المخزون عند %s%%",
+                "series_revenue": "الإيرادات",
+                "tooltip_sales": "%s مبيعات"
+            },
+            "detail": {
+                "back": "العودة إلى الآلات",
+                "machines": "الآلات",
+                "created": "أُنشئت في %s",
+                "enable": "تفعيل",
+                "disable": "تعطيل",
+                "stat_balance": "الرصيد",
+                "stat_balance_hint": "المال داخل الآلة",
+                "stat_revenue": "الإيرادات",
+                "stat_items_sold": "العناصر المباعة",
+                "last_7_days": "آخر 7 أيام",
+                "stat_stock": "مستوى المخزون",
+                "stat_stock_hint": "المتوسط عبر المنتجات",
+                "danger_zone": "منطقة الخطر",
+                "reset_balance": "تصفير الرصيد",
+                "reset_balance_description": "إزالة مبلغ %s الموجود حاليًا في الآلة.",
+                "reset": "تصفير",
+                "delete_machine": "حذف الآلة",
+                "delete_machine_description": "يزيل المجسّم ومخزونه وطلباته وسجله نهائيًا.",
+                "delete": "حذف",
+                "confirm_delete": "سيؤدي هذا إلى حذف %s نهائيًا. لا يمكن التراجع عن ذلك.",
+                "confirm_reset": "سيؤدي هذا إلى إزالة %s من %s.",
+                "working": "جارٍ التنفيذ...",
+                "owner_fallback": "لاعب",
+                "error": "حدث خطأ ما."
+            },
+            "machines": {
+                "search_placeholder": "ابحث بالاسم أو المالك أو المنطقة...",
+                "empty_search": "لا توجد آلات تطابق بحثك",
+                "empty": "لا توجد آلات بعد. أنشئ واحدة أو استوردها.",
+                "show_on_map": "عرض على الخريطة",
+                "manage": "إدارة",
+                "map": "الخريطة",
+                "map_hint": "انقر على علامة لإدارة الآلة",
+                "column_machine": "الآلة",
+                "column_owner": "المالك",
+                "column_status": "الحالة",
+                "column_balance": "الرصيد"
+            },
+            "settings": {
+                "economy": "الاقتصاد",
+                "wholesale_multiplier": "مضاعف سعر الجملة",
+                "wholesale_hint": "يدفع المالكون %s%% من سعر المورّد الأساسي.",
+                "sales_tax": "ضريبة المبيعات (%)",
+                "max_machines": "الآلات لكل لاعب",
+                "max_machines_description": "عدد الآلات التي يمكن للاعب الواحد امتلاكها.",
+                "stock_orders": "طلبات المخزون",
+                "delivery_minutes": "الدقائق لكل مرحلة من الطلب",
+                "delivery_hint": "يستغرق الطلب نحو %s دقيقة من التحضير حتى التسليم.",
+                "defaults": "الإعدادات الافتراضية للآلات الجديدة",
+                "default_capacity": "السعة لكل منتج",
+                "default_price": "سعر البيع الافتراضي",
+                "default_price_description": "يُستخدم عند إنشاء آلة.",
+                "allow_purchase": "يمكن للاعبين شراء الآلات",
+                "allow_purchase_description": "يمكن شراء الآلات المعروضة للبيع داخل اللعبة.",
+                "logging": "السجلات",
+                "webhook": "رابط webhook الخاص بـ Discord",
+                "log_purchases": "تسجيل المشتريات",
+                "log_purchases_description": "إرسال كل عملية شراء آلة إلى الـ webhook.",
+                "log_admin_actions": "تسجيل إجراءات المشرفين",
+                "log_admin_actions_description": "إنشاء الآلات وتعديلها وحذفها.",
+                "share": "مشاركة الآلات",
+                "export": "تصدير الآلات",
+                "export_description": "الأسماء والطرازات والمواقع والأسعار والمنتجات بصيغة JSON. استوردها من صفحة الآلات على خادم آخر.",
+                "export_button": "تصدير",
+                "error_webhook_invalid": "يجب أن يكون الـ webhook رابط webhook من Discord.",
+                "error_webhook_missing": "أضف رابط webhook أو أوقف التسجيل."
+            },
+            "export": {
+                "title": "تصدير الآلات",
+                "summary_one": "%s آلة. تُضمَّن الأسماء والطرازات والمواقع والأسعار والمنتجات فقط؛ يبقى المالكون والأرصدة والمخزون على هذا الخادم.",
+                "summary_other": "%s آلات. تُضمَّن الأسماء والطرازات والمواقع والأسعار والمنتجات فقط؛ يبقى المالكون والأرصدة والمخزون على هذا الخادم.",
+                "output_label": "الآلات المُصدّرة",
+                "copy_failed": "تعذّر النسخ تلقائيًا. انقر على النص واضغط Ctrl+C.",
+                "download": "تنزيل",
+                "copied": "تم النسخ",
+                "copy": "نسخ JSON"
+            },
+            "import": {
+                "title": "استيراد الآلات",
+                "description": "الصق ملف تصدير آلات من الإعدادات على خادم آخر. تصل الآلات معروضة للبيع بدون مالك أو مال أو مخزون.",
+                "load_file": "تحميل ملف",
+                "ready": "%s جاهزة للاستيراد",
+                "skipped": "%s تم تخطيها",
+                "importing": "جارٍ الاستيراد...",
+                "submit_one": "استيراد %s آلة",
+                "submit_other": "استيراد %s آلات",
+                "error": "تعذّر استيراد الآلات.",
+                "error_invalid_json": "هذا ليس JSON صالحًا.",
+                "error_empty": "لم يتم العثور على آلات في هذا الـ JSON.",
+                "unnamed": "الآلة %s",
+                "skip_name": "الاسم مفقود.",
+                "skip_location": "الموقع مفقود.",
+                "skip_occupied": "توجد آلة في هذا المكان بالفعل.",
+                "skip_duplicate": "مُدرجة مرتين في هذا الـ JSON.",
+                "skip_products": "لا يوجد أي من منتجاتها على هذا الخادم."
+            },
+            "form": {
+                "details": "التفاصيل",
+                "name": "اسم الآلة",
+                "name_placeholder": "مثلًا Legion Square #2",
+                "prop_model": "طراز المجسّم",
+                "machine_type": "نوع الآلة",
+                "location": "الموقع",
+                "placing": "جارٍ الوضع...",
+                "set_position": "تحديد موضع الآلة",
+                "area": "اسم المنطقة",
+                "area_placeholder": "مثلًا Legion Square",
+                "no_position": "لم يُحدد موضع بعد",
+                "ownership": "الملكية",
+                "owned_warning": "مملوكة لـ %s. إدخال مالك جديد أو عرضها للبيع سيسحبها منه.",
+                "for_sale": "للبيع",
+                "for_sale_description": "يمكن للاعبين شراء هذه الآلة بدلًا من أن يكون لها مالك.",
+                "transfer_to": "نقل إلى",
+                "owner_id": "معرّف المالك",
+                "transfer_placeholder": "معرّف الخادم أو citizen ID للمالك الجديد",
+                "owner_placeholder": "اتركه فارغًا لعرضها للبيع",
+                "price": "سعر البيع (%s)",
+                "products": "المنتجات",
+                "selected": "تم تحديد %s",
+                "select_all": "تحديد الكل",
+                "clear": "مسح",
+                "sell_product": "بيع %s"
+            },
+            "placement": {
+                "title": "موضع الآلة",
+                "heading": "الاتجاه",
+                "move": "تحريك",
+                "rotate": "تدوير",
+                "snap": "تثبيت على الأرض",
+                "key_left_alt": "Alt الأيسر",
+                "walk": "المشي والنظر حولك",
+                "cursor": "العودة إلى المؤشر",
+                "confirm": "تأكيد"
+            },
+            "map": {
+                "zoom_in": "تكبير",
+                "zoom_out": "تصغير"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "إلغاء",
+                "save": "حفظ",
+                "saving": "جارٍ الحفظ...",
+                "working": "جارٍ التنفيذ...",
+                "player_id": "معرّف اللاعب",
+                "error": "حدث خطأ ما."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "لوحة التحكم",
+                    "description": "نظرة عامة على إيرادات ومبيعات هذه الآلة."
+                },
+                "products": {
+                    "label": "المنتجات",
+                    "description": "مستويات المخزون والأسعار."
+                },
+                "restock": {
+                    "label": "إعادة التخزين",
+                    "description": "اطلب مخزونًا جديدًا من المورّد."
+                },
+                "transactions": {
+                    "label": "المعاملات",
+                    "description": "كل عمليات الشراء التي تمت في هذه الآلة."
+                },
+                "cash": {
+                    "label": "النقد",
+                    "description": "اسحب المال من الآلة وأودعه فيها."
+                },
+                "staff": {
+                    "label": "الموظفون",
+                    "description": "وظّف موظفين واختر ما يمكنهم فعله."
+                },
+                "settings": {
+                    "label": "الإعدادات",
+                    "description": "اسم الآلة وتوفرها."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "عرض الإحصائيات",
+                    "description": "رؤية الإيرادات والمبيعات وأفضل المنتجات."
+                },
+                "products_prices": {
+                    "label": "تغيير الأسعار",
+                    "description": "تحديد السعر الذي يدفعه الزبائن."
+                },
+                "restock_order": {
+                    "label": "طلب المخزون",
+                    "description": "شراء المخزون من المورّد برصيد الآلة."
+                },
+                "transactions_view": {
+                    "label": "عرض المبيعات",
+                    "description": "رؤية كل عمليات الشراء التي تمت في الآلة."
+                },
+                "cash_deposit": {
+                    "label": "إيداع المال",
+                    "description": "وضع نقودهم الخاصة في الآلة."
+                },
+                "cash_withdraw": {
+                    "label": "سحب المال",
+                    "description": "أخذ المال من رصيد الآلة."
+                },
+                "cash_history": {
+                    "label": "عرض السجل",
+                    "description": "رؤية الرصيد وحركات النقد السابقة."
+                },
+                "staff_view": {
+                    "label": "عرض الموظفين",
+                    "description": "رؤية من يعمل هنا وأدوارهم."
+                },
+                "staff_manage": {
+                    "label": "إدارة الموظفين",
+                    "description": "التوظيف والفصل وتغيير الصلاحيات التي يملكونها هم أنفسهم."
+                },
+                "settings_general": {
+                    "label": "عام",
+                    "description": "إعادة تسمية الآلة وفتحها أو إغلاقها."
+                },
+                "settings_hours": {
+                    "label": "ساعات العمل",
+                    "description": "تغيير جدول الفتح والإغلاق."
+                },
+                "settings_stock": {
+                    "label": "المخزون والتنبيهات",
+                    "description": "حد المخزون المنخفض وإعادة التخزين التلقائي والإشعارات."
+                },
+                "settings_payments": {
+                    "label": "المدفوعات",
+                    "description": "اختيار طرق الدفع المقبولة."
+                }
+            },
+            "roles": {
+                "owner": "المالك",
+                "employee": "موظف",
+                "supervisor": "مشرف",
+                "manager": "مدير",
+                "custom": "مخصص"
+            },
+            "header": {
+                "open": "مفتوحة",
+                "closed": "مغلقة",
+                "balance": "الرصيد",
+                "no_access_title": "لا توجد صلاحية",
+                "no_access_description": "اطلب من المالك أن يمنحك صلاحيات لهذه الآلة."
+            },
+            "no_products": {
+                "title": "لا توجد منتجات بعد",
+                "description": "لا تحتوي هذه الآلة على شيء للبيع. عندما يضيف أحد المشرفين منتجات إليها، ستظهر المبيعات والمخزون والطلبات هنا."
+            },
+            "dashboard": {
+                "today_revenue": "إيرادات اليوم",
+                "vs_yesterday": "مقارنة بالأمس",
+                "weekly_revenue": "الإيرادات الأسبوعية",
+                "last_7_days": "آخر 7 أيام",
+                "items_sold": "العناصر المباعة",
+                "low_stock": "مخزون منخفض",
+                "products_suffix": "منتجات",
+                "low_stock_hint": "متبقٍ %s أو أقل",
+                "revenue": "الإيرادات",
+                "no_sales_week": "لا مبيعات في آخر 7 أيام",
+                "top_products": "أفضل المنتجات",
+                "units_sold": "الوحدات المباعة",
+                "units_sold_tooltip": "وحدات مباعة",
+                "nothing_sold": "لم يُبع شيء بعد",
+                "recent_sales": "أحدث المبيعات",
+                "view_all": "عرض الكل",
+                "no_sales": "لا مبيعات بعد.",
+                "sales_count": "%s مبيعات"
+            },
+            "products": {
+                "empty": "لا توجد منتجات",
+                "product": "المنتج",
+                "category": "الفئة",
+                "sold": "المُباع",
+                "stock": "المخزون",
+                "price": "السعر (%s)",
+                "low_stock": "مخزون منخفض"
+            },
+            "restock": {
+                "catalog": "كتالوج المورّد",
+                "low_stock_only": "المخزون المنخفض فقط",
+                "all_stocked_title": "كل شيء متوفر",
+                "all_stocked_description": "لا توجد منتجات على وشك النفاد حاليًا.",
+                "incoming": "+%s في الطريق",
+                "per_unit": "%s للوحدة",
+                "decrease": "تقليل الكمية",
+                "increase": "زيادة الكمية",
+                "fill": "ملء",
+                "summary": "ملخص الطلب",
+                "clear": "مسح",
+                "summary_empty": "اختر الكميات من الكتالوج لإنشاء طلب.",
+                "machine_balance": "رصيد الآلة",
+                "order_total": "إجمالي الطلب",
+                "balance_after": "الرصيد بعد الطلب",
+                "ordering": "جارٍ الطلب...",
+                "place_order": "تقديم الطلب",
+                "orders": "الطلبات",
+                "in_progress": "%s قيد التنفيذ",
+                "insufficient": "لا يوجد مال كافٍ في الآلة لهذا الطلب.",
+                "failed": "فشل الطلب."
+            },
+            "orders": {
+                "preparing": "قيد التحضير",
+                "prepared": "جاهز",
+                "shipping": "في الطريق",
+                "completed": "مكتمل",
+                "cancelled": "ملغى",
+                "status_aria": "حالة الطلب: %s",
+                "pick_up": "استلام"
+            },
+            "transactions": {
+                "empty": "لا مبيعات بعد",
+                "time": "الوقت",
+                "buyer": "المشتري",
+                "product": "المنتج",
+                "quantity": "الكمية",
+                "total": "الإجمالي"
+            },
+            "cash": {
+                "balance": "الرصيد",
+                "balance_hint": "المتاح في الآلة",
+                "deposited": "المُودَع",
+                "withdrawn": "المسحوب",
+                "all_time": "منذ البداية",
+                "amount": "المبلغ (%s)",
+                "all": "الكل",
+                "withdraw_hint": "يمكنك سحب ما يصل إلى %s.",
+                "deposit_hint": "يُؤخذ المال من النقد الذي تحمله. لديك %s.",
+                "processing": "جارٍ المعالجة...",
+                "withdraw": "سحب",
+                "deposit": "إيداع",
+                "stock_order": "طلب مخزون",
+                "history": "سجل النقد",
+                "movements": "%s حركات",
+                "no_movements": "لا توجد حركات نقدية بعد",
+                "not_enough_balance": "لا يوجد مال كافٍ في الآلة.",
+                "not_enough_cash": "ليس لديك هذا القدر من النقد.",
+                "failed": "فشلت المعاملة.",
+                "by_you": "أنت"
+            },
+            "staff": {
+                "search": "بحث...",
+                "hire": "توظيف",
+                "empty": "لا يوجد موظفون بعد",
+                "online": "متصل",
+                "offline": "غير متصل",
+                "you": "أنت",
+                "now": "الآن",
+                "never": "أبدًا",
+                "edit_permissions": "تعديل الصلاحيات",
+                "fire": "فصل",
+                "hire_title": "توظيف موظف",
+                "edit_title": "تعديل الصلاحيات",
+                "server_id": "معرّف الخادم",
+                "edit_description": "ما يمكن لـ %s فعله في %s.",
+                "role": "الدور",
+                "role_hint": "اختر مخصص لتحديد الصلاحيات واحدة تلو الأخرى.",
+                "all": "الكل",
+                "none": "لا شيء",
+                "hire_hint": "يجب أن يكون اللاعب قريبًا. يمكن للموظفين فتح هذه اللوحة لكن لا يمكنهم أبدًا بيع الآلة أو نقلها.",
+                "fire_title": "فصل الموظف",
+                "fire_description": "يفقد %s الوصول إلى %s فورًا.",
+                "employee": "الموظف",
+                "hired": "تاريخ التوظيف",
+                "last_online": "آخر اتصال",
+                "player_fallback": "اللاعب %s"
+            },
+            "settings": {
+                "general": "عام",
+                "name": "اسم الآلة",
+                "description": "الوصف",
+                "description_placeholder": "يظهر للزبائن",
+                "open": "مفتوحة للزبائن",
+                "open_description": "لا يمكن للاعبين الآخرين استخدام الآلات المغلقة.",
+                "hours": "ساعات العمل",
+                "schedule": "استخدام جدول",
+                "schedule_description": "الفتح والإغلاق تلقائيًا حسب وقت اللعبة.",
+                "opens_at": "تفتح في",
+                "closes_at": "تغلق في",
+                "schedule_on": "مفتوحة من %s إلى %s.",
+                "schedule_off": "مفتاح الفتح وحده يتحكم في التوفر.",
+                "stock": "المخزون والتنبيهات",
+                "low_stock_threshold": "حد المخزون المنخفض",
+                "auto_restock": "إعادة التخزين التلقائي",
+                "auto_restock_description": "الطلب حتى السعة الكاملة عندما يصل منتج إلى الحد.",
+                "low_stock_alerts": "تنبيهات المخزون المنخفض",
+                "low_stock_alerts_description": "تلقَّ إشعارًا عندما ينخفض المخزون.",
+                "sale_notifications": "إشعارات المبيعات",
+                "sale_notifications_description": "تلقَّ إشعارًا عند كل عملية شراء.",
+                "payments": "المدفوعات",
+                "cash": "النقد",
+                "cash_description": "يدفع الزبائن نقدًا مما يحملونه.",
+                "accept_cash": "قبول النقد",
+                "bank": "البطاقة البنكية",
+                "bank_description": "يدفع الزبائن من حسابهم البنكي.",
+                "accept_bank": "قبول البطاقة البنكية",
+                "danger_zone": "منطقة الخطر",
+                "transfer_title": "نقل الملكية",
+                "transfer_description": "أعطِ هذه الآلة للاعب آخر. ستفقد كل صلاحياتك.",
+                "transfer": "نقل",
+                "sell": "بيع الآلة",
+                "sell_description": "أعد بيع الآلة. يضيع المخزون والطلبات قيد التنفيذ.",
+                "sell_confirm": "سيؤدي هذا إلى بيع %s نهائيًا. لا يمكن التراجع عن ذلك.",
+                "transfer_prompt": "أدخل معرّف الخادم للاعب الذي سيمتلك هذه الآلة.",
+                "name_empty": "لا يمكن ترك اسم الآلة فارغًا.",
+                "payment_required": "اقبل طريقة دفع واحدة على الأقل.",
+                "same_times": "لا يمكن أن يتطابق وقتا الفتح والإغلاق."
+            }
+        }
+    }
+}

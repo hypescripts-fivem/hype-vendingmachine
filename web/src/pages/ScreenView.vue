@@ -3,15 +3,15 @@
     <main class="flex h-screen w-screen flex-col overflow-hidden bg-bg-base pb-[20px]">
         <template v-if="page === 'products'">
             <header class="px-6 pb-4 pt-6 leading-tight">
-                <h1 class="text-3xl font-semibold text-text-primary">{{ shop.name }}</h1>
-                <p class="text-xl text-text-muted">Pick a product and add it to the cart</p>
+                <h1 class="text-3xl font-semibold text-text-primary">{{ shop.name || t("shop.default_name") }}</h1>
+                <p class="text-xl text-text-muted">{{ t("screen.subtitle") }}</p>
             </header>
 
             <section class="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
                 <EmptyState
                     v-if="!shop.products.length"
-                    title="No products"
-                    description="This machine has nothing for sale yet."
+                    :title="t('screen.empty.title')"
+                    :description="t('screen.empty.description')"
                     :icon="PackageSearch"
                     class="h-full"
                 />
@@ -46,6 +46,7 @@ import ScreenBar from "@/components/screen/ScreenBar.vue";
 import ScreenCart from "@/components/screen/ScreenCart.vue";
 import ScreenItem from "@/components/screen/ScreenItem.vue";
 import { useShopStore } from "@/stores";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 

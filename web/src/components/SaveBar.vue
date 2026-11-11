@@ -14,12 +14,12 @@
                 <p class="flex items-center gap-2 text-sm" :class="error ? 'text-danger' : 'text-text-primary'">
                     <CircleAlert v-if="error" class="size-4 shrink-0" />
                     <span v-else class="size-2 shrink-0 rounded-full bg-warning" />
-                    {{ error ?? "You have unsaved changes." }}
+                    {{ error ?? t("common.save_bar.unsaved") }}
                 </p>
                 <div class="flex shrink-0 items-center gap-2">
-                    <Button variant="outline" size="sm" :disabled="saving" @click="emit('reset')">Reset</Button>
+                    <Button variant="outline" size="sm" :disabled="saving" @click="emit('reset')">{{ t("common.reset") }}</Button>
                     <Button size="sm" :disabled="!!error || saving" @click="emit('save')">
-                        {{ saving ? "Saving..." : saveLabel ?? "Save changes" }}
+                        {{ saving ? t("common.save_bar.saving") : saveLabel ?? t("common.save_bar.save_changes") }}
                     </Button>
                 </div>
             </div>
@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { CircleAlert } from "@lucide/vue";
 import { Button } from "@vezironi/veyra-ui";
+import { t } from "@/utils/locale";
 
 defineProps<{
     dirty: boolean;

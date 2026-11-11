@@ -12,11 +12,11 @@
                 :class="statusMeta[order.status].class"
             >
                 <component :is="statusMeta[order.status].icon" class="size-3" />
-                {{ statusMeta[order.status].label }}
+                {{ t(statusMeta[order.status].label) }}
             </span>
         </div>
 
-        <ol v-if="currentIndex !== -1 && order.status !== 'completed'" class="flex items-start" :aria-label="`Order status: ${statusMeta[order.status].label}`">
+        <ol v-if="currentIndex !== -1 && order.status !== 'completed'" class="flex items-start" :aria-label="t('owner.orders.status_aria', t(statusMeta[order.status].label))">
             <template v-for="(status, index) in orderStatuses" :key="status">
                 <li
                     v-if="index > 0"
@@ -32,7 +32,7 @@
                         <component :is="statusMeta[status].icon" class="size-3" />
                     </span>
                     <span class="text-center text-[10px] leading-tight" :class="index <= currentIndex ? 'text-text-primary' : 'text-text-faint'">
-                        {{ statusMeta[status].label }}
+                        {{ t(statusMeta[status].label) }}
                     </span>
                 </li>
             </template>
@@ -45,7 +45,7 @@
             </p>
             <Button size="sm" class="w-full" :disabled="picking" @click="pickup">
                 <Truck class="size-4" />
-                Pick up
+                {{ t("owner.orders.pick_up") }}
             </Button>
         </div>
     </li>
@@ -57,17 +57,18 @@ import { CircleAlert, CircleCheck, CircleX, Clock, PackageCheck, Truck } from "@
 import { Button } from "@vezironi/veyra-ui";
 import { orderStatuses, useOwnerStore, type StockOrder } from "@/stores/owner";
 import { formatDateTime, formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const props = defineProps<{ order: StockOrder }>();
 
 const owner = useOwnerStore();
 
 const statusMeta = {
-    preparing: { label: "Preparing", icon: Clock, class: "bg-warning/10 text-warning" },
-    prepared: { label: "Prepared", icon: PackageCheck, class: "bg-info/10 text-info" },
-    shipping: { label: "On the way", icon: Truck, class: "bg-info/10 text-info" },
-    completed: { label: "Completed", icon: CircleCheck, class: "bg-success/10 text-success" },
-    cancelled: { label: "Cancelled", icon: CircleX, class: "bg-danger/10 text-danger" },
+    preparing: { label: "owner.orders.preparing", icon: Clock, class: "bg-warning/10 text-warning" },
+    prepared: { label: "owner.orders.prepared", icon: PackageCheck, class: "bg-info/10 text-info" },
+    shipping: { label: "owner.orders.shipping", icon: Truck, class: "bg-info/10 text-info" },
+    completed: { label: "owner.orders.completed", icon: CircleCheck, class: "bg-success/10 text-success" },
+    cancelled: { label: "owner.orders.cancelled", icon: CircleX, class: "bg-danger/10 text-danger" },
 };
 
 const currentIndex = computed(() => orderStatuses.indexOf(props.order.status));

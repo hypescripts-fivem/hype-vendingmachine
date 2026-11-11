@@ -1,0 +1,703 @@
+{
+    "notify_title": "वेंडिंग मशीन",
+
+    "target_buy": "मशीन खरीदें",
+    "target_open": "वेंडिंग मशीन इस्तेमाल करें",
+    "target_manage": "मशीन मैनेज करें",
+    "textui_buy": "[%s] मशीन खरीदें ($%s)",
+    "textui_open": "[%s] वेंडिंग मशीन इस्तेमाल करें",
+    "textui_manage": "[%s] मशीन मैनेज करें",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "ट्रॉली पकड़ें",
+    "target_cargo_drop": "ट्रॉली छोड़ें",
+    "target_cargo_take": "बॉक्स उठाएं",
+    "target_cargo_load": "बॉक्स लोड करें",
+    "target_cargo_unload": "बॉक्स निकालें",
+    "target_cargo_deliver": "बॉक्स मशीन में रखें",
+    "notify_cargo_started": "आपका ऑर्डर तैयार है। इसे चिह्नित जगह से उठाएं।",
+    "notify_cargo_cancelled": "आप पिकअप क्षेत्र से बाहर चले गए। ऑर्डर रद्द कर दिया गया।",
+    "notify_cargo_delivered": "सभी बॉक्स %s में रख दिए गए हैं।",
+    "error_order_not_ready": "यह ऑर्डर अभी नहीं उठाया जा सकता।",
+    "error_cargo_busy": "आप पहले से एक ऑर्डर उठा रहे हैं।",
+
+    "success_machine_bought": "आपने %s को $%s में खरीदा।",
+    "notify_sale": "%s ने एक बिक्री की: $%s।",
+    "notify_low_stock": "%s, %s में कम हो रहा है (%s बचे)।",
+    "notify_hired": "अब आप %s में काम करते हैं।",
+    "notify_staff_removed": "अब आप %s में काम नहीं करते।",
+    "notify_machine_transferred": "आपने %s को %s को दे दिया।",
+    "notify_machine_received": "%s ने आपको %s दिया।",
+    "notify_machine_sold": "आपने %s को $%s में बेचा।",
+    "auto_restock": "ऑटो रीस्टॉक",
+
+    "log_title_purchase": "मशीन खरीद",
+    "log_title_admin": "एडमिन कार्रवाई",
+    "log_machine_bought": "%s ने **%s** (#%s) को $%s में खरीदा।",
+    "log_machine_created": "%s ने **%s** (#%s) बनाई।",
+    "log_machine_updated": "%s ने **%s** (#%s) को एडिट किया।",
+    "log_machine_deleted": "%s ने **%s** (#%s) को हटाया।",
+    "log_machines_imported": "%s ने %s मशीनें इम्पोर्ट कीं।",
+    "log_machine_status": "%s ने **%s** (#%s) को %s पर सेट किया।",
+    "log_balance_reset": "%s ने **%s** (#%s) का बैलेंस रीसेट किया, $%s।",
+    "log_settings_saved": "%s ने एडमिन सेटिंग्स बदलीं।",
+
+    "error_no_permission": "आपको यह करने की अनुमति नहीं है।",
+    "error_invalid_machine": "अमान्य मशीन डेटा।",
+    "error_invalid_name": "मशीन का नाम 1 से %s अक्षरों का होना चाहिए।",
+    "error_invalid_model": "अज्ञात मशीन मॉडल।",
+    "error_invalid_location": "मशीन के लिए एक लोकेशन सेट करें।",
+    "error_invalid_price": "बिक्री मूल्य 0 और %s के बीच एक पूर्ण संख्या होनी चाहिए।",
+    "error_invalid_capacity": "क्षमता 1 और %s के बीच एक पूर्ण संख्या होनी चाहिए।",
+    "error_invalid_products": "कम से कम एक मान्य प्रोडक्ट चुनें।",
+    "error_owner_not_found": "उस सर्वर ID या citizen ID वाला कोई ऑनलाइन खिलाड़ी नहीं मिला।",
+    "error_machine_not_found": "यह मशीन अब मौजूद नहीं है।",
+    "error_machine_too_close": "इस लोकेशन पर पहले से एक मशीन है।",
+    "error_database": "मशीन सेव नहीं हो सकी। सर्वर कंसोल जांचें।",
+    "error_not_for_sale": "यह मशीन बिक्री के लिए नहीं है।",
+    "error_purchase_disabled": "अभी मशीनें नहीं खरीदी जा सकतीं।",
+    "error_max_machines": "आप %s से ज़्यादा मशीनों के मालिक नहीं हो सकते।",
+    "error_not_enough_money": "आपके पास पर्याप्त पैसे नहीं हैं।",
+    "error_payment_not_accepted": "यह मशीन वह भुगतान तरीका स्वीकार नहीं करती।",
+    "error_too_far": "आप मशीन से बहुत दूर हैं।",
+    "error_machine_closed": "यह मशीन बंद है।",
+    "error_machine_disabled": "एक एडमिन ने इस मशीन को डिसेबल कर दिया है। इसे खोला नहीं जा सकता।",
+    "error_invalid_description": "विवरण अधिकतम %s अक्षरों का हो सकता है।",
+    "error_invalid_schedule": "खुलने और बंद होने का समय अलग-अलग और HH:MM फ़ॉर्मेट में होना चाहिए।",
+    "error_invalid_threshold": "कम स्टॉक की सीमा 0 और %s के बीच होनी चाहिए।",
+    "error_invalid_payments": "कम से कम एक भुगतान तरीका स्वीकार करें।",
+    "error_invalid_amount": "$1 और $%s के बीच एक पूर्ण राशि दर्ज करें।",
+    "error_not_enough_balance": "मशीन में इतने पैसे नहीं हैं।",
+    "error_invalid_status": "यहां मशीन को केवल डिसेबल या इनेबल किया जा सकता है।",
+    "error_invalid_settings": "%s के लिए अमान्य मान।",
+    "error_import_empty": "इम्पोर्ट करने के लिए कोई मशीन नहीं है।",
+    "error_import_too_many": "आप एक बार में अधिकतम %s मशीनें इम्पोर्ट कर सकते हैं।",
+    "error_import_entry": "मशीन #%s: %s",
+    "error_import_duplicate": "एक ही जगह पर दो बार सूचीबद्ध है।",
+    "error_invalid_items": "अमान्य आइटम सूची।",
+    "error_too_many_items": "प्रति ऑर्डर एक आइटम के अधिकतम %s।",
+    "error_over_capacity": "%s मशीन की %s की क्षमता से ज़्यादा हो जाएगा।",
+    "error_out_of_stock": "स्टॉक में पर्याप्त %s नहीं बचा है।",
+    "error_cannot_carry": "आप इतना %s नहीं उठा सकते।",
+    "error_player_not_found": "उस ID वाला कोई खिलाड़ी मशीन के पास नहीं है।",
+    "error_already_staff": "वह खिलाड़ी पहले से यहां काम करता है।",
+    "error_invalid_permissions": "कम से कम एक ऐसी अनुमति चुनें जो आपके पास खुद हो।",
+    "error_staff_not_found": "वह कर्मचारी अब यहां काम नहीं करता।",
+    "error_transfer_self": "यह मशीन पहले से आपकी है।",
+    "error_target_max_machines": "वह खिलाड़ी %s से ज़्यादा मशीनों का मालिक नहीं हो सकता।",
+    "error_machine_changed": "इस बीच मशीन बदल गई, फिर से कोशिश करें।",
+
+    "ui": {
+        "common": {
+            "cancel": "रद्द करें",
+            "close": "बंद करें",
+            "clear": "साफ़ करें",
+            "back": "वापस",
+            "done": "हो गया",
+            "reset": "रीसेट",
+            "total": "कुल",
+            "decrease_quantity": "मात्रा घटाएं",
+            "increase_quantity": "मात्रा बढ़ाएं",
+            "save_bar": {
+                "unsaved": "आपके कुछ बदलाव सेव नहीं हुए हैं।",
+                "saving": "सेव हो रहा है...",
+                "save_changes": "बदलाव सेव करें"
+            },
+            "time_picker": {
+                "title": "समय चुनें",
+                "hour": "घंटा",
+                "minute": "मिनट"
+            },
+            "errors": {
+                "no_response": "सर्वर से कोई जवाब नहीं मिला।"
+            }
+        },
+        "shop": {
+            "default_name": "वेंडिंग मशीन",
+            "navbar": {
+                "products": "%s प्रोडक्ट",
+                "all": "सभी",
+                "search": "प्रोडक्ट खोजें..."
+            },
+            "empty": {
+                "title": "कोई प्रोडक्ट नहीं मिला",
+                "description": "कोई दूसरी कैटेगरी या खोज शब्द आज़माएं।"
+            },
+            "item": {
+                "out_of_stock": "स्टॉक खत्म",
+                "in_stock": "%s स्टॉक में",
+                "add": "जोड़ें",
+                "remove": "हटाएं"
+            },
+            "cart": {
+                "title": "कार्ट",
+                "empty_title": "आपका कार्ट खाली है",
+                "empty_description": "प्रोडक्ट जोड़ें, वे यहां दिखेंगे।",
+                "each": "%s प्रति नग",
+                "remove_item": "आइटम हटाएं",
+                "checkout": "चेकआउट"
+            },
+            "checkout": {
+                "title": "चेकआउट",
+                "payment_method": "भुगतान तरीका",
+                "cash": "कैश",
+                "bank": "बैंक",
+                "available": "उपलब्ध",
+                "not_accepted": "यहां स्वीकार नहीं",
+                "not_enough_money": "पर्याप्त पैसे नहीं",
+                "processing": "प्रोसेस हो रहा है...",
+                "pay": "%s भुगतान करें"
+            }
+        },
+        "screen": {
+            "subtitle": "प्रोडक्ट चुनें और कार्ट में जोड़ें",
+            "remove_from_cart": "कार्ट से हटाएं",
+            "empty": {
+                "title": "कोई प्रोडक्ट नहीं",
+                "description": "इस मशीन में अभी बिक्री के लिए कुछ नहीं है।"
+            },
+            "bar": {
+                "items_one": "%s आइटम",
+                "items_other": "%s आइटम",
+                "cart": "कार्ट",
+                "quick_order": "क्विक ऑर्डर"
+            },
+            "cart": {
+                "title": "कार्ट",
+                "summary": "%s प्रोडक्ट · %s आइटम",
+                "each": "%s प्रति नग",
+                "confirm": "कार्ट कन्फ़र्म करें"
+            },
+            "item": {
+                "add_to_cart": "कार्ट में जोड़ें",
+                "out_of_stock": "स्टॉक खत्म"
+            }
+        },
+        "idle": {
+            "use_to_order": "ऑर्डर करने के लिए इस्तेमाल करें"
+        },
+        "purchase": {
+            "title": "मशीन खरीदें",
+            "unknown_area": "अज्ञात क्षेत्र",
+            "type": "प्रकार",
+            "capacity": "क्षमता",
+            "capacity_value": "%s प्रति प्रोडक्ट",
+            "sells_one": "%s प्रोडक्ट बेचती है",
+            "sells_other": "%s प्रोडक्ट बेचती है",
+            "price": "कीमत",
+            "cash_balance": "कैश बैलेंस",
+            "bank_balance": "बैंक बैलेंस",
+            "not_enough_money": "आपके पास पर्याप्त पैसे नहीं हैं।",
+            "buying": "खरीदा जा रहा है...",
+            "buy": "मशीन खरीदें",
+            "placement": {
+                "start_failed": "प्लेसमेंट शुरू नहीं हो सका।"
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "रद्द करें",
+                "import": "इम्पोर्ट",
+                "new_machine": "नई मशीन",
+                "for_sale": "बिक्री के लिए",
+                "no_area": "कोई क्षेत्र नहीं",
+                "teleport": "टेलीपोर्ट",
+                "player_fallback": "खिलाड़ी %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "ओवरव्यू",
+                    "description": "पूरे सर्वर के वेंडिंग आंकड़े।"
+                },
+                "machines": {
+                    "label": "मशीनें",
+                    "description": "सर्वर की हर वेंडिंग मशीन।"
+                },
+                "settings": {
+                    "label": "सेटिंग्स",
+                    "description": "सभी वेंडिंग मशीनों के लिए ग्लोबल नियम।"
+                }
+            },
+            "header": {
+                "machine_settings": "मशीन सेटिंग्स",
+                "editing": "%s एडिट हो रही है",
+                "machines": "मशीनें",
+                "open_count": "%s खुली",
+                "badge": "एडमिन"
+            },
+            "status": {
+                "open": "खुली",
+                "closed": "बंद",
+                "for_sale": "बिक्री के लिए",
+                "disabled": "डिसेबल"
+            },
+            "models": {
+                "soda": "सोडा मशीन",
+                "snack": "स्नैक मशीन",
+                "coffee": "कॉफ़ी मशीन",
+                "water": "पानी मशीन",
+                "custom": "कस्टम वेंडिंग मशीन",
+                "glass": "ग्लास मशीन",
+                "glass_ecola": "ग्लास मशीन (eCola)",
+                "glass_sprunk": "ग्लास मशीन (Sprunk)",
+                "glass_raine": "ग्लास मशीन (Raine)",
+                "glass_junk": "ग्लास मशीन (Junk)",
+                "glass_beanmachine": "ग्लास मशीन (Bean Machine)",
+                "glass_phatchips": "ग्लास मशीन (Phat Chips)",
+                "glass_egochaser": "ग्लास मशीन (Ego Chaser)",
+                "glass_cluckinbell": "ग्लास मशीन (Cluckin' Bell)",
+                "glass_burgershot": "ग्लास मशीन (Burger Shot)",
+                "glass_247": "ग्लास मशीन (24/7)"
+            },
+            "validation": {
+                "name_empty": "मशीन का नाम खाली नहीं हो सकता।",
+                "location_missing": "मशीन के लिए एक लोकेशन सेट करें।",
+                "products_empty": "कम से कम एक प्रोडक्ट चुनें।"
+            },
+            "create": {
+                "title": "नई मशीन",
+                "creating": "बनाई जा रही है...",
+                "submit": "मशीन बनाएं",
+                "error": "मशीन नहीं बनाई जा सकी।"
+            },
+            "dashboard": {
+                "empty_title": "अभी कोई मशीन नहीं",
+                "empty_description": "अपनी पहली वेंडिंग मशीन बनाएं, या किसी दूसरे सर्वर से एक्सपोर्ट की गई मशीनें इम्पोर्ट करें।",
+                "stat_machines": "मशीनें",
+                "stat_machines_open": "अभी %s खुली हैं",
+                "stat_revenue": "कमाई",
+                "stat_items_sold": "बिके आइटम",
+                "stat_all_machines": "पिछले 7 दिन, सभी मशीनें",
+                "stat_owners": "मालिक",
+                "stat_for_sale_one": "%s मशीन बिक्री के लिए",
+                "stat_for_sale_other": "%s मशीनें बिक्री के लिए",
+                "server_revenue": "सर्वर की कमाई",
+                "last_7_days": "पिछले 7 दिन",
+                "no_sales": "पिछले 7 दिनों में कोई बिक्री नहीं",
+                "top_machines": "टॉप मशीनें",
+                "revenue_currency": "कमाई (%s)",
+                "no_top_machines": "अभी तक किसी मशीन ने बिक्री नहीं की",
+                "needs_attention": "ध्यान देने की ज़रूरत",
+                "machine_count": "%s मशीनें",
+                "all_fine": "सभी मशीनें ठीक चल रही हैं।",
+                "open": "खोलें",
+                "newest_machines": "नई मशीनें",
+                "view_all": "सभी देखें",
+                "reason_disabled": "एक एडमिन ने डिसेबल किया",
+                "reason_low_stock": "स्टॉक %s%% पर",
+                "series_revenue": "कमाई",
+                "tooltip_sales": "%s बिक्री"
+            },
+            "detail": {
+                "back": "मशीनों पर वापस",
+                "machines": "मशीनें",
+                "created": "%s को बनाई गई",
+                "enable": "इनेबल करें",
+                "disable": "डिसेबल करें",
+                "stat_balance": "बैलेंस",
+                "stat_balance_hint": "मशीन में मौजूद पैसे",
+                "stat_revenue": "कमाई",
+                "stat_items_sold": "बिके आइटम",
+                "last_7_days": "पिछले 7 दिन",
+                "stat_stock": "स्टॉक स्तर",
+                "stat_stock_hint": "सभी प्रोडक्ट का औसत",
+                "danger_zone": "डेंजर ज़ोन",
+                "reset_balance": "बैलेंस रीसेट करें",
+                "reset_balance_description": "मशीन में अभी मौजूद %s हटाएं।",
+                "reset": "रीसेट",
+                "delete_machine": "मशीन हटाएं",
+                "delete_machine_description": "प्रॉप, उसका स्टॉक, ऑर्डर और हिस्ट्री हमेशा के लिए हटा देता है।",
+                "delete": "हटाएं",
+                "confirm_delete": "यह %s को हमेशा के लिए हटा देगा। इसे वापस नहीं किया जा सकता।",
+                "confirm_reset": "यह %s को %s से हटा देगा।",
+                "working": "काम हो रहा है...",
+                "owner_fallback": "एक खिलाड़ी",
+                "error": "कुछ गलत हो गया।"
+            },
+            "machines": {
+                "search_placeholder": "नाम, मालिक या क्षेत्र खोजें...",
+                "empty_search": "आपकी खोज से कोई मशीन मेल नहीं खाती",
+                "empty": "अभी कोई मशीन नहीं। एक बनाएं या इम्पोर्ट करें।",
+                "show_on_map": "मैप पर दिखाएं",
+                "manage": "मैनेज करें",
+                "map": "मैप",
+                "map_hint": "मशीन मैनेज करने के लिए किसी ब्लिप पर क्लिक करें",
+                "column_machine": "मशीन",
+                "column_owner": "मालिक",
+                "column_status": "स्थिति",
+                "column_balance": "बैलेंस"
+            },
+            "settings": {
+                "economy": "इकॉनमी",
+                "wholesale_multiplier": "थोक मूल्य गुणक",
+                "wholesale_hint": "मालिक सप्लायर के मूल मूल्य का %s%% चुकाते हैं।",
+                "sales_tax": "बिक्री कर (%)",
+                "max_machines": "प्रति खिलाड़ी मशीनें",
+                "max_machines_description": "एक खिलाड़ी कितनी मशीनों का मालिक हो सकता है।",
+                "stock_orders": "स्टॉक ऑर्डर",
+                "delivery_minutes": "प्रति ऑर्डर चरण मिनट",
+                "delivery_hint": "एक ऑर्डर को तैयारी से डिलीवरी तक लगभग %s मिनट लगते हैं।",
+                "defaults": "नई मशीन के डिफ़ॉल्ट",
+                "default_capacity": "प्रति प्रोडक्ट क्षमता",
+                "default_price": "डिफ़ॉल्ट बिक्री मूल्य",
+                "default_price_description": "मशीन बनाते समय इस्तेमाल होता है।",
+                "allow_purchase": "खिलाड़ी मशीनें खरीद सकते हैं",
+                "allow_purchase_description": "बिक्री के लिए चिह्नित मशीनें गेम में खरीदी जा सकती हैं।",
+                "logging": "लॉगिंग",
+                "webhook": "Discord webhook URL",
+                "log_purchases": "खरीद लॉग करें",
+                "log_purchases_description": "हर मशीन खरीद को webhook पर भेजें।",
+                "log_admin_actions": "एडमिन कार्रवाई लॉग करें",
+                "log_admin_actions_description": "मशीनें बनाना, एडिट करना और हटाना।",
+                "share": "मशीनें शेयर करें",
+                "export": "मशीनें एक्सपोर्ट करें",
+                "export_description": "नाम, मॉडल, लोकेशन, कीमतें और प्रोडक्ट JSON के रूप में। इसे दूसरे सर्वर पर मशीनें पेज से इम्पोर्ट करें।",
+                "export_button": "एक्सपोर्ट",
+                "error_webhook_invalid": "webhook एक Discord webhook URL होना चाहिए।",
+                "error_webhook_missing": "एक webhook URL जोड़ें या लॉगिंग बंद करें।"
+            },
+            "export": {
+                "title": "मशीनें एक्सपोर्ट करें",
+                "summary_one": "%s मशीन। केवल नाम, मॉडल, लोकेशन, कीमतें और प्रोडक्ट शामिल हैं; मालिक, बैलेंस और स्टॉक इसी सर्वर पर रहते हैं।",
+                "summary_other": "%s मशीनें। केवल नाम, मॉडल, लोकेशन, कीमतें और प्रोडक्ट शामिल हैं; मालिक, बैलेंस और स्टॉक इसी सर्वर पर रहते हैं।",
+                "output_label": "एक्सपोर्ट की गई मशीनें",
+                "copy_failed": "अपने आप कॉपी नहीं हो सका। टेक्स्ट पर क्लिक करें और Ctrl+C दबाएं।",
+                "download": "डाउनलोड",
+                "copied": "कॉपी हो गया",
+                "copy": "JSON कॉपी करें"
+            },
+            "import": {
+                "title": "मशीनें इम्पोर्ट करें",
+                "description": "दूसरे सर्वर की सेटिंग्स से एक्सपोर्ट की गई मशीनें यहां पेस्ट करें। मशीनें बिना मालिक, पैसे या स्टॉक के बिक्री के लिए आती हैं।",
+                "load_file": "फ़ाइल लोड करें",
+                "ready": "%s इम्पोर्ट के लिए तैयार",
+                "skipped": "%s छोड़ी गईं",
+                "importing": "इम्पोर्ट हो रहा है...",
+                "submit_one": "%s मशीन इम्पोर्ट करें",
+                "submit_other": "%s मशीनें इम्पोर्ट करें",
+                "error": "मशीनें इम्पोर्ट नहीं हो सकीं।",
+                "error_invalid_json": "यह मान्य JSON नहीं है।",
+                "error_empty": "इस JSON में कोई मशीन नहीं मिली।",
+                "unnamed": "मशीन %s",
+                "skip_name": "नाम नहीं है।",
+                "skip_location": "लोकेशन नहीं है।",
+                "skip_occupied": "यहां पहले से एक मशीन है।",
+                "skip_duplicate": "इस JSON में दो बार सूचीबद्ध है।",
+                "skip_products": "इसका कोई भी प्रोडक्ट इस सर्वर पर मौजूद नहीं है।"
+            },
+            "form": {
+                "details": "विवरण",
+                "name": "मशीन का नाम",
+                "name_placeholder": "जैसे Legion Square #2",
+                "prop_model": "प्रॉप मॉडल",
+                "machine_type": "मशीन का प्रकार",
+                "location": "लोकेशन",
+                "placing": "रखी जा रही है...",
+                "set_position": "मशीन की पोज़िशन सेट करें",
+                "area": "क्षेत्र लेबल",
+                "area_placeholder": "जैसे Legion Square",
+                "no_position": "अभी कोई पोज़िशन नहीं",
+                "ownership": "मालिकाना हक",
+                "owned_warning": "मालिक: %s। नया मालिक डालने या इसे बिक्री पर रखने से यह उनसे छिन जाएगी।",
+                "for_sale": "बिक्री के लिए",
+                "for_sale_description": "किसी मालिक के बजाय खिलाड़ी इस मशीन को खरीद सकते हैं।",
+                "transfer_to": "किसे ट्रांसफ़र करें",
+                "owner_id": "मालिक ID",
+                "transfer_placeholder": "नए मालिक की सर्वर ID या citizen ID",
+                "owner_placeholder": "बिक्री पर रखने के लिए खाली छोड़ें",
+                "price": "बिक्री मूल्य (%s)",
+                "products": "प्रोडक्ट",
+                "selected": "%s चुने गए",
+                "select_all": "सभी चुनें",
+                "clear": "साफ़ करें",
+                "sell_product": "%s बेचें"
+            },
+            "placement": {
+                "title": "मशीन की पोज़िशन",
+                "heading": "दिशा",
+                "move": "हिलाएं",
+                "rotate": "घुमाएं",
+                "snap": "ज़मीन पर रखें",
+                "key_left_alt": "लेफ़्ट Alt",
+                "walk": "चलें और चारों ओर देखें",
+                "cursor": "कर्सर पर वापस",
+                "confirm": "कन्फ़र्म करें"
+            },
+            "map": {
+                "zoom_in": "ज़ूम इन",
+                "zoom_out": "ज़ूम आउट"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "रद्द करें",
+                "save": "सेव करें",
+                "saving": "सेव हो रहा है...",
+                "working": "काम हो रहा है...",
+                "player_id": "खिलाड़ी ID",
+                "error": "कुछ गलत हो गया।"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "डैशबोर्ड",
+                    "description": "इस मशीन की कमाई और बिक्री का ओवरव्यू।"
+                },
+                "products": {
+                    "label": "प्रोडक्ट",
+                    "description": "स्टॉक स्तर और कीमतें।"
+                },
+                "restock": {
+                    "label": "रीस्टॉक",
+                    "description": "सप्लायर से नया स्टॉक ऑर्डर करें।"
+                },
+                "transactions": {
+                    "label": "लेन-देन",
+                    "description": "इस मशीन पर की गई हर खरीद।"
+                },
+                "cash": {
+                    "label": "कैश",
+                    "description": "मशीन से पैसे निकालें और जमा करें।"
+                },
+                "staff": {
+                    "label": "स्टाफ़",
+                    "description": "कर्मचारी रखें और चुनें कि वे क्या कर सकते हैं।"
+                },
+                "settings": {
+                    "label": "सेटिंग्स",
+                    "description": "मशीन का नाम और उपलब्धता।"
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "आंकड़े देखें",
+                    "description": "कमाई, बिक्री और टॉप प्रोडक्ट देखें।"
+                },
+                "products_prices": {
+                    "label": "कीमतें बदलें",
+                    "description": "ग्राहकों द्वारा चुकाई जाने वाली कीमत सेट करें।"
+                },
+                "restock_order": {
+                    "label": "स्टॉक ऑर्डर करें",
+                    "description": "मशीन के बैलेंस से सप्लायर से स्टॉक खरीदें।"
+                },
+                "transactions_view": {
+                    "label": "बिक्री देखें",
+                    "description": "मशीन पर की गई हर खरीद देखें।"
+                },
+                "cash_deposit": {
+                    "label": "पैसे जमा करें",
+                    "description": "अपना कैश मशीन में डालें।"
+                },
+                "cash_withdraw": {
+                    "label": "पैसे निकालें",
+                    "description": "मशीन के बैलेंस से पैसे निकालें।"
+                },
+                "cash_history": {
+                    "label": "हिस्ट्री देखें",
+                    "description": "बैलेंस और पिछले कैश लेन-देन देखें।"
+                },
+                "staff_view": {
+                    "label": "स्टाफ़ देखें",
+                    "description": "देखें कि यहां कौन काम करता है और उनकी भूमिकाएं।"
+                },
+                "staff_manage": {
+                    "label": "स्टाफ़ मैनेज करें",
+                    "description": "रखें, निकालें और वे अनुमतियां बदलें जो उनके पास खुद हैं।"
+                },
+                "settings_general": {
+                    "label": "सामान्य",
+                    "description": "मशीन का नाम बदलें और उसे खोलें या बंद करें।"
+                },
+                "settings_hours": {
+                    "label": "काम के घंटे",
+                    "description": "खुलने और बंद होने का शेड्यूल बदलें।"
+                },
+                "settings_stock": {
+                    "label": "स्टॉक और अलर्ट",
+                    "description": "कम स्टॉक की सीमा, ऑटो रीस्टॉक और नोटिफ़िकेशन।"
+                },
+                "settings_payments": {
+                    "label": "भुगतान",
+                    "description": "चुनें कि कौन से भुगतान तरीके स्वीकार हों।"
+                }
+            },
+            "roles": {
+                "owner": "मालिक",
+                "employee": "कर्मचारी",
+                "supervisor": "सुपरवाइज़र",
+                "manager": "मैनेजर",
+                "custom": "कस्टम"
+            },
+            "header": {
+                "open": "खुली",
+                "closed": "बंद",
+                "balance": "बैलेंस",
+                "no_access_title": "कोई एक्सेस नहीं",
+                "no_access_description": "मालिक से इस मशीन की अनुमतियां देने के लिए कहें।"
+            },
+            "no_products": {
+                "title": "अभी कोई प्रोडक्ट नहीं",
+                "description": "इस मशीन में बेचने के लिए कुछ नहीं है। जब कोई एडमिन इसमें प्रोडक्ट जोड़ेगा, तो बिक्री, स्टॉक और ऑर्डर यहां दिखेंगे।"
+            },
+            "dashboard": {
+                "today_revenue": "आज की कमाई",
+                "vs_yesterday": "कल की तुलना में",
+                "weekly_revenue": "साप्ताहिक कमाई",
+                "last_7_days": "पिछले 7 दिन",
+                "items_sold": "बिके आइटम",
+                "low_stock": "कम स्टॉक",
+                "products_suffix": "प्रोडक्ट",
+                "low_stock_hint": "%s या उससे कम बचे",
+                "revenue": "कमाई",
+                "no_sales_week": "पिछले 7 दिनों में कोई बिक्री नहीं",
+                "top_products": "टॉप प्रोडक्ट",
+                "units_sold": "बिकी यूनिट",
+                "units_sold_tooltip": "यूनिट बिकीं",
+                "nothing_sold": "अभी तक कुछ नहीं बिका",
+                "recent_sales": "हाल की बिक्री",
+                "view_all": "सभी देखें",
+                "no_sales": "अभी कोई बिक्री नहीं।",
+                "sales_count": "%s बिक्री"
+            },
+            "products": {
+                "empty": "कोई प्रोडक्ट नहीं",
+                "product": "प्रोडक्ट",
+                "category": "कैटेगरी",
+                "sold": "बिके",
+                "stock": "स्टॉक",
+                "price": "कीमत (%s)",
+                "low_stock": "कम स्टॉक"
+            },
+            "restock": {
+                "catalog": "सप्लायर कैटलॉग",
+                "low_stock_only": "केवल कम स्टॉक",
+                "all_stocked_title": "सब कुछ स्टॉक में है",
+                "all_stocked_description": "अभी किसी प्रोडक्ट का स्टॉक कम नहीं है।",
+                "incoming": "+%s आ रहे हैं",
+                "per_unit": "%s प्रति यूनिट",
+                "decrease": "मात्रा घटाएं",
+                "increase": "मात्रा बढ़ाएं",
+                "fill": "भरें",
+                "summary": "ऑर्डर सारांश",
+                "clear": "साफ़ करें",
+                "summary_empty": "ऑर्डर बनाने के लिए कैटलॉग से मात्रा चुनें।",
+                "machine_balance": "मशीन बैलेंस",
+                "order_total": "ऑर्डर कुल",
+                "balance_after": "बाद में बैलेंस",
+                "ordering": "ऑर्डर हो रहा है...",
+                "place_order": "ऑर्डर करें",
+                "orders": "ऑर्डर",
+                "in_progress": "%s प्रगति में",
+                "insufficient": "इस ऑर्डर के लिए मशीन में पर्याप्त पैसे नहीं हैं।",
+                "failed": "ऑर्डर विफल रहा।"
+            },
+            "orders": {
+                "preparing": "तैयार हो रहा है",
+                "prepared": "तैयार",
+                "shipping": "रास्ते में",
+                "completed": "पूरा हुआ",
+                "cancelled": "रद्द",
+                "status_aria": "ऑर्डर स्थिति: %s",
+                "pick_up": "उठाएं"
+            },
+            "transactions": {
+                "empty": "अभी कोई बिक्री नहीं",
+                "time": "समय",
+                "buyer": "खरीदार",
+                "product": "प्रोडक्ट",
+                "quantity": "मात्रा",
+                "total": "कुल"
+            },
+            "cash": {
+                "balance": "बैलेंस",
+                "balance_hint": "मशीन में उपलब्ध",
+                "deposited": "जमा किया",
+                "withdrawn": "निकाला",
+                "all_time": "अब तक",
+                "amount": "राशि (%s)",
+                "all": "सभी",
+                "withdraw_hint": "आप %s तक निकाल सकते हैं।",
+                "deposit_hint": "पैसे आपके हाथ के कैश से लिए जाते हैं। आपके पास %s है।",
+                "processing": "प्रोसेस हो रहा है...",
+                "withdraw": "निकालें",
+                "deposit": "जमा करें",
+                "stock_order": "स्टॉक ऑर्डर",
+                "history": "कैश हिस्ट्री",
+                "movements": "%s लेन-देन",
+                "no_movements": "अभी कोई कैश लेन-देन नहीं",
+                "not_enough_balance": "मशीन में पर्याप्त पैसे नहीं हैं।",
+                "not_enough_cash": "आपके पास इतना कैश नहीं है।",
+                "failed": "लेन-देन विफल रहा।",
+                "by_you": "आप"
+            },
+            "staff": {
+                "search": "खोजें...",
+                "hire": "रखें",
+                "empty": "अभी कोई स्टाफ़ नहीं",
+                "online": "ऑनलाइन",
+                "offline": "ऑफ़लाइन",
+                "you": "आप",
+                "now": "अभी",
+                "never": "कभी नहीं",
+                "edit_permissions": "अनुमतियां एडिट करें",
+                "fire": "निकालें",
+                "hire_title": "स्टाफ़ रखें",
+                "edit_title": "अनुमतियां एडिट करें",
+                "server_id": "सर्वर ID",
+                "edit_description": "%s, %s में क्या कर सकता है।",
+                "role": "भूमिका",
+                "role_hint": "अनुमतियां एक-एक करके चुनने के लिए कस्टम चुनें।",
+                "all": "सभी",
+                "none": "कोई नहीं",
+                "hire_hint": "खिलाड़ी पास में होना चाहिए। स्टाफ़ यह पैनल खोल सकता है लेकिन मशीन को कभी बेच या ट्रांसफ़र नहीं कर सकता।",
+                "fire_title": "कर्मचारी को निकालें",
+                "fire_description": "%s तुरंत %s का एक्सेस खो देगा।",
+                "employee": "कर्मचारी",
+                "hired": "रखा गया",
+                "last_online": "आखिरी बार ऑनलाइन",
+                "player_fallback": "खिलाड़ी %s"
+            },
+            "settings": {
+                "general": "सामान्य",
+                "name": "मशीन का नाम",
+                "description": "विवरण",
+                "description_placeholder": "ग्राहकों को दिखाया जाता है",
+                "open": "ग्राहकों के लिए खुली",
+                "open_description": "बंद मशीनें दूसरे खिलाड़ी इस्तेमाल नहीं कर सकते।",
+                "hours": "काम के घंटे",
+                "schedule": "शेड्यूल इस्तेमाल करें",
+                "schedule_description": "गेम के समय के अनुसार अपने आप खोलें और बंद करें।",
+                "opens_at": "खुलने का समय",
+                "closes_at": "बंद होने का समय",
+                "schedule_on": "%s से %s तक खुली।",
+                "schedule_off": "केवल खुला स्विच उपलब्धता नियंत्रित करता है।",
+                "stock": "स्टॉक और अलर्ट",
+                "low_stock_threshold": "कम स्टॉक की सीमा",
+                "auto_restock": "ऑटो रीस्टॉक",
+                "auto_restock_description": "जब कोई प्रोडक्ट सीमा पर पहुंचे तो क्षमता तक ऑर्डर करें।",
+                "low_stock_alerts": "कम स्टॉक अलर्ट",
+                "low_stock_alerts_description": "स्टॉक कम होने पर नोटिफ़िकेशन पाएं।",
+                "sale_notifications": "बिक्री नोटिफ़िकेशन",
+                "sale_notifications_description": "हर खरीद पर नोटिफ़िकेशन पाएं।",
+                "payments": "भुगतान",
+                "cash": "कैश",
+                "cash_description": "ग्राहक हाथ के कैश से भुगतान करते हैं।",
+                "accept_cash": "कैश स्वीकार करें",
+                "bank": "बैंक कार्ड",
+                "bank_description": "ग्राहक अपने बैंक खाते से भुगतान करते हैं।",
+                "accept_bank": "बैंक कार्ड स्वीकार करें",
+                "danger_zone": "डेंजर ज़ोन",
+                "transfer_title": "मालिकाना हक ट्रांसफ़र करें",
+                "transfer_description": "यह मशीन किसी दूसरे खिलाड़ी को दें। आपका सारा एक्सेस चला जाएगा।",
+                "transfer": "ट्रांसफ़र",
+                "sell": "मशीन बेचें",
+                "sell_description": "मशीन वापस बेचें। स्टॉक और चल रहे ऑर्डर खो जाएंगे।",
+                "sell_confirm": "यह %s को हमेशा के लिए बेच देगा। इसे वापस नहीं किया जा सकता।",
+                "transfer_prompt": "उस खिलाड़ी की सर्वर ID डालें जो इस मशीन का मालिक होगा।",
+                "name_empty": "मशीन का नाम खाली नहीं हो सकता।",
+                "payment_required": "कम से कम एक भुगतान तरीका स्वीकार करें।",
+                "same_times": "खुलने और बंद होने का समय एक जैसा नहीं हो सकता।"
+            }
+        }
+    }
+}

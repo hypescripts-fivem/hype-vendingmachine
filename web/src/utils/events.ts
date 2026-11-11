@@ -4,6 +4,7 @@ import { useOwnerStore } from "@/stores/owner";
 import { usePlacementStore } from "@/stores/placement";
 import { debug, FetchNUI, setDebug } from ".";
 import { setLocaleFormat } from "./format";
+import { setLocales } from "./locale";
 
 interface NuiMessage {
     action: string;
@@ -14,6 +15,7 @@ export interface UiConfig {
     inventoryImagePath: string;
     currency: string;
     locale: string;
+    locales?: Record<string, unknown>;
     debug: boolean;
 };
 
@@ -22,6 +24,7 @@ export function applyConfig(config: UiConfig) {
     setDebug(config.debug);
     useShopStore().inventoryImagePath = config.inventoryImagePath;
     setLocaleFormat(config.currency, config.locale);
+    setLocales(config.locales);
 };
 
 export function messageEvent() {

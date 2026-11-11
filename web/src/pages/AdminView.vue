@@ -4,7 +4,7 @@
         <PanelSidebar
             :model-value="admin.section"
             :icon="ShieldCheck"
-            :sections="sections"
+            :sections="localizedSections"
             :alerts="admin.lowStockMachines.length ? ['machines'] : []"
             @update:model-value="navigate"
         />
@@ -12,15 +12,15 @@
         <div class="relative flex min-w-0 flex-1 flex-col">
             <header class="flex h-16 shrink-0 items-center gap-4 border-b border-border px-5">
                 <div class="leading-tight">
-                    <h2 class="text-sm font-semibold text-text-primary">{{ admin.editing ? "Machine settings" : current.label }}</h2>
-                    <p class="text-xs text-text-faint">{{ admin.editing ? `Editing ${admin.editing.name}` : current.description }}</p>
+                    <h2 class="text-sm font-semibold text-text-primary">{{ admin.editing ? t("admin.header.machine_settings") : t(current.label) }}</h2>
+                    <p class="text-xs text-text-faint">{{ admin.editing ? t("admin.header.editing", admin.editing.name) : t(current.description) }}</p>
                 </div>
 
                 <div class="ml-auto flex items-center gap-4">
                     <div class="text-right leading-tight">
-                        <p class="text-[10px] uppercase tracking-wider text-text-faint">Machines</p>
+                        <p class="text-[10px] uppercase tracking-wider text-text-faint">{{ t("admin.header.machines") }}</p>
                         <p class="text-sm font-semibold tabular-nums text-text-primary">
-                            {{ admin.stats.total }} <span class="font-normal text-text-faint">· {{ admin.stats.open }} open</span>
+                            {{ admin.stats.total }} <span class="font-normal text-text-faint">· {{ t("admin.header.open_count", admin.stats.open) }}</span>
                         </p>
                     </div>
 
@@ -28,7 +28,7 @@
 
                     <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-primary">
                         <ShieldCheck class="size-3.5" />
-                        Admin
+                        {{ t("admin.header.badge") }}
                     </span>
                 </div>
             </header>
@@ -58,6 +58,7 @@ import PlacementPanel from "@/components/admin/PlacementPanel.vue";
 import { sections } from "@/components/admin/sections";
 import { useAdminStore, type AdminSection } from "@/stores/admin";
 import { usePlacementStore } from "@/stores/placement";
+import { t } from "@/utils/locale";
 
 const admin = useAdminStore();
 const placement = usePlacementStore();
@@ -73,6 +74,8 @@ const pages: Record<AdminSection, Component> = {
 };
 
 const current = computed(() => sections.find((section) => section.value === admin.section)!);
+
+const localizedSections = computed(() => sections.map((section) => ({ ...section, label: t(section.label), description: t(section.description) })));
 
 // Clicking a section in the sidebar always lands on its top level, closing any open machine page
 function navigate(section: AdminSection) {

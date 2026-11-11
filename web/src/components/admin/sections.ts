@@ -3,7 +3,7 @@ import type { PanelSection } from "@/components/PanelSidebar.vue";
 import type { AdminSection } from "@/stores/admin";
 
 export const sections: PanelSection<AdminSection>[] = [
-    { value: "dashboard", label: "Overview", description: "Server-wide vending statistics.", icon: LayoutDashboard },
-    { value: "machines", label: "Machines", description: "Every vending machine on the server.", icon: Boxes },
-    { value: "settings", label: "Settings", description: "Global rules for all vending machines.", icon: Settings },
+    { value: "dashboard", label: "admin.sections.dashboard.label", description: "admin.sections.dashboard.description", icon: LayoutDashboard },
+    { value: "machines", label: "admin.sections.machines.label", description: "admin.sections.machines.description", icon: Boxes },
+    { value: "settings", label: "admin.sections.settings.label", description: "admin.sections.settings.description", icon: Settings },
 ];

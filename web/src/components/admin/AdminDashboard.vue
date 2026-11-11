@@ -2,19 +2,19 @@
     <!-- A fresh server has nothing to chart, so the page points at the first step instead -->
     <EmptyState
         v-if="!admin.machines.length"
-        title="No machines yet"
-        description="Create your first vending machine, or import machines exported from another server."
+        :title="t('admin.dashboard.empty_title')"
+        :description="t('admin.dashboard.empty_description')"
         :icon="Boxes"
         class="h-full"
     >
         <div class="mt-4 flex items-center gap-2">
             <Button variant="outline" size="sm" @click="importing = true">
                 <Upload class="size-3.5" />
-                Import
+                {{ t("admin.common.import") }}
             </Button>
             <Button variant="solid" size="sm" @click="creating = true">
                 <Plus class="size-3.5" />
-                New machine
+                {{ t("admin.common.new_machine") }}
             </Button>
         </div>
 
@@ -24,32 +24,32 @@
 
     <div v-else class="flex flex-col gap-4">
         <div class="grid grid-cols-4 gap-3">
-            <StatCard label="Machines" :value="admin.stats.total" :icon="Boxes" :change-label="`${admin.stats.open} open right now`" />
-            <StatCard label="Revenue" :value="formatMoney(admin.stats.revenue)" :icon="DollarSign" change-label="Last 7 days, all machines" />
-            <StatCard label="Items sold" :value="admin.stats.sales" :icon="ShoppingBag" change-label="Last 7 days, all machines" />
-            <StatCard label="Owners" :value="admin.stats.owners" :icon="Users" :change-label="`${admin.stats.forSale} machine${admin.stats.forSale === 1 ? '' : 's'} for sale`" />
+            <StatCard :label="t('admin.dashboard.stat_machines')" :value="admin.stats.total" :icon="Boxes" :change-label="t('admin.dashboard.stat_machines_open', admin.stats.open)" />
+            <StatCard :label="t('admin.dashboard.stat_revenue')" :value="formatMoney(admin.stats.revenue)" :icon="DollarSign" :change-label="t('admin.dashboard.stat_all_machines')" />
+            <StatCard :label="t('admin.dashboard.stat_items_sold')" :value="admin.stats.sales" :icon="ShoppingBag" :change-label="t('admin.dashboard.stat_all_machines')" />
+            <StatCard :label="t('admin.dashboard.stat_owners')" :value="admin.stats.owners" :icon="Users" :change-label="t(admin.stats.forSale === 1 ? 'admin.dashboard.stat_for_sale_one' : 'admin.dashboard.stat_for_sale_other', admin.stats.forSale)" />
         </div>
 
         <div class="grid grid-cols-3 gap-3">
             <section class="col-span-2 rounded-2xl border border-border bg-bg-surface p-4">
                 <header class="flex items-baseline justify-between">
-                    <h3 class="text-sm font-semibold text-text-primary">Server revenue</h3>
-                    <span class="text-xs text-text-faint">Last 7 days</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("admin.dashboard.server_revenue") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("admin.dashboard.last_7_days") }}</span>
                 </header>
                 <div class="mt-2 h-56">
                     <EChart v-if="hasRevenue" :option="revenueOption" />
-                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">No sales in the last 7 days</p>
+                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">{{ t("admin.dashboard.no_sales") }}</p>
                 </div>
             </section>
 
             <section class="rounded-2xl border border-border bg-bg-surface p-4">
                 <header class="flex items-baseline justify-between">
-                    <h3 class="text-sm font-semibold text-text-primary">Top machines</h3>
-                    <span class="text-xs text-text-faint">Revenue ({{ currencySymbol() }})</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("admin.dashboard.top_machines") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("admin.dashboard.revenue_currency", currencySymbol()) }}</span>
                 </header>
                 <div class="mt-2 h-56">
                     <EChart v-if="ranked.length" :option="topMachinesOption" />
-                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">No machine has made a sale yet</p>
+                    <p v-else class="flex h-full items-center justify-center text-xs text-text-faint">{{ t("admin.dashboard.no_top_machines") }}</p>
                 </div>
             </section>
         </div>
@@ -57,11 +57,11 @@
         <div class="grid grid-cols-2 gap-3">
             <section class="rounded-2xl border border-border bg-bg-surface">
                 <header class="flex items-baseline justify-between px-4 py-3">
-                    <h3 class="text-sm font-semibold text-text-primary">Needs attention</h3>
-                    <span class="text-xs text-text-faint">{{ attention.length }} machines</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("admin.dashboard.needs_attention") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("admin.dashboard.machine_count", attention.length) }}</span>
                 </header>
                 <p v-if="!attention.length" class="border-t border-border px-4 py-6 text-center text-xs text-text-faint">
-                    All machines are running fine.
+                    {{ t("admin.dashboard.all_fine") }}
                 </p>
                 <ul v-else class="divide-y divide-border border-t border-border">
                     <li v-for="{ machine, reason } in attention" :key="machine.id" class="flex items-center gap-3 px-4 py-2.5">
@@ -70,27 +70,27 @@
                             <p class="truncate text-sm font-medium text-text-primary">{{ machine.name }}</p>
                             <p class="text-xs text-text-faint">{{ reason }}</p>
                         </div>
-                        <Button variant="outline" size="sm" @click="admin.openMachine(machine.id)">Open</Button>
+                        <Button variant="outline" size="sm" @click="admin.openMachine(machine.id)">{{ t("admin.dashboard.open") }}</Button>
                     </li>
                 </ul>
             </section>
 
             <section class="rounded-2xl border border-border bg-bg-surface">
                 <header class="flex items-baseline justify-between px-4 py-3">
-                    <h3 class="text-sm font-semibold text-text-primary">Newest machines</h3>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("admin.dashboard.newest_machines") }}</h3>
                     <button
                         type="button"
                         class="text-xs text-text-faint transition-colors hover:text-text-primary"
                         @click="admin.section = 'machines'"
                     >
-                        View all
+                        {{ t("admin.dashboard.view_all") }}
                     </button>
                 </header>
                 <ul class="divide-y divide-border border-t border-border">
                     <li v-for="machine in newest" :key="machine.id" class="flex items-center gap-3 px-4 py-2.5">
                         <div class="min-w-0 flex-1 leading-tight">
                             <p class="truncate text-sm font-medium text-text-primary">{{ machine.name }}</p>
-                            <p class="text-xs text-text-faint">{{ machine.location.label }} · {{ machine.ownerName ?? "For sale" }}</p>
+                            <p class="text-xs text-text-faint">{{ machine.location.label }} · {{ machine.ownerName ?? t("admin.common.for_sale") }}</p>
                         </div>
                         <span class="text-xs tabular-nums text-text-faint">{{ formatDate(machine.createdAt) }}</span>
                         <MachineStatusPill :status="displayStatus(machine)" />
@@ -112,6 +112,7 @@ import AdminCreateMachine from "./AdminCreateMachine.vue";
 import MachineImportModal from "./MachineImportModal.vue";
 import MachineStatusPill from "./MachineStatusPill.vue";
 import { currencySymbol, formatDate, formatDay, formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const admin = useAdminStore();
 
@@ -125,10 +126,10 @@ const axisLabel = { color: theme.faint, fontFamily: theme.font, fontSize: 11 };
 const attention = computed(() => [
     ...admin.machines
         .filter((machine) => machine.status === "disabled")
-        .map((machine) => ({ machine, reason: "Disabled by an admin" })),
+        .map((machine) => ({ machine, reason: t("admin.dashboard.reason_disabled") })),
     ...admin.lowStockMachines
         .filter((machine) => machine.status !== "disabled")
-        .map((machine) => ({ machine, reason: `Stock at ${machine.stockLevel}%` })),
+        .map((machine) => ({ machine, reason: t("admin.dashboard.reason_low_stock", machine.stockLevel) })),
 ].slice(0, 5));
 
 const newest = computed(() => admin.machines.slice(0, 5));
@@ -164,7 +165,7 @@ const revenueOption = computed<ChartOption>(() => ({
     },
     series: [{
         type: "line",
-        name: "Revenue",
+        name: t("admin.dashboard.series_revenue"),
         data: admin.revenue.map((day) => day.revenue),
         smooth: 0.3,
         symbol: "circle",
@@ -192,7 +193,7 @@ const topMachinesOption = computed<ChartOption>(() => ({
         trigger: "item",
         formatter: (params: any) => {
             const machine = ranked.value[params.dataIndex]!;
-            return `${machine.name}<br/><b>${formatMoney(machine.revenue)}</b> <span style="color:${theme.muted}">· ${machine.sales} sales</span>`;
+            return `${machine.name}<br/><b>${formatMoney(machine.revenue)}</b> <span style="color:${theme.muted}">· ${t("admin.dashboard.tooltip_sales", machine.sales)}</span>`;
         },
     },
     xAxis: { type: "value", show: false },
@@ -206,7 +207,7 @@ const topMachinesOption = computed<ChartOption>(() => ({
     },
     series: [{
         type: "bar",
-        name: "Revenue",
+        name: t("admin.dashboard.series_revenue"),
         data: ranked.value.map((machine) => ({
             value: machine.revenue,
             itemStyle: { color: seriesColor(machine.colorSlot) },

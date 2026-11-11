@@ -7,15 +7,15 @@
             <div class="flex items-center gap-2">
                 <div class="relative min-w-0 flex-1 mr-20">
                     <Search class="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-text-faint" />
-                    <Inputs v-model="search" size="sm" class="py-2 pl-9 text-sm" placeholder="Search name, owner or area..." />
+                    <Inputs v-model="search" size="sm" class="py-2 pl-9 text-sm" :placeholder="t('admin.machines.search_placeholder')" />
                 </div>
                 <Button size="sm" variant="outline" class="shrink-0 py-2.5" @click="importing = true">
                     <Upload class="size-3.5" />
-                    Import
+                    {{ t("admin.common.import") }}
                 </Button>
                 <Button size="sm" variant="solid" class="shrink-0 py-2.5" @click="creating = true">
                     <Plus class="size-3.5" />
-                    New machine
+                    {{ t("admin.common.new_machine") }}
                 </Button>
             </div>
 
@@ -27,7 +27,7 @@
                     :columns="columns"
                     :rows="rows"
                     :page-size="pageSize"
-                    :empty-text="admin.machines.length ? 'No machines match your search' : 'No machines yet. Create one or import them.'"
+                    :empty-text="admin.machines.length ? t('admin.machines.empty_search') : t('admin.machines.empty')"
                 >
                     <template #cell="{ column, row }">
                         <div v-if="column.key === 'name'" class="whitespace-nowrap leading-tight">
@@ -35,25 +35,25 @@
                             <p class="text-xs text-text-faint">{{ row.area }}</p>
                         </div>
                         <span v-else-if="column.key === 'owner'" class="whitespace-nowrap" :class="row.owner ? 'text-text-muted' : 'text-text-faint'">
-                            {{ row.owner ?? "For sale" }}
+                            {{ row.owner ?? t("admin.common.for_sale") }}
                         </span>
                         <MachineStatusPill v-else-if="column.key === 'status'" :status="row.status as MachineDisplayStatus" />
                         <span v-else-if="column.key === 'balance'" class="tabular-nums text-text-primary">
                             {{ formatMoney(Number(row.balance)) }}
                         </span>
                         <div v-else-if="column.key === 'actions'" class="flex items-center justify-end gap-1.5">
-                            <Tooltip content="Show on map" side="top">
-                                <Button variant="secondary" size="sm" class="p-2" aria-label="Show on map" @click="locate(String(row.id))">
+                            <Tooltip :content="t('admin.machines.show_on_map')" side="top">
+                                <Button variant="secondary" size="sm" class="p-2" :aria-label="t('admin.machines.show_on_map')" @click="locate(String(row.id))">
                                     <MapPin class="size-3.5" />
                                 </Button>
                             </Tooltip>
-                            <Tooltip content="Teleport" side="top">
-                                <Button variant="secondary" size="sm" class="p-2" aria-label="Teleport" @click="admin.teleport(String(row.id))">
+                            <Tooltip :content="t('admin.common.teleport')" side="top">
+                                <Button variant="secondary" size="sm" class="p-2" :aria-label="t('admin.common.teleport')" @click="admin.teleport(String(row.id))">
                                     <Navigation class="size-3.5" />
                                 </Button>
                             </Tooltip>
-                            <Tooltip content="Manage" side="top">
-                                <Button size="sm" class="p-2" aria-label="Manage" @click="admin.openMachine(String(row.id))">
+                            <Tooltip :content="t('admin.machines.manage')" side="top">
+                                <Button size="sm" class="p-2" :aria-label="t('admin.machines.manage')" @click="admin.openMachine(String(row.id))">
                                     <Settings class="size-3.5" />
                                 </Button>
                             </Tooltip>
@@ -67,12 +67,12 @@
         <section class="flex w-[26rem] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-bg-surface">
             <header class="flex items-center justify-between gap-3 px-4 py-3">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <MapPin class="size-4 text-text-muted" /> Map
+                    <MapPin class="size-4 text-text-muted" /> {{ t("admin.machines.map") }}
                 </h3>
                 <ul class="flex items-center gap-3">
                     <li v-for="item in mapLegend" :key="item.status" class="flex items-center gap-1.5 text-xs text-text-muted">
                         <span class="size-2 rounded-full" :style="{ background: item.color }" />
-                        {{ item.label }}
+                        {{ t(item.label) }}
                     </li>
                 </ul>
             </header>
@@ -80,7 +80,7 @@
             <div class="relative isolate min-h-0 flex-1 border-t border-border">
                 <GameMap ref="map" :blips="blips" @blip-click="admin.openMachine" />
             </div>
-            <p class="border-t border-border px-4 py-2 text-xs text-text-faint">Click a blip to manage the machine</p>
+            <p class="border-t border-border px-4 py-2 text-xs text-text-faint">{{ t("admin.machines.map_hint") }}</p>
         </section>
 
         <AdminCreateMachine v-if="creating" @close="creating = false" />
@@ -99,6 +99,7 @@ import AdminMachineDetail from "./AdminMachineDetail.vue";
 import MachineImportModal from "./MachineImportModal.vue";
 import MachineStatusPill from "./MachineStatusPill.vue";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const admin = useAdminStore();
 
@@ -107,13 +108,13 @@ const sort = ref<{ key: string; direction: "asc" | "desc" } | null>(null);
 const creating = ref(false);
 const importing = ref(false);
 
-const columns: DataTableColumn[] = [
-    { key: "name", label: "Machine", sortable: true },
-    { key: "owner", label: "Owner", sortable: true },
-    { key: "status", label: "Status", sortable: true },
-    { key: "balance", label: "Balance", sortable: true, align: "right" },
+const columns = computed<DataTableColumn[]>(() => [
+    { key: "name", label: t("admin.machines.column_machine"), sortable: true },
+    { key: "owner", label: t("admin.machines.column_owner"), sortable: true },
+    { key: "status", label: t("admin.machines.column_status"), sortable: true },
+    { key: "balance", label: t("admin.machines.column_balance"), sortable: true, align: "right" },
     { key: "actions", label: "", align: "right" },
-];
+]);
 
 const map = ref<InstanceType<typeof GameMap>>();
 
@@ -171,10 +172,10 @@ watch([pageSize, () => rows.value.length], () => {
 
 // Blips live in the DOM, so they can use the theme's status tokens directly
 const statusBlips: Record<MachineDisplayStatus, { label: string; color: string }> = {
-    open: { label: "Open", color: "var(--color-success)" },
-    closed: { label: "Closed", color: "var(--color-text-faint)" },
-    forSale: { label: "For sale", color: "var(--color-info)" },
-    disabled: { label: "Disabled", color: "var(--color-danger)" },
+    open: { label: "admin.status.open", color: "var(--color-success)" },
+    closed: { label: "admin.status.closed", color: "var(--color-text-faint)" },
+    forSale: { label: "admin.status.for_sale", color: "var(--color-info)" },
+    disabled: { label: "admin.status.disabled", color: "var(--color-danger)" },
 };
 
 const mapLegend = (Object.keys(statusBlips) as MachineDisplayStatus[]).map((status) => ({ status, ...statusBlips[status] }));
@@ -185,7 +186,7 @@ const blips = computed<MapBlip[]>(() => filteredMachines.value.map((machine) => 
     return {
         id: machine.id,
         coords: { x: machine.location.x, y: machine.location.y },
-        label: `${machine.name} · ${blip.label}`,
+        label: `${machine.name} · ${t(blip.label)}`,
         color: blip.color,
     };
 }));

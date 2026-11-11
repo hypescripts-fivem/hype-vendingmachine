@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { asList, asNumber, asRecord, FetchNUI, isNative } from "@/utils";
 import { mockTime } from "@/utils/format";
+import { t } from "@/utils/locale";
 import { mockProducts, useShopStore, type Product } from "@/stores";
 
 export type OwnerSection = 'dashboard' | 'products' | 'restock' | 'transactions' | 'cash' | 'staff' | 'settings';
@@ -29,13 +30,13 @@ export type StaffRole = 'employee' | 'supervisor' | 'manager';
 
 // Permission presets. Each set must be unique so a member's role can be read back from their permissions
 export const staffRoles: { value: StaffRole; label: string; permissions: StaffPermission[] }[] = [
-    { value: 'employee', label: 'Employee', permissions: ['restock.order', 'transactions.view'] },
+    { value: 'employee', label: 'owner.roles.employee', permissions: ['restock.order', 'transactions.view'] },
     {
         value: 'supervisor',
-        label: 'Supervisor',
+        label: 'owner.roles.supervisor',
         permissions: ['dashboard.view', 'products.prices', 'restock.order', 'transactions.view', 'cash.deposit', 'cash.history', 'staff.view'],
     },
-    { value: 'manager', label: 'Manager', permissions: [...staffPermissions] },
+    { value: 'manager', label: 'owner.roles.manager', permissions: [...staffPermissions] },
 ];
 
 // undefined means the permissions were picked by hand and match no preset
@@ -391,7 +392,7 @@ export const useOwnerStore = defineStore("owner", () => {
                 const time = Date.now();
 
                 orders.value.unshift({ id, time, items: order, total, status: "preparing" });
-                cashMovements.value.unshift({ id: `c${Date.now()}`, time, type: "order", amount: total, by: "You" });
+                cashMovements.value.unshift({ id: `c${Date.now()}`, time, type: "order", amount: total, by: t("owner.cash.by_you") });
 
                 if (!isNative) simulateDelivery(id);
             }
@@ -486,7 +487,7 @@ export const useOwnerStore = defineStore("owner", () => {
                     time: Date.now(),
                     type,
                     amount,
-                    by: "You",
+                    by: t("owner.cash.by_you"),
                 });
             }
 
@@ -517,7 +518,7 @@ export const useOwnerStore = defineStore("owner", () => {
         if (response.success) {
             staff.value.unshift(response.data?.member ?? {
                 id: `st${Date.now()}`,
-                name: `Player ${playerId}`,
+                name: t("owner.staff.player_fallback", playerId),
                 hiredAt: Date.now(),
                 lastOnline: null,
                 // Hiring needs the player nearby, so they're online

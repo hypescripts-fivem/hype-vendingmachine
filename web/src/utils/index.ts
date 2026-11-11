@@ -1,3 +1,5 @@
+import { t } from './locale';
+
 const resourceName = (): string => (window as any).GetParentResourceName?.() ?? 'hype-vendingmachine';
 
 export const isNative = !!(window as any).invokeNative;
@@ -47,10 +49,10 @@ export async function FetchNUI<T = unknown>(event: string, data?: unknown, mock?
         if (body && typeof body === 'object' && typeof body.success === 'boolean') return body;
 
         console.warn(`NUI callback "${event}" answered without { success, data }:`, text || '(empty)');
-        return { success: false, error: 'No response from the server.' };
+        return { success: false, error: t('common.errors.no_response') };
     } catch (error) {
         console.warn(`NUI callback "${event}" failed:`, error);
-        return { success: false, error: 'No response from the server.' };
+        return { success: false, error: t('common.errors.no_response') };
     }
 };
 

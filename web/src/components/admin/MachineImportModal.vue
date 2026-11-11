@@ -1,8 +1,8 @@
 <template>
-    <Modal title="Import machines" :icon="Upload" width="36rem" @close="emit('close')">
+    <Modal :title="t('admin.import.title')" :icon="Upload" width="36rem" @close="emit('close')">
         <div class="flex flex-col gap-3 px-5 py-4 text-sm text-text-muted">
             <p>
-                Paste a machine export from Settings on another server. Machines arrive for sale with no owner, money or stock.
+                {{ t("admin.import.description") }}
             </p>
 
             <Textarea
@@ -18,7 +18,7 @@
                 <input ref="fileInput" type="file" accept=".json,application/json" class="hidden" @change="loadFile" />
                 <Button variant="outline" size="sm" @click="fileInput?.click()">
                     <FileUp class="size-3.5" />
-                    Load file
+                    {{ t("admin.import.load_file") }}
                 </Button>
                 <span v-if="fileName" class="truncate text-xs text-text-faint">{{ fileName }}</span>
             </div>
@@ -31,8 +31,8 @@
 
                 <template v-else>
                     <p class="text-xs">
-                        <span class="text-text-primary">{{ ready }} ready to import</span>
-                        <span v-if="result.skipped.length" class="text-text-faint"> · {{ result.skipped.length }} skipped</span>
+                        <span class="text-text-primary">{{ t("admin.import.ready", ready) }}</span>
+                        <span v-if="result.skipped.length" class="text-text-faint"> · {{ t("admin.import.skipped", result.skipped.length) }}</span>
                     </p>
                     <!-- Skipped ones first, so problems aren't hidden below a long list -->
                     <div class="flex max-h-56 flex-col gap-1 overflow-y-auto rounded-xl border border-border p-2">
@@ -44,7 +44,7 @@
                         <div v-for="(machine, index) in result.machines" :key="`ok-${index}`" class="flex items-center gap-2 rounded-lg px-2 py-1.5">
                             <CircleCheck class="size-3.5 shrink-0 text-success" />
                             <span class="truncate font-medium text-text-primary">{{ machine.name }}</span>
-                            <span class="ml-auto shrink-0 text-xs text-text-faint">{{ machine.location.label || "No area" }}</span>
+                            <span class="ml-auto shrink-0 text-xs text-text-faint">{{ machine.location.label || t("admin.common.no_area") }}</span>
                         </div>
                     </div>
                 </template>
@@ -57,9 +57,9 @@
         </div>
 
         <template #footer>
-            <Button variant="outline" size="sm" @click="emit('close')">Cancel</Button>
+            <Button variant="outline" size="sm" @click="emit('close')">{{ t("admin.common.cancel") }}</Button>
             <Button size="sm" :disabled="!ready || admin.saving" @click="confirm">
-                {{ admin.saving ? "Importing..." : ready ? `Import ${ready} machine${ready === 1 ? "" : "s"}` : "Import" }}
+                {{ admin.saving ? t("admin.import.importing") : ready ? t(ready === 1 ? "admin.import.submit_one" : "admin.import.submit_other", ready) : t("admin.common.import") }}
             </Button>
         </template>
     </Modal>
@@ -72,6 +72,7 @@ import { Button, Modal, Textarea } from "@vezironi/veyra-ui";
 import { useAdminStore } from "@/stores/admin";
 import { isNative } from "@/utils";
 import { parseMachineImport } from "./machineTransfer";
+import { t } from "@/utils/locale";
 
 const emit = defineEmits<{ close: [] }>();
 
@@ -116,7 +117,7 @@ async function confirm() {
     if (response.success) {
         emit("close");
     } else {
-        importError.value = response.error ?? "The machines could not be imported.";
+        importError.value = response.error ?? t("admin.import.error");
     }
 };
 </script>

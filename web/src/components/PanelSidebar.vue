@@ -31,10 +31,10 @@
         </nav>
 
         <div class="pb-3">
-            <Tooltip content="Close" side="right">
+            <Tooltip :content="t('common.close')" side="right">
                 <button
                     type="button"
-                    aria-label="Close"
+                    :aria-label="t('common.close')"
                     class="flex size-10 items-center justify-center rounded-lg text-danger transition-colors hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                     @click="close"
                 >
@@ -50,6 +50,7 @@ import type { Component } from "vue";
 import { LogOut } from "@lucide/vue";
 import { Tooltip } from "@vezironi/veyra-ui";
 import { useAppStore } from "@/stores/app";
+import { t } from "@/utils/locale";
 
 export interface PanelSection<V extends string = string> {
     value: V;

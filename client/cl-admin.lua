@@ -1,18 +1,13 @@
 RegisterNetEvent("hype-vendingmachine:client:open-admin-menu", function()
-    -- Opening the menu again would reload it and lose the form whose machine is being placed
     if IsPlacing() then return end
 
-    Debug("info", "opening the admin menu")
-    NuiMessage("setView", {
-        view = "admin"
-    })
+    NuiMessage("setView", { view = "admin" })
     SetNuiFocus(true, true)
 end)
 
-RegisterNuiCallback("admin:get-data", function(data, cb)
+RegisterNuiCallback("admin:get-data", function(_, cb)
     local response = lib.callback.await("hype-vendingmachine:server:get-admin-data", false)
 
-    -- Custom (arm) machines need olentrix_vending; without it the panel doesn't offer them
     if response and response.success and response.data then
         response.data.customMachines = GetResourceState("olentrix_vending") == "started"
     end
@@ -20,40 +15,26 @@ RegisterNuiCallback("admin:get-data", function(data, cb)
     cb(response)
 end)
 
-RegisterNuiCallback("admin:create-machine", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:create-machine", false, data))
-end)
+local forwarded <const> = {
+    ["admin:create-machine"] = "hype-vendingmachine:server:create-machine",
+    ["admin:update-machine"] = "hype-vendingmachine:server:update-machine",
+    ["admin:delete-machine"] = "hype-vendingmachine:server:delete-machine",
+    ["admin:import-machine"] = "hype-vendingmachine:server:import-machines",
+    ["admin:set-status"] = "hype-vendingmachine:server:set-machine-status",
+    ["admin:reset-balance"] = "hype-vendingmachine:server:reset-machine-balance",
+    ["admin:save-settings"] = "hype-vendingmachine:server:save-admin-settings",
+}
 
-RegisterNuiCallback("admin:update-machine", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:update-machine", false, data))
-end)
+for name, callback in pairs(forwarded) do
+    RegisterNuiCallback(name, function(data, cb)
+        cb(lib.callback.await(callback, false, data))
+    end)
+end
 
-RegisterNuiCallback("admin:delete-machine", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:delete-machine", false, data))
-end)
-
-RegisterNuiCallback("admin:import-machine", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:import-machines", false, data))
-end)
-
-RegisterNuiCallback("admin:set-status", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:set-machine-status", false, data))
-end)
-
-RegisterNuiCallback("admin:reset-balance", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:reset-machine-balance", false, data))
-end)
-
-RegisterNuiCallback("admin:save-settings", function(data, cb)
-    cb(lib.callback.await("hype-vendingmachine:server:save-admin-settings", false, data))
-end)
-
--- Puts the admin in front of the machine, facing it, instead of inside the prop
 RegisterNuiCallback("admin:teleport", function(data, cb)
     local response = lib.callback.await("hype-vendingmachine:server:get-machine-position", false, data)
 
     if not response or not response.success then
-        Debug("warning", "teleport to machine %s refused: %s", data.id, response and response.error)
         cb(response)
         return
     end
@@ -62,9 +43,8 @@ RegisterNuiCallback("admin:teleport", function(data, cb)
     local heading = math.rad(position.heading)
     local x = position.x - math.sin(heading) * 1.2
     local y = position.y + math.cos(heading) * 1.2
-    local ped = PlayerPedId()
+    local ped = cache.ped
 
-    -- Held in place until the ground loads, so a long teleport doesn't drop through the map
     FreezeEntityPosition(ped, true)
     RequestCollisionAtCoord(x, y, position.z)
     SetEntityCoords(ped, x, y, position.z, false, false, false, false)
@@ -76,6 +56,5 @@ RegisterNuiCallback("admin:teleport", function(data, cb)
     end
 
     FreezeEntityPosition(ped, false)
-    Debug("success", "teleported to machine %s (collision loaded: %s)", data.id, HasCollisionLoadedAroundEntity(ped))
     cb({ success = true })
 end)

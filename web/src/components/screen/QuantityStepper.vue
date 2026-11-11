@@ -2,7 +2,7 @@
     <div class="flex h-12 items-stretch overflow-hidden rounded-lg border border-border bg-bg-muted">
         <button
             type="button"
-            aria-label="Decrease quantity"
+            :aria-label="t('common.decrease_quantity')"
             class="flex w-12 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary"
             @click="emit('update', quantity - 1)"
         >
@@ -13,7 +13,7 @@
         </output>
         <button
             type="button"
-            aria-label="Increase quantity"
+            :aria-label="t('common.increase_quantity')"
             :disabled="quantity >= max"
             class="flex w-12 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-40"
             @click="emit('update', quantity + 1)"
@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { Minus, Plus } from "@lucide/vue";
+import { t } from "@/utils/locale";
 
 defineProps<{
     quantity: number;

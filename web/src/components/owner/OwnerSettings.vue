@@ -5,99 +5,103 @@
         <div class="flex flex-col gap-3">
             <section v-if="owner.can('settings.general')" class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <Store class="size-4 text-text-muted" /> General
+                    <Store class="size-4 text-text-muted" /> {{ t("owner.settings.general") }}
                 </h3>
                 <label class="grid gap-1.5 text-sm text-text-muted">
-                    Machine name
+                    {{ t("owner.settings.name") }}
                     <Inputs
                         :model-value="draft.name"
-                        placeholder="Machine name"
+                        :placeholder="t('owner.settings.name')"
                         @update:model-value="draft.name = String($event ?? '')"
                     />
                 </label>
                 <label class="grid gap-1.5 text-sm text-text-muted">
-                    Description
-                    <Textarea v-model="draft.description" :rows="2" :maxlength="120" :resizable="false" placeholder="Shown to customers" />
+                    {{ t("owner.settings.description") }}
+                    <Textarea v-model="draft.description" :rows="2" :maxlength="120" :resizable="false" :placeholder="t('owner.settings.description_placeholder')" />
                 </label>
-                <SettingRow label="Open for customers" description="Closed machines can't be used by other players.">
+                <SettingRow :label="t('owner.settings.open')" :description="t('owner.settings.open_description')">
                     <Switch v-model="draft.open" />
                 </SettingRow>
             </section>
 
             <section v-if="owner.can('settings.hours')" class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <Clock class="size-4 text-text-muted" /> Operating hours
+                    <Clock class="size-4 text-text-muted" /> {{ t("owner.settings.hours") }}
                 </h3>
-                <SettingRow label="Use a schedule" description="Open and close automatically by in-game time.">
+                <SettingRow :label="t('owner.settings.schedule')" :description="t('owner.settings.schedule_description')">
                     <Switch v-model="draft.schedule.enabled" />
                 </SettingRow>
                 <div class="grid grid-cols-2 gap-3">
-                    <TimePicker v-model="draft.schedule.opensAt" label="Opens at" :disabled="!draft.schedule.enabled" />
-                    <TimePicker v-model="draft.schedule.closesAt" label="Closes at" :disabled="!draft.schedule.enabled" />
+                    <TimePicker v-model="draft.schedule.opensAt" :label="t('owner.settings.opens_at')" :disabled="!draft.schedule.enabled" />
+                    <TimePicker v-model="draft.schedule.closesAt" :label="t('owner.settings.closes_at')" :disabled="!draft.schedule.enabled" />
                 </div>
                 <p class="text-xs text-text-faint">
                     {{ draft.schedule.enabled
-                        ? `Open from ${draft.schedule.opensAt} to ${draft.schedule.closesAt}.`
-                        : "The open switch alone controls availability." }}
+                        ? t("owner.settings.schedule_on", draft.schedule.opensAt, draft.schedule.closesAt)
+                        : t("owner.settings.schedule_off") }}
                 </p>
             </section>
 
             <section v-if="owner.can('settings.stock')" class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <Package class="size-4 text-text-muted" /> Stock & alerts
+                    <Package class="size-4 text-text-muted" /> {{ t("owner.settings.stock") }}
                 </h3>
-                <Slider v-model="draft.lowStockThreshold" :min="1" :max="20" label="Low stock threshold" show-value />
-                <SettingRow label="Auto restock" description="Order up to capacity when a product hits the threshold.">
+                <Slider v-model="draft.lowStockThreshold" :min="1" :max="20" :label="t('owner.settings.low_stock_threshold')" show-value />
+                <SettingRow :label="t('owner.settings.auto_restock')" :description="t('owner.settings.auto_restock_description')">
                     <Switch v-model="draft.autoRestock" />
                 </SettingRow>
-                <SettingRow label="Low stock alerts" description="Get a notification when stock runs low.">
+                <SettingRow :label="t('owner.settings.low_stock_alerts')" :description="t('owner.settings.low_stock_alerts_description')">
                     <Switch v-model="draft.notifyLowStock" />
                 </SettingRow>
-                <SettingRow label="Sale notifications" description="Get a notification for every purchase.">
+                <SettingRow :label="t('owner.settings.sale_notifications')" :description="t('owner.settings.sale_notifications_description')">
                     <Switch v-model="draft.notifySales" />
                 </SettingRow>
             </section>
 
             <section v-if="owner.can('settings.payments')" class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                    <CreditCard class="size-4 text-text-muted" /> Payments
+                    <CreditCard class="size-4 text-text-muted" /> {{ t("owner.settings.payments") }}
                 </h3>
-                <SettingRow label="Cash" description="Customers pay with cash on hand.">
-                    <Checkbox v-model="draft.payments.cash" aria-label="Accept cash" />
+                <SettingRow :label="t('owner.settings.cash')" :description="t('owner.settings.cash_description')">
+                    <Checkbox v-model="draft.payments.cash" :aria-label="t('owner.settings.accept_cash')" />
                 </SettingRow>
-                <SettingRow label="Bank card" description="Customers pay from their bank account.">
-                    <Checkbox v-model="draft.payments.bank" aria-label="Accept bank card" />
+                <SettingRow :label="t('owner.settings.bank')" :description="t('owner.settings.bank_description')">
+                    <Checkbox v-model="draft.payments.bank" :aria-label="t('owner.settings.accept_bank')" />
                 </SettingRow>
             </section>
 
             <!-- Selling and transferring are never delegated to staff -->
             <section v-if="owner.access.owner" class="flex flex-col gap-4 rounded-2xl border border-danger/30 bg-bg-surface p-4">
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-danger">
-                    <TriangleAlert class="size-4" /> Danger zone
+                    <TriangleAlert class="size-4" /> {{ t("owner.settings.danger_zone") }}
                 </h3>
-                <SettingRow label="Transfer ownership" description="Give this machine to another player. You lose all access.">
-                    <Button variant="outline" size="sm" @click="openModal('transfer')">Transfer</Button>
+                <SettingRow :label="t('owner.settings.transfer_title')" :description="t('owner.settings.transfer_description')">
+                    <Button variant="outline" size="sm" @click="openModal('transfer')">{{ t("owner.settings.transfer") }}</Button>
                 </SettingRow>
                 <Separator />
-                <SettingRow label="Sell machine" description="Sell the machine back. Stock and orders in progress are lost.">
-                    <Button variant="danger" size="sm" @click="openModal('sell')">Sell machine</Button>
+                <SettingRow :label="t('owner.settings.sell')" :description="t('owner.settings.sell_description')">
+                    <Button variant="danger" size="sm" @click="openModal('sell')">{{ t("owner.settings.sell") }}</Button>
                 </SettingRow>
             </section>
         </div>
 
         <Modal
             v-if="modal"
-            :title="modal === 'sell' ? 'Sell machine' : 'Transfer ownership'"
+            :title="modal === 'sell' ? t('owner.settings.sell') : t('owner.settings.transfer_title')"
             :icon="TriangleAlert"
             @close="modal = undefined"
         >
             <div class="flex flex-col gap-3 px-5 py-4 text-sm text-text-muted">
                 <template v-if="modal === 'sell'">
-                    <p>This permanently sells <b class="text-text-primary">{{ owner.settings.name }}</b>. This can't be undone.</p>
+                    <p>
+                        <LocaleText :text="t('owner.settings.sell_confirm')">
+                            <template #p0><b class="text-text-primary">{{ owner.settings.name }}</b></template>
+                        </LocaleText>
+                    </p>
                 </template>
                 <template v-else>
-                    <p>Enter the server ID of the player who will own this machine.</p>
-                    <Inputs v-model="playerId" type="number" :min="1" placeholder="Player ID" />
+                    <p>{{ t("owner.settings.transfer_prompt") }}</p>
+                    <Inputs v-model="playerId" type="number" :min="1" :placeholder="t('owner.common.player_id')" />
                 </template>
                 <p v-if="modalError" class="flex items-center gap-1.5 text-xs text-danger">
                     <CircleAlert class="size-3.5 shrink-0" />
@@ -105,9 +109,9 @@
                 </p>
             </div>
             <template #footer>
-                <Button variant="outline" size="sm" @click="modal = undefined">Cancel</Button>
+                <Button variant="outline" size="sm" @click="modal = undefined">{{ t("owner.common.cancel") }}</Button>
                 <Button variant="danger" size="sm" :disabled="!canConfirm || confirming" @click="confirmModal">
-                    {{ confirming ? "Working..." : modal === "sell" ? "Sell machine" : "Transfer" }}
+                    {{ confirming ? t("owner.common.working") : modal === "sell" ? t("owner.settings.sell") : t("owner.settings.transfer") }}
                 </Button>
             </template>
         </Modal>
@@ -120,9 +124,11 @@ import { CircleAlert, Clock, CreditCard, Package, Store, TriangleAlert } from "@
 import { Button, Checkbox, Inputs, Modal, Separator, Slider, Switch, Textarea } from "@vezironi/veyra-ui";
 import { useAppStore } from "@/stores/app";
 import { useOwnerStore, type OwnerSettings } from "@/stores/owner";
+import LocaleText from "@/components/LocaleText.vue";
 import SaveBar from "@/components/SaveBar.vue";
 import SettingRow from "@/components/SettingRow.vue";
 import TimePicker from "@/components/TimePicker.vue";
+import { t } from "@/utils/locale";
 
 const app = useAppStore();
 const owner = useOwnerStore();
@@ -134,10 +140,10 @@ const draft = ref<OwnerSettings>(clone(owner.settings));
 const dirty = computed(() => JSON.stringify(draft.value) !== JSON.stringify(owner.settings));
 
 const error = computed(() => {
-    if (!draft.value.name.trim()) return "Machine name can't be empty.";
-    if (!draft.value.payments.cash && !draft.value.payments.bank) return "Accept at least one payment method.";
+    if (!draft.value.name.trim()) return t("owner.settings.name_empty");
+    if (!draft.value.payments.cash && !draft.value.payments.bank) return t("owner.settings.payment_required");
     if (draft.value.schedule.enabled && draft.value.schedule.opensAt === draft.value.schedule.closesAt) {
-        return "Opening and closing times can't be the same.";
+        return t("owner.settings.same_times");
     }
     return undefined;
 });
@@ -182,7 +188,7 @@ async function confirmModal() {
             // The machine isn't theirs anymore, so the panel has nothing left to show
             app.close();
         } else {
-            modalError.value = response.error ?? "Something went wrong.";
+            modalError.value = response.error ?? t("owner.common.error");
         }
     } finally {
         confirming.value = false;

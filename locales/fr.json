@@ -1,0 +1,703 @@
+{
+    "notify_title": "Distributeur",
+
+    "target_buy": "Acheter le distributeur",
+    "target_open": "Utiliser le distributeur",
+    "target_manage": "Gérer le distributeur",
+    "textui_buy": "[%s] Acheter le distributeur ($%s)",
+    "textui_open": "[%s] Utiliser le distributeur",
+    "textui_manage": "[%s] Gérer le distributeur",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "Prendre le chariot",
+    "target_cargo_drop": "Lâcher le chariot",
+    "target_cargo_take": "Prendre le carton",
+    "target_cargo_load": "Charger le carton",
+    "target_cargo_unload": "Sortir le carton",
+    "target_cargo_deliver": "Mettre le carton dans le distributeur",
+    "notify_cargo_started": "Ta commande est prête. Récupère-la au point indiqué.",
+    "notify_cargo_cancelled": "Tu as quitté la zone de retrait. La commande a été annulée.",
+    "notify_cargo_delivered": "Tous les cartons sont dans %s.",
+    "error_order_not_ready": "Cette commande ne peut pas être récupérée pour le moment.",
+    "error_cargo_busy": "Tu récupères déjà une commande.",
+
+    "success_machine_bought": "Tu as acheté %s pour $%s.",
+    "notify_sale": "%s a fait une vente : $%s.",
+    "notify_low_stock": "%s commence à manquer dans %s (%s restant(s)).",
+    "notify_hired": "Tu travailles maintenant chez %s.",
+    "notify_staff_removed": "Tu ne travailles plus chez %s.",
+    "notify_machine_transferred": "Tu as donné %s à %s.",
+    "notify_machine_received": "%s t'a donné %s.",
+    "notify_machine_sold": "Tu as vendu %s pour $%s.",
+    "auto_restock": "Réapprovisionnement auto",
+
+    "log_title_purchase": "Achat de distributeur",
+    "log_title_admin": "Action admin",
+    "log_machine_bought": "%s a acheté **%s** (#%s) pour $%s.",
+    "log_machine_created": "%s a créé **%s** (#%s).",
+    "log_machine_updated": "%s a modifié **%s** (#%s).",
+    "log_machine_deleted": "%s a supprimé **%s** (#%s).",
+    "log_machines_imported": "%s a importé %s distributeurs.",
+    "log_machine_status": "%s a passé **%s** (#%s) en %s.",
+    "log_balance_reset": "%s a réinitialisé le solde de **%s** (#%s), $%s.",
+    "log_settings_saved": "%s a modifié les paramètres admin.",
+
+    "error_no_permission": "Tu n'as pas la permission de faire ça.",
+    "error_invalid_machine": "Données du distributeur invalides.",
+    "error_invalid_name": "Le nom du distributeur doit contenir entre 1 et %s caractères.",
+    "error_invalid_model": "Modèle de distributeur inconnu.",
+    "error_invalid_location": "Définis un emplacement pour le distributeur.",
+    "error_invalid_price": "Le prix de vente doit être un nombre entier entre 0 et %s.",
+    "error_invalid_capacity": "La capacité doit être un nombre entier entre 1 et %s.",
+    "error_invalid_products": "Choisis au moins un produit valide.",
+    "error_owner_not_found": "Aucun joueur en ligne trouvé avec cet ID serveur ou citizen ID.",
+    "error_machine_not_found": "Ce distributeur n'existe plus.",
+    "error_machine_too_close": "Il y a déjà un distributeur à cet emplacement.",
+    "error_database": "Le distributeur n'a pas pu être enregistré. Vérifie la console du serveur.",
+    "error_not_for_sale": "Ce distributeur n'est pas à vendre.",
+    "error_purchase_disabled": "Les distributeurs ne peuvent pas être achetés pour le moment.",
+    "error_max_machines": "Tu ne peux pas posséder plus de %s distributeurs.",
+    "error_not_enough_money": "Tu n'as pas assez d'argent.",
+    "error_payment_not_accepted": "Ce distributeur n'accepte pas ce moyen de paiement.",
+    "error_too_far": "Tu es trop loin du distributeur.",
+    "error_machine_closed": "Ce distributeur est fermé.",
+    "error_machine_disabled": "Un admin a désactivé ce distributeur. Il ne peut pas être ouvert.",
+    "error_invalid_description": "La description peut contenir au maximum %s caractères.",
+    "error_invalid_schedule": "Les heures d'ouverture et de fermeture doivent être différentes et au format HH:MM.",
+    "error_invalid_threshold": "Le seuil de stock bas doit être compris entre 0 et %s.",
+    "error_invalid_payments": "Accepte au moins un moyen de paiement.",
+    "error_invalid_amount": "Saisis un montant entier entre $1 et $%s.",
+    "error_not_enough_balance": "Le distributeur n'a pas autant d'argent.",
+    "error_invalid_status": "Ici, un distributeur peut seulement être désactivé ou activé.",
+    "error_invalid_settings": "Valeur invalide pour %s.",
+    "error_import_empty": "Aucun distributeur à importer.",
+    "error_import_too_many": "Tu peux importer au maximum %s distributeurs à la fois.",
+    "error_import_entry": "Distributeur #%s : %s",
+    "error_import_duplicate": "Listé deux fois au même endroit.",
+    "error_invalid_items": "Liste d'articles invalide.",
+    "error_too_many_items": "Au maximum %s d'un même article par commande.",
+    "error_over_capacity": "%s dépasserait la capacité du distributeur de %s.",
+    "error_out_of_stock": "Pas assez de %s en stock.",
+    "error_cannot_carry": "Tu ne peux pas porter autant de %s.",
+    "error_player_not_found": "Aucun joueur avec cet ID n'est près du distributeur.",
+    "error_already_staff": "Ce joueur travaille déjà ici.",
+    "error_invalid_permissions": "Choisis au moins une permission que tu possèdes toi-même.",
+    "error_staff_not_found": "Cet employé ne travaille plus ici.",
+    "error_transfer_self": "Ce distributeur t'appartient déjà.",
+    "error_target_max_machines": "Ce joueur ne peut pas posséder plus de %s distributeurs.",
+    "error_machine_changed": "Le distributeur a été modifié entre-temps, réessaie.",
+
+    "ui": {
+        "common": {
+            "cancel": "Annuler",
+            "close": "Fermer",
+            "clear": "Vider",
+            "back": "Retour",
+            "done": "Terminé",
+            "reset": "Réinitialiser",
+            "total": "Total",
+            "decrease_quantity": "Diminuer la quantité",
+            "increase_quantity": "Augmenter la quantité",
+            "save_bar": {
+                "unsaved": "Tu as des modifications non enregistrées.",
+                "saving": "Enregistrement...",
+                "save_changes": "Enregistrer les modifications"
+            },
+            "time_picker": {
+                "title": "Choisir une heure",
+                "hour": "Heure",
+                "minute": "Minute"
+            },
+            "errors": {
+                "no_response": "Aucune réponse du serveur."
+            }
+        },
+        "shop": {
+            "default_name": "Distributeur",
+            "navbar": {
+                "products": "%s produits",
+                "all": "Tout",
+                "search": "Rechercher des produits..."
+            },
+            "empty": {
+                "title": "Aucun produit trouvé",
+                "description": "Essaie une autre catégorie ou un autre terme de recherche."
+            },
+            "item": {
+                "out_of_stock": "Rupture de stock",
+                "in_stock": "%s en stock",
+                "add": "Ajouter",
+                "remove": "Retirer"
+            },
+            "cart": {
+                "title": "Panier",
+                "empty_title": "Ton panier est vide",
+                "empty_description": "Ajoute des produits pour les voir ici.",
+                "each": "%s l'unité",
+                "remove_item": "Retirer l'article",
+                "checkout": "Passer au paiement"
+            },
+            "checkout": {
+                "title": "Paiement",
+                "payment_method": "Moyen de paiement",
+                "cash": "Espèces",
+                "bank": "Banque",
+                "available": "Disponible",
+                "not_accepted": "Non accepté ici",
+                "not_enough_money": "Pas assez d'argent",
+                "processing": "Traitement...",
+                "pay": "Payer %s"
+            }
+        },
+        "screen": {
+            "subtitle": "Choisis un produit et ajoute-le au panier",
+            "remove_from_cart": "Retirer du panier",
+            "empty": {
+                "title": "Aucun produit",
+                "description": "Ce distributeur n'a encore rien à vendre."
+            },
+            "bar": {
+                "items_one": "%s article",
+                "items_other": "%s articles",
+                "cart": "Panier",
+                "quick_order": "Commande rapide"
+            },
+            "cart": {
+                "title": "Panier",
+                "summary": "%s produits · %s articles",
+                "each": "%s l'unité",
+                "confirm": "Valider le panier"
+            },
+            "item": {
+                "add_to_cart": "Ajouter au panier",
+                "out_of_stock": "Rupture de stock"
+            }
+        },
+        "idle": {
+            "use_to_order": "Utiliser pour commander"
+        },
+        "purchase": {
+            "title": "Acheter le distributeur",
+            "unknown_area": "Zone inconnue",
+            "type": "Type",
+            "capacity": "Capacité",
+            "capacity_value": "%s par produit",
+            "sells_one": "Vend %s produit",
+            "sells_other": "Vend %s produits",
+            "price": "Prix",
+            "cash_balance": "Espèces",
+            "bank_balance": "Solde bancaire",
+            "not_enough_money": "Tu n'as pas assez d'argent.",
+            "buying": "Achat...",
+            "buy": "Acheter le distributeur",
+            "placement": {
+                "start_failed": "Le placement n'a pas pu démarrer."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "Annuler",
+                "import": "Importer",
+                "new_machine": "Nouveau distributeur",
+                "for_sale": "À vendre",
+                "no_area": "Aucune zone",
+                "teleport": "Se téléporter",
+                "player_fallback": "Joueur %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Vue d'ensemble",
+                    "description": "Statistiques des distributeurs sur tout le serveur."
+                },
+                "machines": {
+                    "label": "Distributeurs",
+                    "description": "Tous les distributeurs du serveur."
+                },
+                "settings": {
+                    "label": "Paramètres",
+                    "description": "Règles globales pour tous les distributeurs."
+                }
+            },
+            "header": {
+                "machine_settings": "Paramètres du distributeur",
+                "editing": "Modification de %s",
+                "machines": "Distributeurs",
+                "open_count": "%s ouverts",
+                "badge": "Admin"
+            },
+            "status": {
+                "open": "Ouvert",
+                "closed": "Fermé",
+                "for_sale": "À vendre",
+                "disabled": "Désactivé"
+            },
+            "models": {
+                "soda": "Distributeur de sodas",
+                "snack": "Distributeur de snacks",
+                "coffee": "Distributeur de café",
+                "water": "Distributeur d'eau",
+                "custom": "Distributeur personnalisé",
+                "glass": "Distributeur vitré",
+                "glass_ecola": "Distributeur vitré (eCola)",
+                "glass_sprunk": "Distributeur vitré (Sprunk)",
+                "glass_raine": "Distributeur vitré (Raine)",
+                "glass_junk": "Distributeur vitré (Junk)",
+                "glass_beanmachine": "Distributeur vitré (Bean Machine)",
+                "glass_phatchips": "Distributeur vitré (Phat Chips)",
+                "glass_egochaser": "Distributeur vitré (Ego Chaser)",
+                "glass_cluckinbell": "Distributeur vitré (Cluckin' Bell)",
+                "glass_burgershot": "Distributeur vitré (Burger Shot)",
+                "glass_247": "Distributeur vitré (24/7)"
+            },
+            "validation": {
+                "name_empty": "Le nom du distributeur ne peut pas être vide.",
+                "location_missing": "Définis un emplacement pour le distributeur.",
+                "products_empty": "Choisis au moins un produit."
+            },
+            "create": {
+                "title": "Nouveau distributeur",
+                "creating": "Création...",
+                "submit": "Créer le distributeur",
+                "error": "Le distributeur n'a pas pu être créé."
+            },
+            "dashboard": {
+                "empty_title": "Aucun distributeur",
+                "empty_description": "Crée ton premier distributeur ou importe des distributeurs exportés depuis un autre serveur.",
+                "stat_machines": "Distributeurs",
+                "stat_machines_open": "%s ouverts en ce moment",
+                "stat_revenue": "Revenus",
+                "stat_items_sold": "Articles vendus",
+                "stat_all_machines": "7 derniers jours, tous les distributeurs",
+                "stat_owners": "Propriétaires",
+                "stat_for_sale_one": "%s distributeur à vendre",
+                "stat_for_sale_other": "%s distributeurs à vendre",
+                "server_revenue": "Revenus du serveur",
+                "last_7_days": "7 derniers jours",
+                "no_sales": "Aucune vente ces 7 derniers jours",
+                "top_machines": "Meilleurs distributeurs",
+                "revenue_currency": "Revenus (%s)",
+                "no_top_machines": "Aucun distributeur n'a encore fait de vente",
+                "needs_attention": "À surveiller",
+                "machine_count": "%s distributeurs",
+                "all_fine": "Tous les distributeurs fonctionnent bien.",
+                "open": "Ouvrir",
+                "newest_machines": "Derniers distributeurs",
+                "view_all": "Tout voir",
+                "reason_disabled": "Désactivé par un admin",
+                "reason_low_stock": "Stock à %s %%",
+                "series_revenue": "Revenus",
+                "tooltip_sales": "%s ventes"
+            },
+            "detail": {
+                "back": "Retour aux distributeurs",
+                "machines": "Distributeurs",
+                "created": "Créé le %s",
+                "enable": "Activer",
+                "disable": "Désactiver",
+                "stat_balance": "Solde",
+                "stat_balance_hint": "Argent dans le distributeur",
+                "stat_revenue": "Revenus",
+                "stat_items_sold": "Articles vendus",
+                "last_7_days": "7 derniers jours",
+                "stat_stock": "Niveau de stock",
+                "stat_stock_hint": "Moyenne sur tous les produits",
+                "danger_zone": "Zone de danger",
+                "reset_balance": "Réinitialiser le solde",
+                "reset_balance_description": "Retire les %s actuellement dans le distributeur.",
+                "reset": "Réinitialiser",
+                "delete_machine": "Supprimer le distributeur",
+                "delete_machine_description": "Supprime définitivement le prop, son stock, ses commandes et son historique.",
+                "delete": "Supprimer",
+                "confirm_delete": "Cela supprime définitivement %s. Cette action est irréversible.",
+                "confirm_reset": "Cela retire %s de %s.",
+                "working": "En cours...",
+                "owner_fallback": "un joueur",
+                "error": "Une erreur est survenue."
+            },
+            "machines": {
+                "search_placeholder": "Rechercher un nom, un propriétaire ou une zone...",
+                "empty_search": "Aucun distributeur ne correspond à ta recherche",
+                "empty": "Aucun distributeur. Crée-en un ou importe-les.",
+                "show_on_map": "Voir sur la carte",
+                "manage": "Gérer",
+                "map": "Carte",
+                "map_hint": "Clique sur un blip pour gérer le distributeur",
+                "column_machine": "Distributeur",
+                "column_owner": "Propriétaire",
+                "column_status": "Statut",
+                "column_balance": "Solde"
+            },
+            "settings": {
+                "economy": "Économie",
+                "wholesale_multiplier": "Multiplicateur du prix de gros",
+                "wholesale_hint": "Les propriétaires paient %s %% du prix de base du fournisseur.",
+                "sales_tax": "Taxe sur les ventes (%)",
+                "max_machines": "Distributeurs par joueur",
+                "max_machines_description": "Nombre de distributeurs qu'un joueur peut posséder.",
+                "stock_orders": "Commandes de stock",
+                "delivery_minutes": "Minutes par étape de commande",
+                "delivery_hint": "Une commande prend environ %s minutes entre la préparation et la livraison.",
+                "defaults": "Valeurs par défaut des nouveaux distributeurs",
+                "default_capacity": "Capacité par produit",
+                "default_price": "Prix de vente par défaut",
+                "default_price_description": "Utilisé lors de la création d'un distributeur.",
+                "allow_purchase": "Les joueurs peuvent acheter des distributeurs",
+                "allow_purchase_description": "Les distributeurs mis en vente peuvent être achetés en jeu.",
+                "logging": "Journalisation",
+                "webhook": "URL du webhook Discord",
+                "log_purchases": "Journaliser les achats",
+                "log_purchases_description": "Envoyer chaque achat de distributeur au webhook.",
+                "log_admin_actions": "Journaliser les actions admin",
+                "log_admin_actions_description": "Création, modification et suppression de distributeurs.",
+                "share": "Partager les distributeurs",
+                "export": "Exporter les distributeurs",
+                "export_description": "Noms, modèles, emplacements, prix et produits au format JSON. Importe-les depuis la page Distributeurs sur un autre serveur.",
+                "export_button": "Exporter",
+                "error_webhook_invalid": "Le webhook doit être une URL de webhook Discord.",
+                "error_webhook_missing": "Ajoute une URL de webhook ou désactive la journalisation."
+            },
+            "export": {
+                "title": "Exporter les distributeurs",
+                "summary_one": "%s distributeur. Seuls les noms, modèles, emplacements, prix et produits sont inclus ; les propriétaires, soldes et stocks restent sur ce serveur.",
+                "summary_other": "%s distributeurs. Seuls les noms, modèles, emplacements, prix et produits sont inclus ; les propriétaires, soldes et stocks restent sur ce serveur.",
+                "output_label": "Distributeurs exportés",
+                "copy_failed": "Copie automatique impossible. Clique sur le texte et appuie sur Ctrl+C.",
+                "download": "Télécharger",
+                "copied": "Copié",
+                "copy": "Copier le JSON"
+            },
+            "import": {
+                "title": "Importer des distributeurs",
+                "description": "Colle un export de distributeurs provenant des Paramètres d'un autre serveur. Les distributeurs arrivent à vendre, sans propriétaire, argent ni stock.",
+                "load_file": "Charger un fichier",
+                "ready": "%s prêts à importer",
+                "skipped": "%s ignorés",
+                "importing": "Importation...",
+                "submit_one": "Importer %s distributeur",
+                "submit_other": "Importer %s distributeurs",
+                "error": "Les distributeurs n'ont pas pu être importés.",
+                "error_invalid_json": "Ce n'est pas un JSON valide.",
+                "error_empty": "Aucun distributeur trouvé dans ce JSON.",
+                "unnamed": "Distributeur %s",
+                "skip_name": "Nom manquant.",
+                "skip_location": "Emplacement manquant.",
+                "skip_occupied": "Un distributeur se trouve déjà ici.",
+                "skip_duplicate": "Listé deux fois dans ce JSON.",
+                "skip_products": "Aucun de ses produits n'existe sur ce serveur."
+            },
+            "form": {
+                "details": "Détails",
+                "name": "Nom du distributeur",
+                "name_placeholder": "ex. Legion Square #2",
+                "prop_model": "Modèle du prop",
+                "machine_type": "Type de distributeur",
+                "location": "Emplacement",
+                "placing": "Placement...",
+                "set_position": "Définir la position du distributeur",
+                "area": "Nom de la zone",
+                "area_placeholder": "ex. Legion Square",
+                "no_position": "Aucune position",
+                "ownership": "Propriété",
+                "owned_warning": "Appartient à %s. Saisir un nouveau propriétaire ou le mettre en vente le lui retire.",
+                "for_sale": "À vendre",
+                "for_sale_description": "Les joueurs peuvent acheter ce distributeur au lieu qu'il ait un propriétaire.",
+                "transfer_to": "Transférer à",
+                "owner_id": "ID du propriétaire",
+                "transfer_placeholder": "ID serveur ou citizen ID du nouveau propriétaire",
+                "owner_placeholder": "Laisse vide pour le mettre en vente",
+                "price": "Prix de vente (%s)",
+                "products": "Produits",
+                "selected": "%s sélectionné(s)",
+                "select_all": "Tout sélectionner",
+                "clear": "Vider",
+                "sell_product": "Vendre %s"
+            },
+            "placement": {
+                "title": "Position du distributeur",
+                "heading": "Orientation",
+                "move": "Déplacer",
+                "rotate": "Pivoter",
+                "snap": "Poser au sol",
+                "key_left_alt": "Alt gauche",
+                "walk": "marcher et regarder autour",
+                "cursor": "revenir au curseur",
+                "confirm": "Confirmer"
+            },
+            "map": {
+                "zoom_in": "Zoom avant",
+                "zoom_out": "Zoom arrière"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "Annuler",
+                "save": "Enregistrer",
+                "saving": "Enregistrement...",
+                "working": "En cours...",
+                "player_id": "ID du joueur",
+                "error": "Une erreur est survenue."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Tableau de bord",
+                    "description": "Aperçu des revenus et des ventes de ce distributeur."
+                },
+                "products": {
+                    "label": "Produits",
+                    "description": "Niveaux de stock et prix."
+                },
+                "restock": {
+                    "label": "Réapprovisionner",
+                    "description": "Commander du stock auprès du fournisseur."
+                },
+                "transactions": {
+                    "label": "Transactions",
+                    "description": "Tous les achats effectués sur ce distributeur."
+                },
+                "cash": {
+                    "label": "Caisse",
+                    "description": "Retirer ou déposer de l'argent dans le distributeur."
+                },
+                "staff": {
+                    "label": "Personnel",
+                    "description": "Embauche des employés et choisis ce qu'ils peuvent faire."
+                },
+                "settings": {
+                    "label": "Paramètres",
+                    "description": "Nom et disponibilité du distributeur."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "Voir les stats",
+                    "description": "Voir les revenus, les ventes et les meilleurs produits."
+                },
+                "products_prices": {
+                    "label": "Modifier les prix",
+                    "description": "Définir le prix payé par les clients."
+                },
+                "restock_order": {
+                    "label": "Commander du stock",
+                    "description": "Acheter du stock au fournisseur avec le solde du distributeur."
+                },
+                "transactions_view": {
+                    "label": "Voir les ventes",
+                    "description": "Voir tous les achats effectués sur le distributeur."
+                },
+                "cash_deposit": {
+                    "label": "Déposer de l'argent",
+                    "description": "Mettre ses propres espèces dans le distributeur."
+                },
+                "cash_withdraw": {
+                    "label": "Retirer de l'argent",
+                    "description": "Retirer de l'argent du solde du distributeur."
+                },
+                "cash_history": {
+                    "label": "Voir l'historique",
+                    "description": "Voir le solde et les mouvements d'argent passés."
+                },
+                "staff_view": {
+                    "label": "Voir le personnel",
+                    "description": "Voir qui travaille ici et avec quel rôle."
+                },
+                "staff_manage": {
+                    "label": "Gérer le personnel",
+                    "description": "Embaucher, licencier et modifier les permissions qu'on possède soi-même."
+                },
+                "settings_general": {
+                    "label": "Général",
+                    "description": "Renommer le distributeur et l'ouvrir ou le fermer."
+                },
+                "settings_hours": {
+                    "label": "Horaires d'ouverture",
+                    "description": "Modifier le planning d'ouverture et de fermeture."
+                },
+                "settings_stock": {
+                    "label": "Stock et alertes",
+                    "description": "Seuil de stock bas, réapprovisionnement auto et notifications."
+                },
+                "settings_payments": {
+                    "label": "Paiements",
+                    "description": "Choisir les moyens de paiement acceptés."
+                }
+            },
+            "roles": {
+                "owner": "Propriétaire",
+                "employee": "Employé",
+                "supervisor": "Superviseur",
+                "manager": "Gérant",
+                "custom": "Personnalisé"
+            },
+            "header": {
+                "open": "Ouvert",
+                "closed": "Fermé",
+                "balance": "Solde",
+                "no_access_title": "Aucun accès",
+                "no_access_description": "Demande au propriétaire de te donner des permissions pour ce distributeur."
+            },
+            "no_products": {
+                "title": "Aucun produit",
+                "description": "Ce distributeur n'a rien à vendre. Dès qu'un admin y ajoute des produits, les ventes, le stock et les commandes apparaissent ici."
+            },
+            "dashboard": {
+                "today_revenue": "Revenus du jour",
+                "vs_yesterday": "vs hier",
+                "weekly_revenue": "Revenus de la semaine",
+                "last_7_days": "7 derniers jours",
+                "items_sold": "Articles vendus",
+                "low_stock": "Stock bas",
+                "products_suffix": "produits",
+                "low_stock_hint": "%s ou moins restants",
+                "revenue": "Revenus",
+                "no_sales_week": "Aucune vente ces 7 derniers jours",
+                "top_products": "Meilleurs produits",
+                "units_sold": "Unités vendues",
+                "units_sold_tooltip": "unités vendues",
+                "nothing_sold": "Rien de vendu pour l'instant",
+                "recent_sales": "Ventes récentes",
+                "view_all": "Tout voir",
+                "no_sales": "Aucune vente pour l'instant.",
+                "sales_count": "%s ventes"
+            },
+            "products": {
+                "empty": "Aucun produit",
+                "product": "Produit",
+                "category": "Catégorie",
+                "sold": "Vendus",
+                "stock": "Stock",
+                "price": "Prix (%s)",
+                "low_stock": "Stock bas"
+            },
+            "restock": {
+                "catalog": "Catalogue fournisseur",
+                "low_stock_only": "Stock bas uniquement",
+                "all_stocked_title": "Tout est en stock",
+                "all_stocked_description": "Aucun produit ne manque pour le moment.",
+                "incoming": "+%s en route",
+                "per_unit": "%s l'unité",
+                "decrease": "Diminuer la quantité",
+                "increase": "Augmenter la quantité",
+                "fill": "Remplir",
+                "summary": "Récapitulatif",
+                "clear": "Vider",
+                "summary_empty": "Choisis des quantités dans le catalogue pour créer une commande.",
+                "machine_balance": "Solde du distributeur",
+                "order_total": "Total de la commande",
+                "balance_after": "Solde après",
+                "ordering": "Commande...",
+                "place_order": "Commander",
+                "orders": "Commandes",
+                "in_progress": "%s en cours",
+                "insufficient": "Pas assez d'argent dans le distributeur pour cette commande.",
+                "failed": "La commande a échoué."
+            },
+            "orders": {
+                "preparing": "En préparation",
+                "prepared": "Prête",
+                "shipping": "En route",
+                "completed": "Terminée",
+                "cancelled": "Annulée",
+                "status_aria": "Statut de la commande : %s",
+                "pick_up": "Récupérer"
+            },
+            "transactions": {
+                "empty": "Aucune vente",
+                "time": "Heure",
+                "buyer": "Acheteur",
+                "product": "Produit",
+                "quantity": "Qté",
+                "total": "Total"
+            },
+            "cash": {
+                "balance": "Solde",
+                "balance_hint": "Disponible dans le distributeur",
+                "deposited": "Déposé",
+                "withdrawn": "Retiré",
+                "all_time": "Depuis le début",
+                "amount": "Montant (%s)",
+                "all": "Tout",
+                "withdraw_hint": "Tu peux retirer jusqu'à %s.",
+                "deposit_hint": "L'argent est pris sur tes espèces. Tu as %s.",
+                "processing": "Traitement...",
+                "withdraw": "Retirer",
+                "deposit": "Déposer",
+                "stock_order": "Commande de stock",
+                "history": "Historique de caisse",
+                "movements": "%s mouvements",
+                "no_movements": "Aucun mouvement d'argent",
+                "not_enough_balance": "Pas assez d'argent dans le distributeur.",
+                "not_enough_cash": "Tu n'as pas autant d'espèces.",
+                "failed": "La transaction a échoué.",
+                "by_you": "Toi"
+            },
+            "staff": {
+                "search": "Rechercher...",
+                "hire": "Embaucher",
+                "empty": "Aucun personnel",
+                "online": "En ligne",
+                "offline": "Hors ligne",
+                "you": "Toi",
+                "now": "Maintenant",
+                "never": "Jamais",
+                "edit_permissions": "Modifier les permissions",
+                "fire": "Licencier",
+                "hire_title": "Embaucher du personnel",
+                "edit_title": "Modifier les permissions",
+                "server_id": "ID serveur",
+                "edit_description": "Ce que %s peut faire chez %s.",
+                "role": "Rôle",
+                "role_hint": "Choisis Personnalisé pour sélectionner les permissions une par une.",
+                "all": "Toutes",
+                "none": "Aucune",
+                "hire_hint": "Le joueur doit être à proximité. Le personnel peut ouvrir ce panneau mais ne peut jamais vendre ni transférer le distributeur.",
+                "fire_title": "Licencier l'employé",
+                "fire_description": "%s perd immédiatement l'accès à %s.",
+                "employee": "Employé",
+                "hired": "Embauché",
+                "last_online": "Dernière connexion",
+                "player_fallback": "Joueur %s"
+            },
+            "settings": {
+                "general": "Général",
+                "name": "Nom du distributeur",
+                "description": "Description",
+                "description_placeholder": "Visible par les clients",
+                "open": "Ouvert aux clients",
+                "open_description": "Les distributeurs fermés ne peuvent pas être utilisés par les autres joueurs.",
+                "hours": "Horaires d'ouverture",
+                "schedule": "Utiliser un planning",
+                "schedule_description": "Ouvrir et fermer automatiquement selon l'heure en jeu.",
+                "opens_at": "Ouvre à",
+                "closes_at": "Ferme à",
+                "schedule_on": "Ouvert de %s à %s.",
+                "schedule_off": "Seul l'interrupteur d'ouverture contrôle la disponibilité.",
+                "stock": "Stock et alertes",
+                "low_stock_threshold": "Seuil de stock bas",
+                "auto_restock": "Réapprovisionnement auto",
+                "auto_restock_description": "Commander jusqu'à la capacité quand un produit atteint le seuil.",
+                "low_stock_alerts": "Alertes de stock bas",
+                "low_stock_alerts_description": "Recevoir une notification quand le stock est bas.",
+                "sale_notifications": "Notifications de vente",
+                "sale_notifications_description": "Recevoir une notification à chaque achat.",
+                "payments": "Paiements",
+                "cash": "Espèces",
+                "cash_description": "Les clients paient avec leurs espèces.",
+                "accept_cash": "Accepter les espèces",
+                "bank": "Carte bancaire",
+                "bank_description": "Les clients paient depuis leur compte bancaire.",
+                "accept_bank": "Accepter la carte bancaire",
+                "danger_zone": "Zone de danger",
+                "transfer_title": "Transférer la propriété",
+                "transfer_description": "Donne ce distributeur à un autre joueur. Tu perds tout accès.",
+                "transfer": "Transférer",
+                "sell": "Vendre le distributeur",
+                "sell_description": "Revends le distributeur. Le stock et les commandes en cours sont perdus.",
+                "sell_confirm": "Cela vend définitivement %s. Cette action est irréversible.",
+                "transfer_prompt": "Saisis l'ID serveur du joueur qui possédera ce distributeur.",
+                "name_empty": "Le nom du distributeur ne peut pas être vide.",
+                "payment_required": "Accepte au moins un moyen de paiement.",
+                "same_times": "Les heures d'ouverture et de fermeture ne peuvent pas être identiques."
+            }
+        }
+    }
+}

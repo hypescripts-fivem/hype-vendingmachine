@@ -1,35 +1,24 @@
 local Config <const> = require 'config.config'
 
--- Arm machines (Config.Machines `arm`): their stock is shown on the shelves and olentrix_vending's arm vends each unit sold
 local VENDING <const> = "olentrix_vending"
 
---- @type table<string, CatalogProduct>
 local catalog = {}
 for _, product in ipairs(Config.Products) do
     catalog[product.id] = product
 end
 
---- @param vendId integer
 local function collect(vendId)
     TriggerServerEvent("hype-vendingmachine:server:vend-collect", vendId)
-    Debug("info", "collecting vend %s", vendId)
 end
 
---- @param data MachineProp
---- @param item string
---- @return integer
-local function stockOf(data, item)
-    for _, product in ipairs(data.products) do
+local function stockOf(machine, item)
+    for _, product in ipairs(machine.stock or {}) do
         if product.item == item then return product.stock end
     end
 
     return 0
 end
 
---- @param machine MachineEntry
---- @param item string
---- @param slot string
---- @return ShelfLane?
 local function newLane(machine, item, slot)
     local product = catalog[item]
     local model = product and product.model and joaat(product.model)
@@ -53,10 +42,6 @@ local function newLane(machine, item, slot)
     }
 end
 
---- Spawns or deletes props so the lane shows `count` of them, then puts them in place from the front
---- @param machine MachineEntry
---- @param lane ShelfLane
---- @param count integer
 local function layout(machine, lane, count)
     local entities = lane.entities
     count = math.min(count, lane.capacity)
@@ -69,8 +54,7 @@ local function layout(machine, lane, count)
         local entity = machine.entity
         local ok = pcall(lib.requestModel, lane.model)
 
-        -- The prop went away while the model loaded
-        if not ok or machine.entity ~= entity or not entity then return end
+        if not ok or not entity or machine.entity ~= entity then return end
 
         local coords = GetEntityCoords(entity)
         for index = #entities + 1, count do
@@ -88,7 +72,6 @@ local function layout(machine, lane, count)
     end
 end
 
---- @param shelf Shelf
 local function deleteLanes(shelf)
     for _, lane in pairs(shelf.lanes) do
         for _, prop in ipairs(lane.entities) do
@@ -99,15 +82,12 @@ local function deleteLanes(shelf)
     shelf.lanes = {}
 end
 
---- Matches the shelves to the machine's products and stock. A product change (admin edit) rebuilds the lanes,
---- after the arm is done if it's working
---- @param machine MachineEntry
 function RefreshShelf(machine)
     local shelf = machine.shelf
-    if not shelf then return end
+    if not shelf or not machine.stock then return end
 
     local items = {}
-    for index, product in ipairs(machine.data.products) do
+    for index, product in ipairs(machine.stock) do
         items[index] = product.item
     end
 
@@ -134,14 +114,12 @@ function RefreshShelf(machine)
     end
 
     for item, lane in pairs(shelf.lanes) do
-        layout(machine, lane, stockOf(machine.data, item) + (shelf.pending[item] or 0))
+        layout(machine, lane, stockOf(machine, item) + (shelf.pending[item] or 0))
     end
 end
 
---- Puts the arm in a freshly spawned arm machine and fills its shelves
---- @param machine MachineEntry
 function SetupShelf(machine)
-    if not ArmModels[machine.data.model] or GetResourceState(VENDING) ~= "started" then return end
+    if GetResourceState(VENDING) ~= "started" then return end
 
     local entity = machine.entity
 
@@ -150,19 +128,18 @@ function SetupShelf(machine)
         return
     end
 
-    -- The prop went away while the arm's models loaded
+    local stock = lib.callback.await("hype-vendingmachine:server:get-stock", false, machine.data.id)
+
     if machine.entity ~= entity then
         exports[VENDING]:RemoveArm(entity)
         return
     end
 
+    machine.stock = stock
     machine.shelf = { key = "", lanes = {}, queue = {}, pending = {}, vending = false }
     RefreshShelf(machine)
-    Debug("info", "set up the shelves of machine %s", machine.data.id)
 end
 
---- Before the prop is deleted: the props and arm go, and this player's waiting vends are collected now
---- @param machine MachineEntry
 function ClearShelf(machine)
     local shelf = machine.shelf
     if not shelf then return end
@@ -180,9 +157,31 @@ function ClearShelf(machine)
     end
 end
 
---- Works through the queue, one unit at a time: the arm takes the front prop of the lane to the tray
---- @param machine MachineEntry
---- @param shelf Shelf
+local function vendUnit(machine, shelf, step)
+    local lane = shelf.lanes[step.item]
+    local prop = table.remove(lane.entities, 1)
+    shelf.pending[step.item] = shelf.pending[step.item] - 1
+
+    if prop then
+        local dropped = promise.new()
+
+        local started = exports[VENDING]:Vend(machine.entity, lane.slot, prop, function(held)
+            if held and DoesEntityExist(held) then DeleteObject(held) end
+            dropped:resolve()
+        end)
+
+        if started then
+            Citizen.Await(dropped)
+        else
+            DeleteObject(prop)
+        end
+    end
+
+    if machine.shelf == shelf then
+        layout(machine, lane, stockOf(machine, step.item) + shelf.pending[step.item])
+    end
+end
+
 local function runQueue(machine, shelf)
     if shelf.vending then return end
     shelf.vending = true
@@ -194,44 +193,16 @@ local function runQueue(machine, shelf)
             if step.collect then
                 collect(step.vendId)
             else
-                local lane = shelf.lanes[step.item]
-                local prop = table.remove(lane.entities, 1)
-                shelf.pending[step.item] = shelf.pending[step.item] - 1
-
-                if prop then
-                    local dropped = promise.new()
-
-                    -- The dropped prop is deleted once the arm is back home
-                    local started = exports[VENDING]:Vend(machine.entity, lane.slot, prop, function(held)
-                        if held and DoesEntityExist(held) then DeleteObject(held) end
-                        dropped:resolve()
-                    end)
-
-                    if started then
-                        Citizen.Await(dropped)
-                    else
-                        DeleteObject(prop)
-                    end
-                end
-
-                if machine.shelf == shelf then
-                    layout(machine, lane, stockOf(machine.data, step.item) + shelf.pending[step.item])
-                end
+                vendUnit(machine, shelf, step)
             end
         end
 
         shelf.vending = false
 
-        -- Products changed while the arm was working
         if machine.shelf == shelf then RefreshShelf(machine) end
     end)
 end
 
---- Queues the units of a checkout for the arm. The buyer collects after its last unit, or right away without an arm
---- @param machine MachineEntry?
---- @param vendId integer
---- @param buyer integer Server id
---- @param lines SaleLine[]
 function QueueVend(machine, vendId, buyer, lines)
     local mine = buyer == cache.serverId
     local shelf = machine and machine.shelf
@@ -255,14 +226,9 @@ function QueueVend(machine, vendId, buyer, lines)
         shelf.queue[#shelf.queue + 1] = { vendId = vendId, collect = true }
     end
 
-    Debug("info", "queued vend %s on machine %s (%d step(s) waiting)", vendId, machine.data.id, #shelf.queue)
-
-    runQueue(machine --[[@as MachineEntry]], shelf)
+    runQueue(machine, shelf)
 end
 
---- Arm machines close the page after a checkout, so the buyer can watch the arm
---- @param machine MachineEntry?
---- @return boolean
 function HasShelf(machine)
     return machine ~= nil and machine.shelf ~= nil
 end

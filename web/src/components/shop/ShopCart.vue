@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between px-4 py-3">
             <div class="flex items-center gap-2">
                 <ShoppingCart class="size-4 text-text-muted" />
-                <h2 class="text-sm font-semibold text-text-primary">Cart</h2>
+                <h2 class="text-sm font-semibold text-text-primary">{{ t("shop.cart.title") }}</h2>
                 <Badge variant="muted">{{ shop.cartCount }}</Badge>
             </div>
             <button
@@ -12,7 +12,7 @@
                 class="text-xs text-text-faint transition-colors hover:text-text-primary"
                 @click="shop.clearCart"
             >
-                Clear
+                {{ t("common.clear") }}
             </button>
         </div>
 
@@ -21,8 +21,8 @@
         <div class="min-h-0 flex-1 overflow-y-auto p-3">
             <EmptyState
                 v-if="!shop.cart.length"
-                title="Your cart is empty"
-                description="Add products to see them here."
+                :title="t('shop.cart.empty_title')"
+                :description="t('shop.cart.empty_description')"
                 :icon="ShoppingCart"
                 class="h-full bg-transparent border-none"
             />
@@ -46,11 +46,11 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-medium text-text-primary">{{ item.product.name }}</p>
-                            <p class="text-xs tabular-nums text-text-faint">{{ formatMoney(item.product.price) }} each</p>
+                            <p class="text-xs tabular-nums text-text-faint">{{ t("shop.cart.each", formatMoney(item.product.price)) }}</p>
                         </div>
                         <button
                             type="button"
-                            aria-label="Remove item"
+                            :aria-label="t('shop.cart.remove_item')"
                             class="text-text-faint transition-colors hover:text-danger"
                             @click="shop.removeFromCart(item.product.id)"
                         >
@@ -62,7 +62,7 @@
                         <div class="flex h-7 items-stretch overflow-hidden rounded-md border border-border">
                             <button
                                 type="button"
-                                aria-label="Decrease quantity"
+                                :aria-label="t('common.decrease_quantity')"
                                 class="flex w-7 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary"
                                 @click="shop.setQuantity(item.product.id, item.quantity - 1)"
                             >
@@ -73,7 +73,7 @@
                             </output>
                             <button
                                 type="button"
-                                aria-label="Increase quantity"
+                                :aria-label="t('common.increase_quantity')"
                                 :disabled="item.quantity >= item.product.stock"
                                 class="flex w-7 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-40"
                                 @click="shop.setQuantity(item.product.id, item.quantity + 1)"
@@ -93,13 +93,13 @@
 
         <div class="flex flex-col gap-3 p-4">
             <div class="flex items-center justify-between">
-                <span class="text-xs uppercase tracking-wider text-text-faint">Total</span>
+                <span class="text-xs uppercase tracking-wider text-text-faint">{{ t("common.total") }}</span>
                 <span class="text-lg font-semibold tabular-nums text-text-primary">
                     {{ formatMoney(shop.cartTotal) }}
                 </span>
             </div>
             <Button class="w-full" :disabled="!shop.cart.length || shop.checkingOut" @click="paying = true">
-                Checkout
+                {{ t("shop.cart.checkout") }}
             </Button>
         </div>
 
@@ -114,6 +114,7 @@ import { Badge, Button, EmptyState, Separator } from "@vezironi/veyra-ui";
 import { useShopStore } from "@/stores";
 import CheckoutModal from "./CheckoutModal.vue";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 

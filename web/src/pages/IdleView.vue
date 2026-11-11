@@ -18,7 +18,7 @@
             <div class="flex size-32 items-center justify-center rounded-3xl border border-border bg-bg-surface">
                 <ShoppingCart class="size-16 text-text-primary" />
             </div>
-            <p class="text-6xl font-semibold text-text-primary">Use to order</p>
+            <p class="text-6xl font-semibold text-text-primary">{{ t("idle.use_to_order") }}</p>
         </div>
     </main>
 </template>
@@ -28,6 +28,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { ShoppingCart } from "@lucide/vue";
 import { useShopStore } from "@/stores";
 import { asList, FetchNUI } from "@/utils";
+import { t } from "@/utils/locale";
 
 // How long each product image stays before the next one fades in
 const IMAGE_MS = 4000;

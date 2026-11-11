@@ -19,7 +19,7 @@
                         <p class="text-sm font-medium text-text-primary">{{ owner.settings.name }}</p>
                         <p class="flex items-center justify-end gap-1.5 text-xs" :class="owner.settings.open ? 'text-success' : 'text-text-faint'">
                             <span class="size-1.5 rounded-full bg-current" />
-                            {{ owner.settings.open ? "Open" : "Closed" }}
+                            {{ owner.settings.open ? t("owner.header.open") : t("owner.header.closed") }}
                         </p>
                     </div>
 
@@ -27,7 +27,7 @@
                         <Separator orientation="vertical" class="h-8" />
 
                         <div class="text-right leading-tight">
-                            <p class="text-[10px] uppercase tracking-wider text-text-faint">Balance</p>
+                            <p class="text-[10px] uppercase tracking-wider text-text-faint">{{ t("owner.header.balance") }}</p>
                             <p class="text-sm font-semibold tabular-nums text-text-primary">
                                 {{ formatMoney(owner.balance) }}
                             </p>
@@ -40,8 +40,8 @@
                 <component :is="pages[current.value]" v-if="current" />
                 <EmptyState
                     v-else
-                    title="No access"
-                    description="Ask the owner to give you permissions for this machine."
+                    :title="t('owner.header.no_access_title')"
+                    :description="t('owner.header.no_access_description')"
                     :icon="Lock"
                 />
             </section>
@@ -64,6 +64,7 @@ import OwnerSettings from "@/components/owner/OwnerSettings.vue";
 import { sections } from "@/components/owner/sections";
 import { useOwnerStore, type OwnerSection } from "@/stores/owner";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const owner = useOwnerStore();
 
@@ -78,7 +79,9 @@ const pages: Record<OwnerSection, Component> = {
 };
 
 // A section shows up when the viewer has at least one of its permissions
-const visibleSections = computed(() => sections.filter((section) => owner.canSection(section.value)));
+const visibleSections = computed(() => sections
+    .filter((section) => owner.canSection(section.value))
+    .map((section) => ({ ...section, label: t(section.label), description: t(section.description) })));
 
 const current = computed(() => visibleSections.value.find((section) => section.value === owner.section));
 

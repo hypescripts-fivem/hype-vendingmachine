@@ -4,14 +4,14 @@
     <div v-else class="grid grid-cols-5 items-start gap-3">
         <section class="col-span-3 rounded-2xl border border-border bg-bg-surface">
             <header class="flex items-center justify-between px-4 py-3">
-                <h3 class="text-sm font-semibold text-text-primary">Supplier catalog</h3>
-                <Switch v-model="lowStockOnly" label="Low stock only" />
+                <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.restock.catalog") }}</h3>
+                <Switch v-model="lowStockOnly" :label="t('owner.restock.low_stock_only')" />
             </header>
 
             <EmptyState
                 v-if="!catalog.length"
-                title="Everything is stocked"
-                description="No products are running low right now."
+                :title="t('owner.restock.all_stocked_title')"
+                :description="t('owner.restock.all_stocked_description')"
                 :icon="PackageCheck"
                 class="border-none bg-transparent"
             />
@@ -24,15 +24,15 @@
                         <p class="truncate text-sm font-medium text-text-primary">{{ product.name }}</p>
                         <p class="text-xs text-text-faint">
                             <span class="tabular-nums" :class="stockClass(product.stock)">{{ product.stock }} / {{ owner.capacity }}</span>
-                            <span v-if="owner.incoming[product.id]" class="tabular-nums text-info"> +{{ owner.incoming[product.id] }} incoming</span>
-                            · {{ formatMoney(unitCost(product.id)) }} per unit
+                            <span v-if="owner.incoming[product.id]" class="tabular-nums text-info"> {{ t("owner.restock.incoming", owner.incoming[product.id]!) }}</span>
+                            · {{ t("owner.restock.per_unit", formatMoney(unitCost(product.id))) }}
                         </p>
                     </div>
 
                     <div class="flex h-8 items-stretch overflow-hidden rounded-lg border border-border">
                         <button
                             type="button"
-                            aria-label="Decrease quantity"
+                            :aria-label="t('owner.restock.decrease')"
                             :disabled="quantity(product.id) < 1"
                             class="flex w-8 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-40"
                             @click="setQuantity(product, quantity(product.id) - 1)"
@@ -44,7 +44,7 @@
                         </output>
                         <button
                             type="button"
-                            aria-label="Increase quantity"
+                            :aria-label="t('owner.restock.increase')"
                             :disabled="quantity(product.id) >= space(product)"
                             class="flex w-8 items-center justify-center text-text-muted transition-colors hover:bg-bg-muted-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-40"
                             @click="setQuantity(product, quantity(product.id) + 1)"
@@ -54,7 +54,7 @@
                     </div>
 
                     <Button variant="outline" size="sm" :disabled="quantity(product.id) >= space(product)" @click="setQuantity(product, space(product))">
-                        Fill
+                        {{ t("owner.restock.fill") }}
                     </Button>
 
                     <span class="w-14 text-right text-sm font-semibold tabular-nums text-text-primary">
@@ -67,20 +67,20 @@
         <div class="col-span-2 flex flex-col gap-3">
             <section class="rounded-2xl border border-border bg-bg-surface">
                 <header class="flex items-center justify-between px-4 py-3">
-                    <h3 class="text-sm font-semibold text-text-primary">Order summary</h3>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.restock.summary") }}</h3>
                     <button
                         v-if="orderItems.length"
                         type="button"
                         class="text-xs text-text-faint transition-colors hover:text-text-primary"
                         @click="clear"
                     >
-                        Clear
+                        {{ t("owner.restock.clear") }}
                     </button>
                 </header>
 
                 <div class="border-t border-border px-4 py-3">
                     <p v-if="!orderItems.length" class="py-4 text-center text-xs text-text-faint">
-                        Pick quantities from the catalog to build an order.
+                        {{ t("owner.restock.summary_empty") }}
                     </p>
                     <ul v-else class="flex flex-col gap-1.5">
                         <li v-for="item in orderItems" :key="item.productId" class="flex justify-between text-sm">
@@ -95,22 +95,22 @@
                 <!-- Staff without cash.history only see the total; the error below still says when the balance is short -->
                 <dl v-if="owner.can('cash.history')" class="flex flex-col gap-1.5 border-t border-border px-4 py-3 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-text-muted">Machine balance</dt>
+                        <dt class="text-text-muted">{{ t("owner.restock.machine_balance") }}</dt>
                         <dd class="tabular-nums text-text-primary">{{ formatMoney(owner.balance) }}</dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-text-muted">Order total</dt>
+                        <dt class="text-text-muted">{{ t("owner.restock.order_total") }}</dt>
                         <dd class="tabular-nums text-text-primary">−{{ formatMoney(total) }}</dd>
                     </div>
                     <div class="flex justify-between font-semibold">
-                        <dt class="text-text-primary">Balance after</dt>
+                        <dt class="text-text-primary">{{ t("owner.restock.balance_after") }}</dt>
                         <dd class="tabular-nums" :class="insufficient ? 'text-danger' : 'text-text-primary'">
                             {{ formatMoney(owner.balance - total) }}
                         </dd>
                     </div>
                 </dl>
                 <dl v-else class="flex justify-between border-t border-border px-4 py-3 text-sm font-semibold">
-                    <dt class="text-text-primary">Order total</dt>
+                    <dt class="text-text-primary">{{ t("owner.restock.order_total") }}</dt>
                     <dd class="tabular-nums text-text-primary">{{ formatMoney(total) }}</dd>
                 </dl>
 
@@ -121,15 +121,15 @@
                     </p>
                     <Button class="w-full" :disabled="!orderItems.length || insufficient || owner.ordering" @click="placeOrder">
                         <Truck class="size-4" />
-                        {{ owner.ordering ? "Ordering..." : "Place order" }}
+                        {{ owner.ordering ? t("owner.restock.ordering") : t("owner.restock.place_order") }}
                     </Button>
                 </div>
             </section>
 
             <section class="rounded-2xl border border-border bg-bg-surface">
                 <header class="flex items-baseline justify-between px-4 py-3">
-                    <h3 class="text-sm font-semibold text-text-primary">Orders</h3>
-                    <span class="text-xs text-text-faint">{{ owner.activeOrders.length }} in progress</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.restock.orders") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("owner.restock.in_progress", owner.activeOrders.length) }}</span>
                 </header>
                 <ul class="max-h-96 divide-y divide-border overflow-y-auto border-t border-border">
                     <StockOrderCard v-for="order in sortedOrders" :key="order.id" :order="order" />
@@ -149,6 +149,7 @@ import StockOrderCard from "./StockOrderCard.vue";
 import { useShopStore, type Product } from "@/stores";
 import { useOwnerStore } from "@/stores/owner";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 const owner = useOwnerStore();
@@ -173,7 +174,7 @@ const sortedOrders = computed(() => [
 const insufficient = computed(() => total.value > owner.balance);
 
 watch(insufficient, (value) => {
-    error.value = value ? "Not enough money in the machine for this order." : undefined;
+    error.value = value ? t("owner.restock.insufficient") : undefined;
 });
 
 function unitCost(productId: string): number {
@@ -209,7 +210,7 @@ async function placeOrder() {
     if (response?.success) {
         clear();
     } else if (response) {
-        error.value = response.error ?? "Order failed.";
+        error.value = response.error ?? t("owner.restock.failed");
     }
 };
 </script>

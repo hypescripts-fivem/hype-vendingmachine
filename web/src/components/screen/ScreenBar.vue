@@ -1,17 +1,17 @@
 <template>
     <footer class="flex items-center gap-3 border-t border-border bg-bg-surface px-6 py-5">
         <div class="min-w-0 flex-1 leading-tight">
-            <p class="text-xl text-text-muted">{{ shop.cartCount }} {{ shop.cartCount === 1 ? "item" : "items" }}</p>
+            <p class="text-xl text-text-muted">{{ shop.cartCount === 1 ? t("screen.bar.items_one", shop.cartCount) : t("screen.bar.items_other", shop.cartCount) }}</p>
             <p class="text-3xl font-semibold tabular-nums text-text-primary">{{ formatMoney(shop.cartTotal) }}</p>
         </div>
         <Button variant="secondary" size="lg" class="text-xl" :disabled="!shop.cart.length" @click="emit('cart')">
             <ShoppingCart class="size-5" />
-            Cart
+            {{ t("screen.bar.cart") }}
             <Badge variant="muted" class="text-base">{{ shop.cartCount }}</Badge>
         </Button>
         <Button size="lg" class="text-xl" :disabled="!shop.cart.length || shop.checkingOut" @click="emit('quick')">
             <Zap class="size-5" />
-            Quick order
+            {{ t("screen.bar.quick_order") }}
         </Button>
     </footer>
 </template>
@@ -21,6 +21,7 @@ import { ShoppingCart, Zap } from "@lucide/vue";
 import { Badge, Button } from "@vezironi/veyra-ui";
 import { useShopStore } from "@/stores";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const emit = defineEmits<{
     cart: [];

@@ -6,8 +6,8 @@
             <section class="w-3/4 overflow-y-auto p-4">
                 <EmptyState
                     v-if="!shop.filteredProducts.length"
-                    title="No products found"
-                    description="Try a different category or search term."
+                    :title="t('shop.empty.title')"
+                    :description="t('shop.empty.description')"
                     :icon="PackageSearch"
                     class="h-full"
                 />
@@ -39,6 +39,7 @@ import ShopNavbar from "@/components/shop/ShopNavbar.vue";
 import ShopCart from "@/components/shop/ShopCart.vue";
 import ShopItem from "@/components/shop/ShopItem.vue";
 import { useShopStore } from "@/stores";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 </script>

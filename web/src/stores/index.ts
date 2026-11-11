@@ -48,7 +48,7 @@ const mockVending: VendingData = {
 };
 
 export const useShopStore = defineStore("shop", () => {
-    const name = ref("Vending Machine");
+    const name = ref("");
     // The machine's products. The owner panel reuses this list for prices and stock
     const products = ref<Product[]>([]);
     const cart = ref<CartItem[]>([]);
@@ -122,7 +122,7 @@ export const useShopStore = defineStore("shop", () => {
         search.value = "";
 
         if (response.success && response.data) {
-            name.value = response.data.name || "Vending Machine";
+            name.value = response.data.name || "";
             products.value = asList(response.data.products);
             payments.value = { cash: response.data.payments?.cash === true, bank: response.data.payments?.bank === true };
             wallet.value = { cash: asNumber(response.data.wallet?.cash), bank: asNumber(response.data.wallet?.bank) };

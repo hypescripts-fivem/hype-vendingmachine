@@ -1,15 +1,14 @@
 local Config <const> = require 'config.config'
+local Cargo <const> = Config.Cargo
 
---- Pickups in progress, by player
---- @type table<integer, CargoJob>
+local propModels <const> = {
+    [joaat(Cargo.model) & 0xFFFFFFFF] = true,
+    [joaat(Cargo.boxModel) & 0xFFFFFFFF] = true,
+}
+
 local jobs = {}
-
---- Boxes not delivered yet of pickups cut short by a disconnect, so the next pickup doesn't bring them twice
---- @type table<integer, CargoBox[]>
 local remaining = {}
 
---- @param orderId integer
---- @return boolean
 local function isBeingPickedUp(orderId)
     for _, job in pairs(jobs) do
         if job.orderId == orderId then return true end
@@ -18,11 +17,6 @@ local function isBeingPickedUp(orderId)
     return false
 end
 
---- Called by owner-pickup-order once the machine and permission are checked
---- @param playerId integer
---- @param row MachineRow
---- @param orderId integer?
---- @return CallbackResponse
 function StartCargo(playerId, row, orderId)
     if jobs[playerId] then return Fail(locale("error_cargo_busy")) end
 
@@ -39,11 +33,12 @@ function StartCargo(playerId, row, orderId)
         end
     end
 
-    local spawn = math.random(#Config.Cargo.spawns)
+    local spawn = math.random(#Cargo.spawns)
 
     jobs[playerId] = {
         orderId = order.id,
         machineId = row.id,
+        spawn = Cargo.spawns[spawn].xyz,
         boxes = boxes,
         loaded = 0,
         delivered = 0,
@@ -63,15 +58,13 @@ function StartCargo(playerId, row, orderId)
     }
 end
 
--- The client's cart and boxes, deleted by the server if the player drops
 RegisterNetEvent("hype-vendingmachine:server:cargo-props", function(netIds)
     local job = jobs[source]
-    if not job or type(netIds) ~= "table" then return end
+    if not job or type(netIds) ~= "table" or #netIds > #job.boxes + 2 then return end
 
     job.props = netIds
 end)
 
--- The first grab of the cart puts the order on its way
 RegisterNetEvent("hype-vendingmachine:server:cargo-grab", function()
     local job = jobs[source]
     if not job or job.shipping then return end
@@ -81,14 +74,15 @@ RegisterNetEvent("hype-vendingmachine:server:cargo-grab", function()
 end)
 
 RegisterNetEvent("hype-vendingmachine:server:cargo-load", function()
-    local job = jobs[source]
+    local playerId = source
+    local job = jobs[playerId]
     if not job or job.loaded >= #job.boxes then return end
 
+    if not exports['hype-core']:IsPlayerNearCoords(playerId, job.spawn, Cargo.cancelDistance) then return end
+
     job.loaded = job.loaded + 1
-    Debug("info", "player %s loaded box %d/%d of order %s", source, job.loaded, #job.boxes, job.orderId)
 end)
 
--- Sent by the client when the player went past Config.Cargo.cancelDistance before every box was loaded
 RegisterNetEvent("hype-vendingmachine:server:cargo-cancel", function()
     local playerId = source
     local job = jobs[playerId]
@@ -101,7 +95,6 @@ RegisterNetEvent("hype-vendingmachine:server:cargo-cancel", function()
     Notify(playerId, locale("notify_cargo_cancelled"), "error")
 end)
 
--- Each box adds its product's stock; the last one completes the order
 lib.callback.register("hype-vendingmachine:server:cargo-deliver", function(source)
     local playerId = source
     local job = jobs[playerId]
@@ -115,12 +108,8 @@ lib.callback.register("hype-vendingmachine:server:cargo-deliver", function(sourc
     job.delivered = job.delivered + 1
     local box = job.boxes[job.delivered]
 
-    -- Never above capacity, even if the admin lowered it after the order
     MySQL.update.await(Queries.AddStock, { box.quantity, row.capacity, row.id, box.item })
-    Debug("success", "player %s delivered %sx %s to machine %s (%d/%d)", playerId, box.quantity, box.item, row.id, job.delivered, #job.boxes)
-
-    -- Fills the shelves of arm machines
-    SyncMachine(row.id)
+    SyncStock(row)
 
     if job.delivered < #job.boxes then return true end
 
@@ -133,16 +122,19 @@ lib.callback.register("hype-vendingmachine:server:cargo-deliver", function(sourc
     return true
 end)
 
--- The props go, the order waits for a new pickup with the boxes that weren't delivered
 AddEventHandler("playerDropped", function()
-    local job = jobs[source]
+    local playerId = source
+    local job = jobs[playerId]
     if not job then return end
 
-    jobs[source] = nil
+    jobs[playerId] = nil
 
     for _, netId in ipairs(job.props) do
-        local entity = NetworkGetEntityFromNetworkId(netId)
-        if DoesEntityExist(entity) then DeleteEntity(entity) end
+        local entity = NetworkGetEntityFromNetworkId(tonumber(netId) or 0)
+
+        if DoesEntityExist(entity) and propModels[GetEntityModel(entity) & 0xFFFFFFFF] and NetworkGetFirstEntityOwner(entity) == playerId then
+            DeleteEntity(entity)
+        end
     end
 
     remaining[job.orderId] = { table.unpack(job.boxes, job.delivered + 1) }

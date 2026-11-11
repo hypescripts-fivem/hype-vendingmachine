@@ -6,7 +6,7 @@
             <button
                 type="button"
                 class="grid size-8 place-items-center text-text-muted transition-colors hover:bg-bg-muted hover:text-text-primary"
-                aria-label="Zoom in"
+                :aria-label="t('admin.map.zoom_in')"
                 @click="map?.zoomIn()"
             >
                 <Plus class="size-4" />
@@ -15,7 +15,7 @@
             <button
                 type="button"
                 class="grid size-8 place-items-center text-text-muted transition-colors hover:bg-bg-muted hover:text-text-primary"
-                aria-label="Zoom out"
+                :aria-label="t('admin.map.zoom_out')"
                 @click="map?.zoomOut()"
             >
                 <Minus class="size-4" />
@@ -30,6 +30,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Minus, Plus } from "@lucide/vue";
 import { CustomCRS } from "./CustomCRS";
+import { t } from "@/utils/locale";
 
 export interface MapBlip {
     id: string;

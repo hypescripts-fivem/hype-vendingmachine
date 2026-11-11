@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { FetchNUI, type NuiResponse } from "@/utils";
 import type { MachineLocation } from "@/stores/admin";
+import { t } from "@/utils/locale";
 
 export type PlacementMode = "translate" | "rotate";
 
@@ -47,7 +48,7 @@ export const usePlacementStore = defineStore("placement", () => {
      */
     async function start(model: string, machineId?: string): Promise<NuiResponse<MachineLocation | undefined>> {
         const response = await FetchNUI<PlacementPosition>("placement:start", { model, machineId }, { x: 195.4, y: -933.2, z: 30.7, heading: 90 });
-        if (!response.success || !response.data) return { success: false, error: response.error ?? "The placement could not start." };
+        if (!response.success || !response.data) return { success: false, error: response.error ?? t("purchase.placement.start_failed") };
 
         position.value = response.data;
         mode.value = "translate";

@@ -1,5 +1,5 @@
 fx_version 'cerulean'
-game {'gta5'}
+game 'gta5'
 
 author 'vezironi'
 description ''
@@ -17,7 +17,6 @@ shared_scripts {
     '@ox_lib/init.lua',
     'shared/utils.lua',
     'shared/main.lua',
-    'config/config.lua',
 }
 
 client_scripts {
@@ -26,20 +25,20 @@ client_scripts {
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'server/*.lua',
+    'server/queries.lua',
+    'server/sv-*.lua',
 }
 
 escrow_ignore {
     'config/*.lua',
     'shared/*.lua',
     'server/*.lua',
-    'install/*.sql',
+    'INSTALL/*.sql',
     'locales/*.json',
 }
 
 files {
     'config/*.lua',
-    'shared/*.lua',
     'web/dist/*.*',
     'web/dist/**/*.*',
     'locales/*.json',

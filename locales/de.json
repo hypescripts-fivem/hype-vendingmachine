@@ -1,0 +1,703 @@
+{
+    "notify_title": "Verkaufsautomat",
+
+    "target_buy": "Automat kaufen",
+    "target_open": "Verkaufsautomat benutzen",
+    "target_manage": "Automat verwalten",
+    "textui_buy": "[%s] Automat kaufen ($%s)",
+    "textui_open": "[%s] Verkaufsautomat benutzen",
+    "textui_manage": "[%s] Automat verwalten",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "Wagen greifen",
+    "target_cargo_drop": "Wagen abstellen",
+    "target_cargo_take": "Kiste nehmen",
+    "target_cargo_load": "Kiste aufladen",
+    "target_cargo_unload": "Kiste herausnehmen",
+    "target_cargo_deliver": "Kiste in den Automaten legen",
+    "notify_cargo_started": "Deine Bestellung ist bereit. Hol sie am markierten Ort ab.",
+    "notify_cargo_cancelled": "Du hast den Abholbereich verlassen. Die Bestellung wurde storniert.",
+    "notify_cargo_delivered": "Alle Kisten sind in %s.",
+    "error_order_not_ready": "Diese Bestellung kann gerade nicht abgeholt werden.",
+    "error_cargo_busy": "Du holst bereits eine Bestellung ab.",
+
+    "success_machine_bought": "Du hast %s für $%s gekauft.",
+    "notify_sale": "%s hat einen Verkauf gemacht: $%s.",
+    "notify_low_stock": "%s wird in %s knapp (%s übrig).",
+    "notify_hired": "Du arbeitest jetzt bei %s.",
+    "notify_staff_removed": "Du arbeitest nicht mehr bei %s.",
+    "notify_machine_transferred": "Du hast %s an %s übergeben.",
+    "notify_machine_received": "%s hat dir %s übergeben.",
+    "notify_machine_sold": "Du hast %s für $%s verkauft.",
+    "auto_restock": "Automatisch auffüllen",
+
+    "log_title_purchase": "Automatenkauf",
+    "log_title_admin": "Admin-Aktion",
+    "log_machine_bought": "%s hat **%s** (#%s) für $%s gekauft.",
+    "log_machine_created": "%s hat **%s** (#%s) erstellt.",
+    "log_machine_updated": "%s hat **%s** (#%s) bearbeitet.",
+    "log_machine_deleted": "%s hat **%s** (#%s) gelöscht.",
+    "log_machines_imported": "%s hat %s Automaten importiert.",
+    "log_machine_status": "%s hat **%s** (#%s) auf %s gesetzt.",
+    "log_balance_reset": "%s hat das Guthaben von **%s** (#%s) zurückgesetzt, $%s.",
+    "log_settings_saved": "%s hat die Admin-Einstellungen geändert.",
+
+    "error_no_permission": "Dazu hast du keine Berechtigung.",
+    "error_invalid_machine": "Ungültige Automatendaten.",
+    "error_invalid_name": "Der Automatenname muss 1 bis %s Zeichen lang sein.",
+    "error_invalid_model": "Unbekanntes Automatenmodell.",
+    "error_invalid_location": "Lege einen Standort für den Automaten fest.",
+    "error_invalid_price": "Der Verkaufspreis muss eine ganze Zahl zwischen 0 und %s sein.",
+    "error_invalid_capacity": "Die Kapazität muss eine ganze Zahl zwischen 1 und %s sein.",
+    "error_invalid_products": "Wähle mindestens ein gültiges Produkt.",
+    "error_owner_not_found": "Kein Online-Spieler mit dieser Server- oder Citizen-ID gefunden.",
+    "error_machine_not_found": "Dieser Automat existiert nicht mehr.",
+    "error_machine_too_close": "An diesem Ort steht bereits ein Automat.",
+    "error_database": "Der Automat konnte nicht gespeichert werden. Prüfe die Serverkonsole.",
+    "error_not_for_sale": "Dieser Automat steht nicht zum Verkauf.",
+    "error_purchase_disabled": "Automaten können gerade nicht gekauft werden.",
+    "error_max_machines": "Du kannst nicht mehr als %s Automaten besitzen.",
+    "error_not_enough_money": "Du hast nicht genug Geld.",
+    "error_payment_not_accepted": "Dieser Automat akzeptiert diese Zahlungsart nicht.",
+    "error_too_far": "Du bist zu weit vom Automaten entfernt.",
+    "error_machine_closed": "Dieser Automat ist geschlossen.",
+    "error_machine_disabled": "Ein Admin hat diesen Automaten deaktiviert. Er kann nicht geöffnet werden.",
+    "error_invalid_description": "Die Beschreibung darf höchstens %s Zeichen lang sein.",
+    "error_invalid_schedule": "Öffnungs- und Schließzeit müssen unterschiedliche Uhrzeiten im Format HH:MM sein.",
+    "error_invalid_threshold": "Der Mindestbestand muss zwischen 0 und %s liegen.",
+    "error_invalid_payments": "Akzeptiere mindestens eine Zahlungsart.",
+    "error_invalid_amount": "Gib einen ganzen Betrag zwischen $1 und $%s ein.",
+    "error_not_enough_balance": "So viel Geld hat der Automat nicht.",
+    "error_invalid_status": "Ein Automat kann hier nur deaktiviert oder aktiviert werden.",
+    "error_invalid_settings": "Ungültiger Wert für %s.",
+    "error_import_empty": "Keine Automaten zum Importieren.",
+    "error_import_too_many": "Du kannst höchstens %s Automaten auf einmal importieren.",
+    "error_import_entry": "Automat #%s: %s",
+    "error_import_duplicate": "Zweimal an derselben Stelle aufgeführt.",
+    "error_invalid_items": "Ungültige Artikelliste.",
+    "error_too_many_items": "Höchstens %s Stück eines Artikels pro Bestellung.",
+    "error_over_capacity": "%s würde die Kapazität des Automaten von %s überschreiten.",
+    "error_out_of_stock": "Nicht genug %s auf Lager.",
+    "error_cannot_carry": "Du kannst nicht so viel %s tragen.",
+    "error_player_not_found": "Kein Spieler mit dieser ID ist in der Nähe des Automaten.",
+    "error_already_staff": "Dieser Spieler arbeitet bereits hier.",
+    "error_invalid_permissions": "Wähle mindestens eine Berechtigung, die du selbst hast.",
+    "error_staff_not_found": "Dieser Mitarbeiter arbeitet hier nicht mehr.",
+    "error_transfer_self": "Dieser Automat gehört dir bereits.",
+    "error_target_max_machines": "Dieser Spieler kann nicht mehr als %s Automaten besitzen.",
+    "error_machine_changed": "Der Automat hat sich inzwischen geändert, versuche es erneut.",
+
+    "ui": {
+        "common": {
+            "cancel": "Abbrechen",
+            "close": "Schließen",
+            "clear": "Leeren",
+            "back": "Zurück",
+            "done": "Fertig",
+            "reset": "Zurücksetzen",
+            "total": "Gesamt",
+            "decrease_quantity": "Menge verringern",
+            "increase_quantity": "Menge erhöhen",
+            "save_bar": {
+                "unsaved": "Du hast ungespeicherte Änderungen.",
+                "saving": "Wird gespeichert...",
+                "save_changes": "Änderungen speichern"
+            },
+            "time_picker": {
+                "title": "Uhrzeit wählen",
+                "hour": "Stunde",
+                "minute": "Minute"
+            },
+            "errors": {
+                "no_response": "Keine Antwort vom Server."
+            }
+        },
+        "shop": {
+            "default_name": "Verkaufsautomat",
+            "navbar": {
+                "products": "%s Produkte",
+                "all": "Alle",
+                "search": "Produkte suchen..."
+            },
+            "empty": {
+                "title": "Keine Produkte gefunden",
+                "description": "Probier eine andere Kategorie oder einen anderen Suchbegriff."
+            },
+            "item": {
+                "out_of_stock": "Ausverkauft",
+                "in_stock": "%s auf Lager",
+                "add": "Hinzufügen",
+                "remove": "Entfernen"
+            },
+            "cart": {
+                "title": "Warenkorb",
+                "empty_title": "Dein Warenkorb ist leer",
+                "empty_description": "Füge Produkte hinzu, um sie hier zu sehen.",
+                "each": "je %s",
+                "remove_item": "Artikel entfernen",
+                "checkout": "Zur Kasse"
+            },
+            "checkout": {
+                "title": "Kasse",
+                "payment_method": "Zahlungsart",
+                "cash": "Bargeld",
+                "bank": "Bank",
+                "available": "Verfügbar",
+                "not_accepted": "Hier nicht akzeptiert",
+                "not_enough_money": "Nicht genug Geld",
+                "processing": "Wird verarbeitet...",
+                "pay": "%s bezahlen"
+            }
+        },
+        "screen": {
+            "subtitle": "Wähle ein Produkt und leg es in den Warenkorb",
+            "remove_from_cart": "Aus dem Warenkorb entfernen",
+            "empty": {
+                "title": "Keine Produkte",
+                "description": "Dieser Automat hat noch nichts im Angebot."
+            },
+            "bar": {
+                "items_one": "%s Artikel",
+                "items_other": "%s Artikel",
+                "cart": "Warenkorb",
+                "quick_order": "Schnellbestellung"
+            },
+            "cart": {
+                "title": "Warenkorb",
+                "summary": "%s Produkte · %s Artikel",
+                "each": "je %s",
+                "confirm": "Warenkorb bestätigen"
+            },
+            "item": {
+                "add_to_cart": "In den Warenkorb",
+                "out_of_stock": "Ausverkauft"
+            }
+        },
+        "idle": {
+            "use_to_order": "Zum Bestellen benutzen"
+        },
+        "purchase": {
+            "title": "Automat kaufen",
+            "unknown_area": "Unbekanntes Gebiet",
+            "type": "Typ",
+            "capacity": "Kapazität",
+            "capacity_value": "%s pro Produkt",
+            "sells_one": "Verkauft %s Produkt",
+            "sells_other": "Verkauft %s Produkte",
+            "price": "Preis",
+            "cash_balance": "Bargeld",
+            "bank_balance": "Kontostand",
+            "not_enough_money": "Du hast nicht genug Geld.",
+            "buying": "Wird gekauft...",
+            "buy": "Automat kaufen",
+            "placement": {
+                "start_failed": "Die Platzierung konnte nicht gestartet werden."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "Abbrechen",
+                "import": "Importieren",
+                "new_machine": "Neuer Automat",
+                "for_sale": "Zu verkaufen",
+                "no_area": "Kein Gebiet",
+                "teleport": "Teleportieren",
+                "player_fallback": "Spieler %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Übersicht",
+                    "description": "Serverweite Automatenstatistiken."
+                },
+                "machines": {
+                    "label": "Automaten",
+                    "description": "Alle Verkaufsautomaten auf dem Server."
+                },
+                "settings": {
+                    "label": "Einstellungen",
+                    "description": "Globale Regeln für alle Verkaufsautomaten."
+                }
+            },
+            "header": {
+                "machine_settings": "Automateneinstellungen",
+                "editing": "%s bearbeiten",
+                "machines": "Automaten",
+                "open_count": "%s geöffnet",
+                "badge": "Admin"
+            },
+            "status": {
+                "open": "Geöffnet",
+                "closed": "Geschlossen",
+                "for_sale": "Zu verkaufen",
+                "disabled": "Deaktiviert"
+            },
+            "models": {
+                "soda": "Getränkeautomat",
+                "snack": "Snackautomat",
+                "coffee": "Kaffeeautomat",
+                "water": "Wasserautomat",
+                "custom": "Eigener Verkaufsautomat",
+                "glass": "Glasautomat",
+                "glass_ecola": "Glasautomat (eCola)",
+                "glass_sprunk": "Glasautomat (Sprunk)",
+                "glass_raine": "Glasautomat (Raine)",
+                "glass_junk": "Glasautomat (Junk)",
+                "glass_beanmachine": "Glasautomat (Bean Machine)",
+                "glass_phatchips": "Glasautomat (Phat Chips)",
+                "glass_egochaser": "Glasautomat (Ego Chaser)",
+                "glass_cluckinbell": "Glasautomat (Cluckin' Bell)",
+                "glass_burgershot": "Glasautomat (Burger Shot)",
+                "glass_247": "Glasautomat (24/7)"
+            },
+            "validation": {
+                "name_empty": "Der Automatenname darf nicht leer sein.",
+                "location_missing": "Lege einen Standort für den Automaten fest.",
+                "products_empty": "Wähle mindestens ein Produkt."
+            },
+            "create": {
+                "title": "Neuer Automat",
+                "creating": "Wird erstellt...",
+                "submit": "Automat erstellen",
+                "error": "Der Automat konnte nicht erstellt werden."
+            },
+            "dashboard": {
+                "empty_title": "Noch keine Automaten",
+                "empty_description": "Erstelle deinen ersten Verkaufsautomaten oder importiere Automaten, die von einem anderen Server exportiert wurden.",
+                "stat_machines": "Automaten",
+                "stat_machines_open": "%s gerade geöffnet",
+                "stat_revenue": "Umsatz",
+                "stat_items_sold": "Verkaufte Artikel",
+                "stat_all_machines": "Letzte 7 Tage, alle Automaten",
+                "stat_owners": "Besitzer",
+                "stat_for_sale_one": "%s Automat zu verkaufen",
+                "stat_for_sale_other": "%s Automaten zu verkaufen",
+                "server_revenue": "Serverumsatz",
+                "last_7_days": "Letzte 7 Tage",
+                "no_sales": "Keine Verkäufe in den letzten 7 Tagen",
+                "top_machines": "Top-Automaten",
+                "revenue_currency": "Umsatz (%s)",
+                "no_top_machines": "Noch kein Automat hat etwas verkauft",
+                "needs_attention": "Braucht Aufmerksamkeit",
+                "machine_count": "%s Automaten",
+                "all_fine": "Alle Automaten laufen einwandfrei.",
+                "open": "Öffnen",
+                "newest_machines": "Neueste Automaten",
+                "view_all": "Alle anzeigen",
+                "reason_disabled": "Von einem Admin deaktiviert",
+                "reason_low_stock": "Bestand bei %s%%",
+                "series_revenue": "Umsatz",
+                "tooltip_sales": "%s Verkäufe"
+            },
+            "detail": {
+                "back": "Zurück zu den Automaten",
+                "machines": "Automaten",
+                "created": "Erstellt am %s",
+                "enable": "Aktivieren",
+                "disable": "Deaktivieren",
+                "stat_balance": "Guthaben",
+                "stat_balance_hint": "Geld im Automaten",
+                "stat_revenue": "Umsatz",
+                "stat_items_sold": "Verkaufte Artikel",
+                "last_7_days": "Letzte 7 Tage",
+                "stat_stock": "Füllstand",
+                "stat_stock_hint": "Durchschnitt aller Produkte",
+                "danger_zone": "Gefahrenzone",
+                "reset_balance": "Guthaben zurücksetzen",
+                "reset_balance_description": "Entfernt die %s, die sich gerade im Automaten befinden.",
+                "reset": "Zurücksetzen",
+                "delete_machine": "Automat löschen",
+                "delete_machine_description": "Entfernt das Prop samt Bestand, Bestellungen und Verlauf endgültig.",
+                "delete": "Löschen",
+                "confirm_delete": "Damit wird %s endgültig gelöscht. Das kann nicht rückgängig gemacht werden.",
+                "confirm_reset": "Damit werden %s aus %s entfernt.",
+                "working": "Wird ausgeführt...",
+                "owner_fallback": "einem Spieler",
+                "error": "Etwas ist schiefgelaufen."
+            },
+            "machines": {
+                "search_placeholder": "Name, Besitzer oder Gebiet suchen...",
+                "empty_search": "Keine Automaten entsprechen deiner Suche",
+                "empty": "Noch keine Automaten. Erstelle einen oder importiere welche.",
+                "show_on_map": "Auf der Karte zeigen",
+                "manage": "Verwalten",
+                "map": "Karte",
+                "map_hint": "Klicke auf einen Blip, um den Automaten zu verwalten",
+                "column_machine": "Automat",
+                "column_owner": "Besitzer",
+                "column_status": "Status",
+                "column_balance": "Guthaben"
+            },
+            "settings": {
+                "economy": "Wirtschaft",
+                "wholesale_multiplier": "Großhandelspreis-Multiplikator",
+                "wholesale_hint": "Besitzer zahlen %s%% des Grundpreises beim Lieferanten.",
+                "sales_tax": "Umsatzsteuer (%)",
+                "max_machines": "Automaten pro Spieler",
+                "max_machines_description": "Wie viele Automaten ein Spieler besitzen kann.",
+                "stock_orders": "Warenbestellungen",
+                "delivery_minutes": "Minuten pro Bestellphase",
+                "delivery_hint": "Eine Bestellung dauert von der Vorbereitung bis zur Lieferung etwa %s Minuten.",
+                "defaults": "Standards für neue Automaten",
+                "default_capacity": "Kapazität pro Produkt",
+                "default_price": "Standard-Verkaufspreis",
+                "default_price_description": "Wird beim Erstellen eines Automaten verwendet.",
+                "allow_purchase": "Spieler können Automaten kaufen",
+                "allow_purchase_description": "Zum Verkauf markierte Automaten können im Spiel gekauft werden.",
+                "logging": "Protokollierung",
+                "webhook": "Discord-Webhook-URL",
+                "log_purchases": "Käufe protokollieren",
+                "log_purchases_description": "Jeden Automatenkauf an den Webhook senden.",
+                "log_admin_actions": "Admin-Aktionen protokollieren",
+                "log_admin_actions_description": "Erstellen, Bearbeiten und Löschen von Automaten.",
+                "share": "Automaten teilen",
+                "export": "Automaten exportieren",
+                "export_description": "Namen, Modelle, Standorte, Preise und Produkte als JSON. Importiere sie auf einem anderen Server über die Seite Automaten.",
+                "export_button": "Exportieren",
+                "error_webhook_invalid": "Der Webhook muss eine Discord-Webhook-URL sein.",
+                "error_webhook_missing": "Füge eine Webhook-URL hinzu oder schalte die Protokollierung aus."
+            },
+            "export": {
+                "title": "Automaten exportieren",
+                "summary_one": "%s Automat. Nur Namen, Modelle, Standorte, Preise und Produkte sind enthalten; Besitzer, Guthaben und Bestand bleiben auf diesem Server.",
+                "summary_other": "%s Automaten. Nur Namen, Modelle, Standorte, Preise und Produkte sind enthalten; Besitzer, Guthaben und Bestand bleiben auf diesem Server.",
+                "output_label": "Exportierte Automaten",
+                "copy_failed": "Automatisches Kopieren fehlgeschlagen. Klicke auf den Text und drücke Strg+C.",
+                "download": "Herunterladen",
+                "copied": "Kopiert",
+                "copy": "JSON kopieren"
+            },
+            "import": {
+                "title": "Automaten importieren",
+                "description": "Füge einen Automaten-Export aus den Einstellungen eines anderen Servers ein. Die Automaten stehen danach ohne Besitzer, Geld oder Bestand zum Verkauf.",
+                "load_file": "Datei laden",
+                "ready": "%s bereit zum Import",
+                "skipped": "%s übersprungen",
+                "importing": "Wird importiert...",
+                "submit_one": "%s Automat importieren",
+                "submit_other": "%s Automaten importieren",
+                "error": "Die Automaten konnten nicht importiert werden.",
+                "error_invalid_json": "Das ist kein gültiges JSON.",
+                "error_empty": "In diesem JSON wurden keine Automaten gefunden.",
+                "unnamed": "Automat %s",
+                "skip_name": "Name fehlt.",
+                "skip_location": "Standort fehlt.",
+                "skip_occupied": "Hier steht bereits ein Automat.",
+                "skip_duplicate": "Zweimal in diesem JSON aufgeführt.",
+                "skip_products": "Keines seiner Produkte existiert auf diesem Server."
+            },
+            "form": {
+                "details": "Details",
+                "name": "Automatenname",
+                "name_placeholder": "z. B. Legion Square #2",
+                "prop_model": "Prop-Modell",
+                "machine_type": "Automatentyp",
+                "location": "Standort",
+                "placing": "Wird platziert...",
+                "set_position": "Automatenposition festlegen",
+                "area": "Gebietsname",
+                "area_placeholder": "z. B. Legion Square",
+                "no_position": "Noch keine Position",
+                "ownership": "Besitz",
+                "owned_warning": "Gehört %s. Wenn du einen neuen Besitzer einträgst oder ihn zum Verkauf anbietest, verliert dieser ihn.",
+                "for_sale": "Zu verkaufen",
+                "for_sale_description": "Spieler können diesen Automaten kaufen, statt dass er einen Besitzer hat.",
+                "transfer_to": "Übertragen an",
+                "owner_id": "Besitzer-ID",
+                "transfer_placeholder": "Server- oder Citizen-ID des neuen Besitzers",
+                "owner_placeholder": "Leer lassen, um ihn zum Verkauf anzubieten",
+                "price": "Verkaufspreis (%s)",
+                "products": "Produkte",
+                "selected": "%s ausgewählt",
+                "select_all": "Alle auswählen",
+                "clear": "Leeren",
+                "sell_product": "%s verkaufen"
+            },
+            "placement": {
+                "title": "Automatenposition",
+                "heading": "Ausrichtung",
+                "move": "Bewegen",
+                "rotate": "Drehen",
+                "snap": "Auf den Boden setzen",
+                "key_left_alt": "Alt links",
+                "walk": "laufen und umsehen",
+                "cursor": "zurück zum Mauszeiger",
+                "confirm": "Bestätigen"
+            },
+            "map": {
+                "zoom_in": "Vergrößern",
+                "zoom_out": "Verkleinern"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "Abbrechen",
+                "save": "Speichern",
+                "saving": "Wird gespeichert...",
+                "working": "Wird ausgeführt...",
+                "player_id": "Spieler-ID",
+                "error": "Etwas ist schiefgelaufen."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Dashboard",
+                    "description": "Umsatz- und Verkaufsübersicht für diesen Automaten."
+                },
+                "products": {
+                    "label": "Produkte",
+                    "description": "Bestände und Preise."
+                },
+                "restock": {
+                    "label": "Nachbestellen",
+                    "description": "Neue Ware beim Lieferanten bestellen."
+                },
+                "transactions": {
+                    "label": "Transaktionen",
+                    "description": "Jeder Kauf an diesem Automaten."
+                },
+                "cash": {
+                    "label": "Kasse",
+                    "description": "Geld aus dem Automaten abheben oder einzahlen."
+                },
+                "staff": {
+                    "label": "Personal",
+                    "description": "Stelle Mitarbeiter ein und lege fest, was sie tun dürfen."
+                },
+                "settings": {
+                    "label": "Einstellungen",
+                    "description": "Automatenname und Verfügbarkeit."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "Statistiken ansehen",
+                    "description": "Umsatz, Verkäufe und Top-Produkte sehen."
+                },
+                "products_prices": {
+                    "label": "Preise ändern",
+                    "description": "Den Preis festlegen, den Kunden zahlen."
+                },
+                "restock_order": {
+                    "label": "Ware bestellen",
+                    "description": "Ware mit dem Automatenguthaben beim Lieferanten kaufen."
+                },
+                "transactions_view": {
+                    "label": "Verkäufe ansehen",
+                    "description": "Jeden Kauf am Automaten sehen."
+                },
+                "cash_deposit": {
+                    "label": "Geld einzahlen",
+                    "description": "Eigenes Bargeld in den Automaten legen."
+                },
+                "cash_withdraw": {
+                    "label": "Geld abheben",
+                    "description": "Geld vom Automatenguthaben abheben."
+                },
+                "cash_history": {
+                    "label": "Verlauf ansehen",
+                    "description": "Guthaben und bisherige Geldbewegungen sehen."
+                },
+                "staff_view": {
+                    "label": "Personal ansehen",
+                    "description": "Sehen, wer hier arbeitet und welche Rollen es gibt."
+                },
+                "staff_manage": {
+                    "label": "Personal verwalten",
+                    "description": "Einstellen, entlassen und Berechtigungen ändern, die man selbst hat."
+                },
+                "settings_general": {
+                    "label": "Allgemein",
+                    "description": "Den Automaten umbenennen und öffnen oder schließen."
+                },
+                "settings_hours": {
+                    "label": "Öffnungszeiten",
+                    "description": "Den Öffnungs- und Schließplan ändern."
+                },
+                "settings_stock": {
+                    "label": "Bestand & Warnungen",
+                    "description": "Mindestbestand, automatisches Auffüllen und Benachrichtigungen."
+                },
+                "settings_payments": {
+                    "label": "Zahlungen",
+                    "description": "Festlegen, welche Zahlungsarten akzeptiert werden."
+                }
+            },
+            "roles": {
+                "owner": "Besitzer",
+                "employee": "Mitarbeiter",
+                "supervisor": "Schichtleiter",
+                "manager": "Manager",
+                "custom": "Benutzerdefiniert"
+            },
+            "header": {
+                "open": "Geöffnet",
+                "closed": "Geschlossen",
+                "balance": "Guthaben",
+                "no_access_title": "Kein Zugriff",
+                "no_access_description": "Bitte den Besitzer, dir Berechtigungen für diesen Automaten zu geben."
+            },
+            "no_products": {
+                "title": "Noch keine Produkte",
+                "description": "Dieser Automat hat nichts zu verkaufen. Sobald ein Admin Produkte hinzufügt, erscheinen hier Verkäufe, Bestand und Bestellungen."
+            },
+            "dashboard": {
+                "today_revenue": "Heutiger Umsatz",
+                "vs_yesterday": "ggü. gestern",
+                "weekly_revenue": "Wochenumsatz",
+                "last_7_days": "Letzte 7 Tage",
+                "items_sold": "Verkaufte Artikel",
+                "low_stock": "Niedriger Bestand",
+                "products_suffix": "Produkte",
+                "low_stock_hint": "%s oder weniger übrig",
+                "revenue": "Umsatz",
+                "no_sales_week": "Keine Verkäufe in den letzten 7 Tagen",
+                "top_products": "Top-Produkte",
+                "units_sold": "Verkaufte Einheiten",
+                "units_sold_tooltip": "Einheiten verkauft",
+                "nothing_sold": "Noch nichts verkauft",
+                "recent_sales": "Letzte Verkäufe",
+                "view_all": "Alle anzeigen",
+                "no_sales": "Noch keine Verkäufe.",
+                "sales_count": "%s Verkäufe"
+            },
+            "products": {
+                "empty": "Keine Produkte",
+                "product": "Produkt",
+                "category": "Kategorie",
+                "sold": "Verkauft",
+                "stock": "Bestand",
+                "price": "Preis (%s)",
+                "low_stock": "Niedriger Bestand"
+            },
+            "restock": {
+                "catalog": "Lieferantenkatalog",
+                "low_stock_only": "Nur niedriger Bestand",
+                "all_stocked_title": "Alles ist aufgefüllt",
+                "all_stocked_description": "Gerade wird kein Produkt knapp.",
+                "incoming": "+%s unterwegs",
+                "per_unit": "%s pro Stück",
+                "decrease": "Menge verringern",
+                "increase": "Menge erhöhen",
+                "fill": "Auffüllen",
+                "summary": "Bestellübersicht",
+                "clear": "Leeren",
+                "summary_empty": "Wähle Mengen aus dem Katalog, um eine Bestellung zusammenzustellen.",
+                "machine_balance": "Automatenguthaben",
+                "order_total": "Bestellsumme",
+                "balance_after": "Guthaben danach",
+                "ordering": "Wird bestellt...",
+                "place_order": "Bestellen",
+                "orders": "Bestellungen",
+                "in_progress": "%s in Bearbeitung",
+                "insufficient": "Nicht genug Geld im Automaten für diese Bestellung.",
+                "failed": "Bestellung fehlgeschlagen."
+            },
+            "orders": {
+                "preparing": "Wird vorbereitet",
+                "prepared": "Vorbereitet",
+                "shipping": "Unterwegs",
+                "completed": "Abgeschlossen",
+                "cancelled": "Storniert",
+                "status_aria": "Bestellstatus: %s",
+                "pick_up": "Abholen"
+            },
+            "transactions": {
+                "empty": "Noch keine Verkäufe",
+                "time": "Zeit",
+                "buyer": "Käufer",
+                "product": "Produkt",
+                "quantity": "Menge",
+                "total": "Gesamt"
+            },
+            "cash": {
+                "balance": "Guthaben",
+                "balance_hint": "Im Automaten verfügbar",
+                "deposited": "Eingezahlt",
+                "withdrawn": "Abgehoben",
+                "all_time": "Insgesamt",
+                "amount": "Betrag (%s)",
+                "all": "Alles",
+                "withdraw_hint": "Du kannst bis zu %s abheben.",
+                "deposit_hint": "Das Geld wird von deinem Bargeld genommen. Du hast %s.",
+                "processing": "Wird verarbeitet...",
+                "withdraw": "Abheben",
+                "deposit": "Einzahlen",
+                "stock_order": "Warenbestellung",
+                "history": "Kassenverlauf",
+                "movements": "%s Bewegungen",
+                "no_movements": "Noch keine Geldbewegungen",
+                "not_enough_balance": "Nicht genug Geld im Automaten.",
+                "not_enough_cash": "So viel Bargeld hast du nicht.",
+                "failed": "Transaktion fehlgeschlagen.",
+                "by_you": "Du"
+            },
+            "staff": {
+                "search": "Suchen...",
+                "hire": "Einstellen",
+                "empty": "Noch kein Personal",
+                "online": "Online",
+                "offline": "Offline",
+                "you": "Du",
+                "now": "Jetzt",
+                "never": "Nie",
+                "edit_permissions": "Berechtigungen bearbeiten",
+                "fire": "Entlassen",
+                "hire_title": "Personal einstellen",
+                "edit_title": "Berechtigungen bearbeiten",
+                "server_id": "Server-ID",
+                "edit_description": "Was %s bei %s tun darf.",
+                "role": "Rolle",
+                "role_hint": "Wähle Benutzerdefiniert, um Berechtigungen einzeln festzulegen.",
+                "all": "Alle",
+                "none": "Keine",
+                "hire_hint": "Der Spieler muss in der Nähe sein. Personal kann dieses Panel öffnen, den Automaten aber nie verkaufen oder übertragen.",
+                "fire_title": "Mitarbeiter entlassen",
+                "fire_description": "%s verliert sofort den Zugriff auf %s.",
+                "employee": "Mitarbeiter",
+                "hired": "Eingestellt",
+                "last_online": "Zuletzt online",
+                "player_fallback": "Spieler %s"
+            },
+            "settings": {
+                "general": "Allgemein",
+                "name": "Automatenname",
+                "description": "Beschreibung",
+                "description_placeholder": "Wird Kunden angezeigt",
+                "open": "Für Kunden geöffnet",
+                "open_description": "Geschlossene Automaten können von anderen Spielern nicht benutzt werden.",
+                "hours": "Öffnungszeiten",
+                "schedule": "Zeitplan verwenden",
+                "schedule_description": "Automatisch nach Ingame-Zeit öffnen und schließen.",
+                "opens_at": "Öffnet um",
+                "closes_at": "Schließt um",
+                "schedule_on": "Geöffnet von %s bis %s.",
+                "schedule_off": "Nur der Öffnungsschalter steuert die Verfügbarkeit.",
+                "stock": "Bestand & Warnungen",
+                "low_stock_threshold": "Mindestbestand",
+                "auto_restock": "Automatisch auffüllen",
+                "auto_restock_description": "Bis zur Kapazität nachbestellen, wenn ein Produkt den Mindestbestand erreicht.",
+                "low_stock_alerts": "Warnungen bei niedrigem Bestand",
+                "low_stock_alerts_description": "Erhalte eine Benachrichtigung, wenn der Bestand knapp wird.",
+                "sale_notifications": "Verkaufsbenachrichtigungen",
+                "sale_notifications_description": "Erhalte bei jedem Kauf eine Benachrichtigung.",
+                "payments": "Zahlungen",
+                "cash": "Bargeld",
+                "cash_description": "Kunden zahlen mit Bargeld.",
+                "accept_cash": "Bargeld akzeptieren",
+                "bank": "Bankkarte",
+                "bank_description": "Kunden zahlen von ihrem Bankkonto.",
+                "accept_bank": "Bankkarte akzeptieren",
+                "danger_zone": "Gefahrenzone",
+                "transfer_title": "Besitz übertragen",
+                "transfer_description": "Gib diesen Automaten einem anderen Spieler. Du verlierst jeglichen Zugriff.",
+                "transfer": "Übertragen",
+                "sell": "Automat verkaufen",
+                "sell_description": "Verkaufe den Automaten zurück. Bestand und laufende Bestellungen gehen verloren.",
+                "sell_confirm": "Damit wird %s endgültig verkauft. Das kann nicht rückgängig gemacht werden.",
+                "transfer_prompt": "Gib die Server-ID des Spielers ein, dem dieser Automat gehören soll.",
+                "name_empty": "Der Automatenname darf nicht leer sein.",
+                "payment_required": "Akzeptiere mindestens eine Zahlungsart.",
+                "same_times": "Öffnungs- und Schließzeit dürfen nicht gleich sein."
+            }
+        }
+    }
+}

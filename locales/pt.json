@@ -1,0 +1,703 @@
+{
+    "notify_title": "Máquina de venda",
+
+    "target_buy": "Comprar máquina",
+    "target_open": "Usar máquina de venda",
+    "target_manage": "Gerenciar máquina",
+    "textui_buy": "[%s] Comprar máquina ($%s)",
+    "textui_open": "[%s] Usar máquina de venda",
+    "textui_manage": "[%s] Gerenciar máquina",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "Pegar carrinho",
+    "target_cargo_drop": "Soltar carrinho",
+    "target_cargo_take": "Pegar caixa",
+    "target_cargo_load": "Carregar caixa",
+    "target_cargo_unload": "Tirar caixa",
+    "target_cargo_deliver": "Colocar caixa na máquina",
+    "notify_cargo_started": "Seu pedido está pronto. Retire no local marcado.",
+    "notify_cargo_cancelled": "Você saiu da área de retirada. O pedido foi cancelado.",
+    "notify_cargo_delivered": "Todas as caixas estão em %s.",
+    "error_order_not_ready": "Este pedido não pode ser retirado agora.",
+    "error_cargo_busy": "Você já está retirando um pedido.",
+
+    "success_machine_bought": "Você comprou %s por $%s.",
+    "notify_sale": "%s fez uma venda: $%s.",
+    "notify_low_stock": "%s está acabando em %s (restam %s).",
+    "notify_hired": "Agora você trabalha em %s.",
+    "notify_staff_removed": "Você não trabalha mais em %s.",
+    "notify_machine_transferred": "Você deu %s para %s.",
+    "notify_machine_received": "%s te deu %s.",
+    "notify_machine_sold": "Você vendeu %s por $%s.",
+    "auto_restock": "Reabastecimento automático",
+
+    "log_title_purchase": "Compra de máquina",
+    "log_title_admin": "Ação de admin",
+    "log_machine_bought": "%s comprou **%s** (#%s) por $%s.",
+    "log_machine_created": "%s criou **%s** (#%s).",
+    "log_machine_updated": "%s editou **%s** (#%s).",
+    "log_machine_deleted": "%s excluiu **%s** (#%s).",
+    "log_machines_imported": "%s importou %s máquinas.",
+    "log_machine_status": "%s definiu **%s** (#%s) como %s.",
+    "log_balance_reset": "%s zerou o saldo de **%s** (#%s), $%s.",
+    "log_settings_saved": "%s alterou as configurações de admin.",
+
+    "error_no_permission": "Você não tem permissão para fazer isso.",
+    "error_invalid_machine": "Dados da máquina inválidos.",
+    "error_invalid_name": "O nome da máquina deve ter de 1 a %s caracteres.",
+    "error_invalid_model": "Modelo de máquina desconhecido.",
+    "error_invalid_location": "Defina um local para a máquina.",
+    "error_invalid_price": "O preço de venda deve ser um número inteiro entre 0 e %s.",
+    "error_invalid_capacity": "A capacidade deve ser um número inteiro entre 1 e %s.",
+    "error_invalid_products": "Escolha pelo menos um produto válido.",
+    "error_owner_not_found": "Nenhum jogador online encontrado com esse ID de servidor ou citizen ID.",
+    "error_machine_not_found": "Esta máquina não existe mais.",
+    "error_machine_too_close": "Já existe uma máquina neste local.",
+    "error_database": "Não foi possível salvar a máquina. Verifique o console do servidor.",
+    "error_not_for_sale": "Esta máquina não está à venda.",
+    "error_purchase_disabled": "Não é possível comprar máquinas agora.",
+    "error_max_machines": "Você não pode ter mais de %s máquinas.",
+    "error_not_enough_money": "Você não tem dinheiro suficiente.",
+    "error_payment_not_accepted": "Esta máquina não aceita essa forma de pagamento.",
+    "error_too_far": "Você está muito longe da máquina.",
+    "error_machine_closed": "Esta máquina está fechada.",
+    "error_machine_disabled": "Um admin desativou esta máquina. Ela não pode ser aberta.",
+    "error_invalid_description": "A descrição pode ter no máximo %s caracteres.",
+    "error_invalid_schedule": "Os horários de abertura e fechamento devem ser diferentes e no formato HH:MM.",
+    "error_invalid_threshold": "O limite de estoque baixo deve estar entre 0 e %s.",
+    "error_invalid_payments": "Aceite pelo menos uma forma de pagamento.",
+    "error_invalid_amount": "Digite um valor inteiro entre $1 e $%s.",
+    "error_not_enough_balance": "A máquina não tem todo esse dinheiro.",
+    "error_invalid_status": "Aqui uma máquina só pode ser desativada ou ativada.",
+    "error_invalid_settings": "Valor inválido para %s.",
+    "error_import_empty": "Nenhuma máquina para importar.",
+    "error_import_too_many": "Você pode importar no máximo %s máquinas de uma vez.",
+    "error_import_entry": "Máquina #%s: %s",
+    "error_import_duplicate": "Listada duas vezes no mesmo local.",
+    "error_invalid_items": "Lista de itens inválida.",
+    "error_too_many_items": "No máximo %s de um mesmo item por pedido.",
+    "error_over_capacity": "%s ultrapassaria a capacidade da máquina de %s.",
+    "error_out_of_stock": "Não há %s suficiente em estoque.",
+    "error_cannot_carry": "Você não consegue carregar tanto %s.",
+    "error_player_not_found": "Nenhum jogador com esse ID está perto da máquina.",
+    "error_already_staff": "Esse jogador já trabalha aqui.",
+    "error_invalid_permissions": "Escolha pelo menos uma permissão que você mesmo tenha.",
+    "error_staff_not_found": "Esse funcionário não trabalha mais aqui.",
+    "error_transfer_self": "Você já é dono desta máquina.",
+    "error_target_max_machines": "Esse jogador não pode ter mais de %s máquinas.",
+    "error_machine_changed": "A máquina foi alterada nesse meio tempo, tente novamente.",
+
+    "ui": {
+        "common": {
+            "cancel": "Cancelar",
+            "close": "Fechar",
+            "clear": "Limpar",
+            "back": "Voltar",
+            "done": "Pronto",
+            "reset": "Redefinir",
+            "total": "Total",
+            "decrease_quantity": "Diminuir quantidade",
+            "increase_quantity": "Aumentar quantidade",
+            "save_bar": {
+                "unsaved": "Você tem alterações não salvas.",
+                "saving": "Salvando...",
+                "save_changes": "Salvar alterações"
+            },
+            "time_picker": {
+                "title": "Escolha um horário",
+                "hour": "Hora",
+                "minute": "Minuto"
+            },
+            "errors": {
+                "no_response": "Sem resposta do servidor."
+            }
+        },
+        "shop": {
+            "default_name": "Máquina de venda",
+            "navbar": {
+                "products": "%s produtos",
+                "all": "Todos",
+                "search": "Buscar produtos..."
+            },
+            "empty": {
+                "title": "Nenhum produto encontrado",
+                "description": "Tente outra categoria ou outro termo de busca."
+            },
+            "item": {
+                "out_of_stock": "Esgotado",
+                "in_stock": "%s em estoque",
+                "add": "Adicionar",
+                "remove": "Remover"
+            },
+            "cart": {
+                "title": "Carrinho",
+                "empty_title": "Seu carrinho está vazio",
+                "empty_description": "Adicione produtos para vê-los aqui.",
+                "each": "%s cada",
+                "remove_item": "Remover item",
+                "checkout": "Finalizar compra"
+            },
+            "checkout": {
+                "title": "Finalizar compra",
+                "payment_method": "Forma de pagamento",
+                "cash": "Dinheiro",
+                "bank": "Banco",
+                "available": "Disponível",
+                "not_accepted": "Não aceito aqui",
+                "not_enough_money": "Dinheiro insuficiente",
+                "processing": "Processando...",
+                "pay": "Pagar %s"
+            }
+        },
+        "screen": {
+            "subtitle": "Escolha um produto e adicione ao carrinho",
+            "remove_from_cart": "Remover do carrinho",
+            "empty": {
+                "title": "Sem produtos",
+                "description": "Esta máquina ainda não tem nada à venda."
+            },
+            "bar": {
+                "items_one": "%s item",
+                "items_other": "%s itens",
+                "cart": "Carrinho",
+                "quick_order": "Pedido rápido"
+            },
+            "cart": {
+                "title": "Carrinho",
+                "summary": "%s produtos · %s itens",
+                "each": "%s cada",
+                "confirm": "Confirmar carrinho"
+            },
+            "item": {
+                "add_to_cart": "Adicionar ao carrinho",
+                "out_of_stock": "Esgotado"
+            }
+        },
+        "idle": {
+            "use_to_order": "Use para pedir"
+        },
+        "purchase": {
+            "title": "Comprar máquina",
+            "unknown_area": "Área desconhecida",
+            "type": "Tipo",
+            "capacity": "Capacidade",
+            "capacity_value": "%s por produto",
+            "sells_one": "Vende %s produto",
+            "sells_other": "Vende %s produtos",
+            "price": "Preço",
+            "cash_balance": "Dinheiro em mãos",
+            "bank_balance": "Saldo bancário",
+            "not_enough_money": "Você não tem dinheiro suficiente.",
+            "buying": "Comprando...",
+            "buy": "Comprar máquina",
+            "placement": {
+                "start_failed": "Não foi possível iniciar o posicionamento."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "Cancelar",
+                "import": "Importar",
+                "new_machine": "Nova máquina",
+                "for_sale": "À venda",
+                "no_area": "Sem área",
+                "teleport": "Teleportar",
+                "player_fallback": "Jogador %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Visão geral",
+                    "description": "Estatísticas das máquinas de todo o servidor."
+                },
+                "machines": {
+                    "label": "Máquinas",
+                    "description": "Todas as máquinas de venda do servidor."
+                },
+                "settings": {
+                    "label": "Configurações",
+                    "description": "Regras globais para todas as máquinas de venda."
+                }
+            },
+            "header": {
+                "machine_settings": "Configurações da máquina",
+                "editing": "Editando %s",
+                "machines": "Máquinas",
+                "open_count": "%s abertas",
+                "badge": "Admin"
+            },
+            "status": {
+                "open": "Aberta",
+                "closed": "Fechada",
+                "for_sale": "À venda",
+                "disabled": "Desativada"
+            },
+            "models": {
+                "soda": "Máquina de refrigerante",
+                "snack": "Máquina de salgadinhos",
+                "coffee": "Máquina de café",
+                "water": "Máquina de água",
+                "custom": "Máquina de venda personalizada",
+                "glass": "Máquina de vidro",
+                "glass_ecola": "Máquina de vidro (eCola)",
+                "glass_sprunk": "Máquina de vidro (Sprunk)",
+                "glass_raine": "Máquina de vidro (Raine)",
+                "glass_junk": "Máquina de vidro (Junk)",
+                "glass_beanmachine": "Máquina de vidro (Bean Machine)",
+                "glass_phatchips": "Máquina de vidro (Phat Chips)",
+                "glass_egochaser": "Máquina de vidro (Ego Chaser)",
+                "glass_cluckinbell": "Máquina de vidro (Cluckin' Bell)",
+                "glass_burgershot": "Máquina de vidro (Burger Shot)",
+                "glass_247": "Máquina de vidro (24/7)"
+            },
+            "validation": {
+                "name_empty": "O nome da máquina não pode ficar vazio.",
+                "location_missing": "Defina um local para a máquina.",
+                "products_empty": "Escolha pelo menos um produto."
+            },
+            "create": {
+                "title": "Nova máquina",
+                "creating": "Criando...",
+                "submit": "Criar máquina",
+                "error": "Não foi possível criar a máquina."
+            },
+            "dashboard": {
+                "empty_title": "Nenhuma máquina ainda",
+                "empty_description": "Crie sua primeira máquina de venda ou importe máquinas exportadas de outro servidor.",
+                "stat_machines": "Máquinas",
+                "stat_machines_open": "%s abertas agora",
+                "stat_revenue": "Receita",
+                "stat_items_sold": "Itens vendidos",
+                "stat_all_machines": "Últimos 7 dias, todas as máquinas",
+                "stat_owners": "Donos",
+                "stat_for_sale_one": "%s máquina à venda",
+                "stat_for_sale_other": "%s máquinas à venda",
+                "server_revenue": "Receita do servidor",
+                "last_7_days": "Últimos 7 dias",
+                "no_sales": "Nenhuma venda nos últimos 7 dias",
+                "top_machines": "Melhores máquinas",
+                "revenue_currency": "Receita (%s)",
+                "no_top_machines": "Nenhuma máquina fez uma venda ainda",
+                "needs_attention": "Requer atenção",
+                "machine_count": "%s máquinas",
+                "all_fine": "Todas as máquinas estão funcionando bem.",
+                "open": "Abrir",
+                "newest_machines": "Máquinas mais recentes",
+                "view_all": "Ver tudo",
+                "reason_disabled": "Desativada por um admin",
+                "reason_low_stock": "Estoque em %s%%",
+                "series_revenue": "Receita",
+                "tooltip_sales": "%s vendas"
+            },
+            "detail": {
+                "back": "Voltar para máquinas",
+                "machines": "Máquinas",
+                "created": "Criada em %s",
+                "enable": "Ativar",
+                "disable": "Desativar",
+                "stat_balance": "Saldo",
+                "stat_balance_hint": "Dinheiro na máquina",
+                "stat_revenue": "Receita",
+                "stat_items_sold": "Itens vendidos",
+                "last_7_days": "Últimos 7 dias",
+                "stat_stock": "Nível de estoque",
+                "stat_stock_hint": "Média entre os produtos",
+                "danger_zone": "Zona de perigo",
+                "reset_balance": "Zerar saldo",
+                "reset_balance_description": "Remove os %s que estão na máquina agora.",
+                "reset": "Zerar",
+                "delete_machine": "Excluir máquina",
+                "delete_machine_description": "Remove o prop, seu estoque, pedidos e histórico para sempre.",
+                "delete": "Excluir",
+                "confirm_delete": "Isso exclui %s permanentemente. Não é possível desfazer.",
+                "confirm_reset": "Isso remove %s de %s.",
+                "working": "Processando...",
+                "owner_fallback": "um jogador",
+                "error": "Algo deu errado."
+            },
+            "machines": {
+                "search_placeholder": "Buscar nome, dono ou área...",
+                "empty_search": "Nenhuma máquina corresponde à sua busca",
+                "empty": "Nenhuma máquina ainda. Crie uma ou importe.",
+                "show_on_map": "Mostrar no mapa",
+                "manage": "Gerenciar",
+                "map": "Mapa",
+                "map_hint": "Clique em um ícone para gerenciar a máquina",
+                "column_machine": "Máquina",
+                "column_owner": "Dono",
+                "column_status": "Status",
+                "column_balance": "Saldo"
+            },
+            "settings": {
+                "economy": "Economia",
+                "wholesale_multiplier": "Multiplicador do preço de atacado",
+                "wholesale_hint": "Os donos pagam %s%% do preço base do fornecedor.",
+                "sales_tax": "Imposto sobre vendas (%)",
+                "max_machines": "Máquinas por jogador",
+                "max_machines_description": "Quantas máquinas um jogador pode ter.",
+                "stock_orders": "Pedidos de estoque",
+                "delivery_minutes": "Minutos por etapa do pedido",
+                "delivery_hint": "Um pedido leva cerca de %s minutos da preparação até a entrega.",
+                "defaults": "Padrões de novas máquinas",
+                "default_capacity": "Capacidade por produto",
+                "default_price": "Preço de venda padrão",
+                "default_price_description": "Usado ao criar uma máquina.",
+                "allow_purchase": "Jogadores podem comprar máquinas",
+                "allow_purchase_description": "Máquinas marcadas à venda podem ser compradas no jogo.",
+                "logging": "Logs",
+                "webhook": "URL do webhook do Discord",
+                "log_purchases": "Registrar compras",
+                "log_purchases_description": "Envia cada compra de máquina para o webhook.",
+                "log_admin_actions": "Registrar ações de admin",
+                "log_admin_actions_description": "Criar, editar e excluir máquinas.",
+                "share": "Compartilhar máquinas",
+                "export": "Exportar máquinas",
+                "export_description": "Nomes, modelos, locais, preços e produtos em JSON. Importe pela página Máquinas em outro servidor.",
+                "export_button": "Exportar",
+                "error_webhook_invalid": "O webhook deve ser uma URL de webhook do Discord.",
+                "error_webhook_missing": "Adicione uma URL de webhook ou desative os logs."
+            },
+            "export": {
+                "title": "Exportar máquinas",
+                "summary_one": "%s máquina. Apenas nomes, modelos, locais, preços e produtos são incluídos; donos, saldos e estoque ficam neste servidor.",
+                "summary_other": "%s máquinas. Apenas nomes, modelos, locais, preços e produtos são incluídos; donos, saldos e estoque ficam neste servidor.",
+                "output_label": "Máquinas exportadas",
+                "copy_failed": "Não foi possível copiar automaticamente. Clique no texto e pressione Ctrl+C.",
+                "download": "Baixar",
+                "copied": "Copiado",
+                "copy": "Copiar JSON"
+            },
+            "import": {
+                "title": "Importar máquinas",
+                "description": "Cole uma exportação de máquinas feita em Configurações de outro servidor. As máquinas chegam à venda, sem dono, dinheiro ou estoque.",
+                "load_file": "Carregar arquivo",
+                "ready": "%s prontas para importar",
+                "skipped": "%s ignoradas",
+                "importing": "Importando...",
+                "submit_one": "Importar %s máquina",
+                "submit_other": "Importar %s máquinas",
+                "error": "Não foi possível importar as máquinas.",
+                "error_invalid_json": "Este não é um JSON válido.",
+                "error_empty": "Nenhuma máquina encontrada neste JSON.",
+                "unnamed": "Máquina %s",
+                "skip_name": "Sem nome.",
+                "skip_location": "Sem local.",
+                "skip_occupied": "Já existe uma máquina aqui.",
+                "skip_duplicate": "Listada duas vezes neste JSON.",
+                "skip_products": "Nenhum dos seus produtos existe neste servidor."
+            },
+            "form": {
+                "details": "Detalhes",
+                "name": "Nome da máquina",
+                "name_placeholder": "ex.: Legion Square #2",
+                "prop_model": "Modelo do prop",
+                "machine_type": "Tipo de máquina",
+                "location": "Local",
+                "placing": "Posicionando...",
+                "set_position": "Definir posição da máquina",
+                "area": "Nome da área",
+                "area_placeholder": "ex.: Legion Square",
+                "no_position": "Nenhuma posição ainda",
+                "ownership": "Propriedade",
+                "owned_warning": "Pertence a %s. Definir um novo dono ou colocá-la à venda tira a máquina dele.",
+                "for_sale": "À venda",
+                "for_sale_description": "Jogadores podem comprar esta máquina em vez de ela ter um dono.",
+                "transfer_to": "Transferir para",
+                "owner_id": "ID do dono",
+                "transfer_placeholder": "ID de servidor ou citizen ID do novo dono",
+                "owner_placeholder": "Deixe vazio para colocá-la à venda",
+                "price": "Preço de venda (%s)",
+                "products": "Produtos",
+                "selected": "%s selecionados",
+                "select_all": "Selecionar todos",
+                "clear": "Limpar",
+                "sell_product": "Vender %s"
+            },
+            "placement": {
+                "title": "Posição da máquina",
+                "heading": "Direção",
+                "move": "Mover",
+                "rotate": "Girar",
+                "snap": "Encaixar no chão",
+                "key_left_alt": "Alt esquerdo",
+                "walk": "andar e olhar ao redor",
+                "cursor": "voltar ao cursor",
+                "confirm": "Confirmar"
+            },
+            "map": {
+                "zoom_in": "Aproximar",
+                "zoom_out": "Afastar"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "Cancelar",
+                "save": "Salvar",
+                "saving": "Salvando...",
+                "working": "Processando...",
+                "player_id": "ID do jogador",
+                "error": "Algo deu errado."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Painel",
+                    "description": "Visão geral de receita e vendas desta máquina."
+                },
+                "products": {
+                    "label": "Produtos",
+                    "description": "Níveis de estoque e preços."
+                },
+                "restock": {
+                    "label": "Reabastecer",
+                    "description": "Peça estoque novo ao fornecedor."
+                },
+                "transactions": {
+                    "label": "Transações",
+                    "description": "Todas as compras feitas nesta máquina."
+                },
+                "cash": {
+                    "label": "Caixa",
+                    "description": "Saque e deposite dinheiro na máquina."
+                },
+                "staff": {
+                    "label": "Equipe",
+                    "description": "Contrate funcionários e escolha o que eles podem fazer."
+                },
+                "settings": {
+                    "label": "Configurações",
+                    "description": "Nome e disponibilidade da máquina."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "Ver estatísticas",
+                    "description": "Ver receita, vendas e produtos mais vendidos."
+                },
+                "products_prices": {
+                    "label": "Alterar preços",
+                    "description": "Definir o preço que os clientes pagam."
+                },
+                "restock_order": {
+                    "label": "Pedir estoque",
+                    "description": "Comprar estoque do fornecedor com o saldo da máquina."
+                },
+                "transactions_view": {
+                    "label": "Ver vendas",
+                    "description": "Ver todas as compras feitas na máquina."
+                },
+                "cash_deposit": {
+                    "label": "Depositar dinheiro",
+                    "description": "Colocar o próprio dinheiro na máquina."
+                },
+                "cash_withdraw": {
+                    "label": "Sacar dinheiro",
+                    "description": "Retirar dinheiro do saldo da máquina."
+                },
+                "cash_history": {
+                    "label": "Ver histórico",
+                    "description": "Ver o saldo e as movimentações de caixa anteriores."
+                },
+                "staff_view": {
+                    "label": "Ver equipe",
+                    "description": "Ver quem trabalha aqui e seus cargos."
+                },
+                "staff_manage": {
+                    "label": "Gerenciar equipe",
+                    "description": "Contratar, demitir e alterar permissões que eles mesmos têm."
+                },
+                "settings_general": {
+                    "label": "Geral",
+                    "description": "Renomear a máquina e abri-la ou fechá-la."
+                },
+                "settings_hours": {
+                    "label": "Horário de funcionamento",
+                    "description": "Alterar o horário de abertura e fechamento."
+                },
+                "settings_stock": {
+                    "label": "Estoque e alertas",
+                    "description": "Limite de estoque baixo, reabastecimento automático e notificações."
+                },
+                "settings_payments": {
+                    "label": "Pagamentos",
+                    "description": "Escolher quais formas de pagamento são aceitas."
+                }
+            },
+            "roles": {
+                "owner": "Dono",
+                "employee": "Funcionário",
+                "supervisor": "Supervisor",
+                "manager": "Gerente",
+                "custom": "Personalizado"
+            },
+            "header": {
+                "open": "Aberta",
+                "closed": "Fechada",
+                "balance": "Saldo",
+                "no_access_title": "Sem acesso",
+                "no_access_description": "Peça ao dono para te dar permissões nesta máquina."
+            },
+            "no_products": {
+                "title": "Nenhum produto ainda",
+                "description": "Esta máquina não tem nada para vender. Quando um admin adicionar produtos, as vendas, o estoque e os pedidos aparecerão aqui."
+            },
+            "dashboard": {
+                "today_revenue": "Receita de hoje",
+                "vs_yesterday": "vs. ontem",
+                "weekly_revenue": "Receita semanal",
+                "last_7_days": "Últimos 7 dias",
+                "items_sold": "Itens vendidos",
+                "low_stock": "Estoque baixo",
+                "products_suffix": "produtos",
+                "low_stock_hint": "Restam %s ou menos",
+                "revenue": "Receita",
+                "no_sales_week": "Nenhuma venda nos últimos 7 dias",
+                "top_products": "Mais vendidos",
+                "units_sold": "Unidades vendidas",
+                "units_sold_tooltip": "unidades vendidas",
+                "nothing_sold": "Nada vendido ainda",
+                "recent_sales": "Vendas recentes",
+                "view_all": "Ver tudo",
+                "no_sales": "Nenhuma venda ainda.",
+                "sales_count": "%s vendas"
+            },
+            "products": {
+                "empty": "Sem produtos",
+                "product": "Produto",
+                "category": "Categoria",
+                "sold": "Vendidos",
+                "stock": "Estoque",
+                "price": "Preço (%s)",
+                "low_stock": "Estoque baixo"
+            },
+            "restock": {
+                "catalog": "Catálogo do fornecedor",
+                "low_stock_only": "Só estoque baixo",
+                "all_stocked_title": "Tudo abastecido",
+                "all_stocked_description": "Nenhum produto está acabando agora.",
+                "incoming": "+%s a caminho",
+                "per_unit": "%s por unidade",
+                "decrease": "Diminuir quantidade",
+                "increase": "Aumentar quantidade",
+                "fill": "Encher",
+                "summary": "Resumo do pedido",
+                "clear": "Limpar",
+                "summary_empty": "Escolha quantidades no catálogo para montar um pedido.",
+                "machine_balance": "Saldo da máquina",
+                "order_total": "Total do pedido",
+                "balance_after": "Saldo depois",
+                "ordering": "Pedindo...",
+                "place_order": "Fazer pedido",
+                "orders": "Pedidos",
+                "in_progress": "%s em andamento",
+                "insufficient": "A máquina não tem dinheiro suficiente para este pedido.",
+                "failed": "O pedido falhou."
+            },
+            "orders": {
+                "preparing": "Preparando",
+                "prepared": "Preparado",
+                "shipping": "A caminho",
+                "completed": "Concluído",
+                "cancelled": "Cancelado",
+                "status_aria": "Status do pedido: %s",
+                "pick_up": "Retirar"
+            },
+            "transactions": {
+                "empty": "Nenhuma venda ainda",
+                "time": "Hora",
+                "buyer": "Comprador",
+                "product": "Produto",
+                "quantity": "Qtd",
+                "total": "Total"
+            },
+            "cash": {
+                "balance": "Saldo",
+                "balance_hint": "Disponível na máquina",
+                "deposited": "Depositado",
+                "withdrawn": "Sacado",
+                "all_time": "Desde o início",
+                "amount": "Valor (%s)",
+                "all": "Tudo",
+                "withdraw_hint": "Você pode sacar até %s.",
+                "deposit_hint": "O dinheiro sai do que você tem em mãos. Você tem %s.",
+                "processing": "Processando...",
+                "withdraw": "Sacar",
+                "deposit": "Depositar",
+                "stock_order": "Pedido de estoque",
+                "history": "Histórico do caixa",
+                "movements": "%s movimentações",
+                "no_movements": "Nenhuma movimentação de caixa ainda",
+                "not_enough_balance": "A máquina não tem dinheiro suficiente.",
+                "not_enough_cash": "Você não tem todo esse dinheiro.",
+                "failed": "A transação falhou.",
+                "by_you": "Você"
+            },
+            "staff": {
+                "search": "Buscar...",
+                "hire": "Contratar",
+                "empty": "Nenhum funcionário ainda",
+                "online": "Online",
+                "offline": "Offline",
+                "you": "Você",
+                "now": "Agora",
+                "never": "Nunca",
+                "edit_permissions": "Editar permissões",
+                "fire": "Demitir",
+                "hire_title": "Contratar funcionário",
+                "edit_title": "Editar permissões",
+                "server_id": "ID de servidor",
+                "edit_description": "O que %s pode fazer em %s.",
+                "role": "Cargo",
+                "role_hint": "Escolha Personalizado para selecionar as permissões uma a uma.",
+                "all": "Todas",
+                "none": "Nenhuma",
+                "hire_hint": "O jogador precisa estar por perto. Funcionários podem abrir este painel, mas nunca vender ou transferir a máquina.",
+                "fire_title": "Demitir funcionário",
+                "fire_description": "%s perde o acesso a %s imediatamente.",
+                "employee": "Funcionário",
+                "hired": "Contratado",
+                "last_online": "Última vez online",
+                "player_fallback": "Jogador %s"
+            },
+            "settings": {
+                "general": "Geral",
+                "name": "Nome da máquina",
+                "description": "Descrição",
+                "description_placeholder": "Mostrada aos clientes",
+                "open": "Aberta para clientes",
+                "open_description": "Máquinas fechadas não podem ser usadas por outros jogadores.",
+                "hours": "Horário de funcionamento",
+                "schedule": "Usar horário programado",
+                "schedule_description": "Abrir e fechar automaticamente pelo horário do jogo.",
+                "opens_at": "Abre às",
+                "closes_at": "Fecha às",
+                "schedule_on": "Aberta das %s às %s.",
+                "schedule_off": "Só o botão de abertura controla a disponibilidade.",
+                "stock": "Estoque e alertas",
+                "low_stock_threshold": "Limite de estoque baixo",
+                "auto_restock": "Reabastecimento automático",
+                "auto_restock_description": "Pede até a capacidade máxima quando um produto atinge o limite.",
+                "low_stock_alerts": "Alertas de estoque baixo",
+                "low_stock_alerts_description": "Receba uma notificação quando o estoque estiver baixo.",
+                "sale_notifications": "Notificações de vendas",
+                "sale_notifications_description": "Receba uma notificação a cada compra.",
+                "payments": "Pagamentos",
+                "cash": "Dinheiro",
+                "cash_description": "Os clientes pagam com dinheiro em mãos.",
+                "accept_cash": "Aceitar dinheiro",
+                "bank": "Cartão bancário",
+                "bank_description": "Os clientes pagam pela conta bancária.",
+                "accept_bank": "Aceitar cartão bancário",
+                "danger_zone": "Zona de perigo",
+                "transfer_title": "Transferir propriedade",
+                "transfer_description": "Dê esta máquina para outro jogador. Você perde todo o acesso.",
+                "transfer": "Transferir",
+                "sell": "Vender máquina",
+                "sell_description": "Venda a máquina de volta. O estoque e os pedidos em andamento são perdidos.",
+                "sell_confirm": "Isso vende %s permanentemente. Não é possível desfazer.",
+                "transfer_prompt": "Digite o ID de servidor do jogador que será o dono desta máquina.",
+                "name_empty": "O nome da máquina não pode ficar vazio.",
+                "payment_required": "Aceite pelo menos uma forma de pagamento.",
+                "same_times": "Os horários de abertura e fechamento não podem ser iguais."
+            }
+        }
+    }
+}

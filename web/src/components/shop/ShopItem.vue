@@ -25,7 +25,7 @@
                 <h3 class="truncate text-sm font-semibold text-text-primary">{{ product.name }}</h3>
                 <p class="mt-1 flex items-center gap-1.5 text-xs" :class="stockClass">
                     <span class="size-1.5 rounded-full bg-current" />
-                    {{ outOfStock ? "Out of stock" : `${stock} in stock` }}
+                    {{ outOfStock ? t("shop.item.out_of_stock") : t("shop.item.in_stock", stock) }}
                 </p>
             </div>
 
@@ -35,11 +35,11 @@
                 </p>
                 <Button v-if="inCart" size="sm" variant="danger" @click="emit('remove', product)">
                     <Trash2 class="size-3.5" />
-                    Remove
+                    {{ t("shop.item.remove") }}
                 </Button>
                 <Button v-else size="sm" :disabled="outOfStock" @click="emit('add', product)">
                     <Plus class="size-3.5" />
-                    Add
+                    {{ t("shop.item.add") }}
                 </Button>
             </div>
         </div>
@@ -53,6 +53,7 @@ import { Button } from "@vezironi/veyra-ui";
 import { useShopStore } from "@/stores";
 import type { Product } from "@/stores";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const props = defineProps<{
     product: Product;

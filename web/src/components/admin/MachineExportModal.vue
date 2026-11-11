@@ -1,9 +1,8 @@
 <template>
-    <Modal title="Export machines" :icon="Download" width="36rem" @close="emit('close')">
+    <Modal :title="t('admin.export.title')" :icon="Download" width="36rem" @close="emit('close')">
         <div class="flex flex-col gap-3 px-5 py-4 text-sm text-text-muted">
             <p>
-                {{ admin.machines.length }} machine{{ admin.machines.length === 1 ? "" : "s" }}. Only names, models, locations, prices and
-                products are included; owners, balances and stock stay on this server.
+                {{ t(admin.machines.length === 1 ? "admin.export.summary_one" : "admin.export.summary_other", admin.machines.length) }}
             </p>
 
             <textarea
@@ -11,14 +10,14 @@
                 readonly
                 rows="12"
                 :value="json"
-                aria-label="Exported machines"
+                :aria-label="t('admin.export.output_label')"
                 class="w-full resize-none rounded-lg border border-border bg-bg-inset p-3 font-mono text-xs text-text-muted outline-none focus:border-text-faint"
                 @focus="output?.select()"
             />
 
             <p v-if="copyFailed" class="flex items-center gap-1.5 text-xs text-danger">
                 <CircleAlert class="size-3.5 shrink-0" />
-                Couldn't copy automatically. Click the text and press Ctrl+C.
+                {{ t("admin.export.copy_failed") }}
             </p>
         </div>
 
@@ -26,12 +25,12 @@
             <!-- Downloads don't work in FiveM's browser; copying does -->
             <Button v-if="!isNative" variant="outline" size="sm" @click="download">
                 <Download class="size-3.5" />
-                Download
+                {{ t("admin.export.download") }}
             </Button>
             <Button size="sm" @click="copy">
                 <Check v-if="copied" class="size-3.5" />
                 <Copy v-else class="size-3.5" />
-                {{ copied ? "Copied" : "Copy JSON" }}
+                {{ copied ? t("admin.export.copied") : t("admin.export.copy") }}
             </Button>
         </template>
     </Modal>
@@ -44,6 +43,7 @@ import { Button, Modal } from "@vezironi/veyra-ui";
 import { useAdminStore } from "@/stores/admin";
 import { isNative } from "@/utils";
 import { exportMachines } from "./machineTransfer";
+import { t } from "@/utils/locale";
 
 const emit = defineEmits<{ close: [] }>();
 

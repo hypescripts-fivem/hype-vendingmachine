@@ -1,7 +1,7 @@
 <template>
     <NoProducts v-if="!shop.products.length" />
 
-    <DataTable v-else v-model:sort="sort" :columns="columns" :rows="rows" :page-size="15" empty-text="No products">
+    <DataTable v-else v-model:sort="sort" :columns="columns" :rows="rows" :page-size="15" :empty-text="t('owner.products.empty')">
         <template #cell="{ column, row }">
             <template v-if="productOf(row)">
                 <div v-if="column.key === 'name'" class="flex items-center gap-3">
@@ -24,7 +24,7 @@
                             :style="{ width: `${(Number(row.stock) / owner.capacity) * 100}%` }"
                         />
                     </div>
-                    <TriangleAlert v-if="owner.isLowStock(Number(row.stock))" class="size-4 shrink-0 text-warning" aria-label="Low stock" />
+                    <TriangleAlert v-if="owner.isLowStock(Number(row.stock))" class="size-4 shrink-0 text-warning" :aria-label="t('owner.products.low_stock')" />
                 </div>
 
                 <div v-else-if="column.key === 'price'" class="w-28">
@@ -37,7 +37,7 @@
                     :disabled="!isDirty(productOf(row)!) || savingId === row.id"
                     @click="save(productOf(row)!)"
                 >
-                    {{ savingId === row.id ? "Saving..." : "Save" }}
+                    {{ savingId === row.id ? t("owner.common.saving") : t("owner.common.save") }}
                 </Button>
             </template>
         </template>
@@ -53,6 +53,7 @@ import { useShopStore, type Product } from "@/stores";
 import { useOwnerStore } from "@/stores/owner";
 import NoProducts from "./NoProducts.vue";
 import { currencySymbol } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const shop = useShopStore();
 const owner = useOwnerStore();
@@ -61,14 +62,14 @@ const sort = ref<{ key: string; direction: "asc" | "desc" } | null>(null);
 const drafts = reactive<Record<string, string | number | undefined>>({});
 const savingId = ref<string>();
 
-const columns: DataTableColumn[] = [
-    { key: "name", label: "Product", sortable: true },
-    { key: "category", label: "Category", sortable: true },
-    { key: "sold", label: "Sold", sortable: true, align: "right" },
-    { key: "stock", label: "Stock", sortable: true },
-    { key: "price", label: `Price (${currencySymbol()})`, sortable: true },
+const columns = computed<DataTableColumn[]>(() => [
+    { key: "name", label: t("owner.products.product"), sortable: true },
+    { key: "category", label: t("owner.products.category"), sortable: true },
+    { key: "sold", label: t("owner.products.sold"), sortable: true, align: "right" },
+    { key: "stock", label: t("owner.products.stock"), sortable: true },
+    { key: "price", label: t("owner.products.price", currencySymbol()), sortable: true },
     { key: "actions", label: "", align: "right" },
-];
+]);
 
 const rows = computed(() => shop.products.map((product) => ({
     id: product.id,

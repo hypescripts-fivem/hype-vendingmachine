@@ -17,31 +17,31 @@ export interface PermissionGroup {
 
 const details: Record<OwnerSection, PermissionDetail[]> = {
     dashboard: [
-        { value: "dashboard.view", label: "View stats", description: "See revenue, sales and top products." },
+        { value: "dashboard.view", label: "owner.permissions.dashboard_view.label", description: "owner.permissions.dashboard_view.description" },
     ],
     products: [
-        { value: "products.prices", label: "Change prices", description: "Set the price customers pay." },
+        { value: "products.prices", label: "owner.permissions.products_prices.label", description: "owner.permissions.products_prices.description" },
     ],
     restock: [
-        { value: "restock.order", label: "Order stock", description: "Buy stock from the supplier with the machine balance." },
+        { value: "restock.order", label: "owner.permissions.restock_order.label", description: "owner.permissions.restock_order.description" },
     ],
     transactions: [
-        { value: "transactions.view", label: "View sales", description: "See every purchase made at the machine." },
+        { value: "transactions.view", label: "owner.permissions.transactions_view.label", description: "owner.permissions.transactions_view.description" },
     ],
     cash: [
-        { value: "cash.deposit", label: "Deposit money", description: "Put their own cash into the machine." },
-        { value: "cash.withdraw", label: "Withdraw money", description: "Take money out of the machine balance." },
-        { value: "cash.history", label: "View history", description: "See the balance and past cash movements." },
+        { value: "cash.deposit", label: "owner.permissions.cash_deposit.label", description: "owner.permissions.cash_deposit.description" },
+        { value: "cash.withdraw", label: "owner.permissions.cash_withdraw.label", description: "owner.permissions.cash_withdraw.description" },
+        { value: "cash.history", label: "owner.permissions.cash_history.label", description: "owner.permissions.cash_history.description" },
     ],
     staff: [
-        { value: "staff.view", label: "View staff", description: "See who works here and their roles." },
-        { value: "staff.manage", label: "Manage staff", description: "Hire, fire and change permissions they have themselves." },
+        { value: "staff.view", label: "owner.permissions.staff_view.label", description: "owner.permissions.staff_view.description" },
+        { value: "staff.manage", label: "owner.permissions.staff_manage.label", description: "owner.permissions.staff_manage.description" },
     ],
     settings: [
-        { value: "settings.general", label: "General", description: "Rename the machine and open or close it." },
-        { value: "settings.hours", label: "Operating hours", description: "Change the open and close schedule." },
-        { value: "settings.stock", label: "Stock & alerts", description: "Low stock threshold, auto restock and notifications." },
-        { value: "settings.payments", label: "Payments", description: "Choose which payment methods are accepted." },
+        { value: "settings.general", label: "owner.permissions.settings_general.label", description: "owner.permissions.settings_general.description" },
+        { value: "settings.hours", label: "owner.permissions.settings_hours.label", description: "owner.permissions.settings_hours.description" },
+        { value: "settings.stock", label: "owner.permissions.settings_stock.label", description: "owner.permissions.settings_stock.description" },
+        { value: "settings.payments", label: "owner.permissions.settings_payments.label", description: "owner.permissions.settings_payments.description" },
     ],
 };
 

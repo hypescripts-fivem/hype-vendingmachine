@@ -1,0 +1,703 @@
+{
+    "notify_title": "自动售货机",
+
+    "target_buy": "购买售货机",
+    "target_open": "使用自动售货机",
+    "target_manage": "管理售货机",
+    "textui_buy": "[%s] 购买售货机 ($%s)",
+    "textui_open": "[%s] 使用自动售货机",
+    "textui_manage": "[%s] 管理售货机",
+    "textui_cargo": "[%s] %s",
+
+    "target_cargo_grab": "推起手推车",
+    "target_cargo_drop": "放下手推车",
+    "target_cargo_take": "拿起箱子",
+    "target_cargo_load": "装上箱子",
+    "target_cargo_unload": "取出箱子",
+    "target_cargo_deliver": "把箱子放进售货机",
+    "notify_cargo_started": "你的订单已备好，请到标记地点取货。",
+    "notify_cargo_cancelled": "你离开了取货区域，订单已取消。",
+    "notify_cargo_delivered": "所有箱子都已放入 %s。",
+    "error_order_not_ready": "该订单当前无法取货。",
+    "error_cargo_busy": "你已经在取一个订单了。",
+
+    "success_machine_bought": "你购买了 %s，花费 $%s。",
+    "notify_sale": "%s 完成一笔销售：$%s。",
+    "notify_low_stock": "%s 在 %s 中库存不足（剩余 %s）。",
+    "notify_hired": "你现在在 %s 工作。",
+    "notify_staff_removed": "你不再在 %s 工作。",
+    "notify_machine_transferred": "你把 %s 交给了 %s。",
+    "notify_machine_received": "%s 把 %s 交给了你。",
+    "notify_machine_sold": "你卖掉了 %s，获得 $%s。",
+    "auto_restock": "自动补货",
+
+    "log_title_purchase": "售货机购买",
+    "log_title_admin": "管理员操作",
+    "log_machine_bought": "%s 购买了 **%s** (#%s)，价格 $%s。",
+    "log_machine_created": "%s 创建了 **%s** (#%s)。",
+    "log_machine_updated": "%s 编辑了 **%s** (#%s)。",
+    "log_machine_deleted": "%s 删除了 **%s** (#%s)。",
+    "log_machines_imported": "%s 导入了 %s 台售货机。",
+    "log_machine_status": "%s 将 **%s** (#%s) 设置为 %s。",
+    "log_balance_reset": "%s 重置了 **%s** (#%s) 的余额，$%s。",
+    "log_settings_saved": "%s 修改了管理员设置。",
+
+    "error_no_permission": "你没有权限执行此操作。",
+    "error_invalid_machine": "售货机数据无效。",
+    "error_invalid_name": "售货机名称必须为 1 到 %s 个字符。",
+    "error_invalid_model": "未知的售货机模型。",
+    "error_invalid_location": "请为售货机设置位置。",
+    "error_invalid_price": "售价必须是 0 到 %s 之间的整数。",
+    "error_invalid_capacity": "容量必须是 1 到 %s 之间的整数。",
+    "error_invalid_products": "请至少选择一个有效商品。",
+    "error_owner_not_found": "未找到该服务器 ID 或 citizen ID 对应的在线玩家。",
+    "error_machine_not_found": "这台售货机已不存在。",
+    "error_machine_too_close": "该位置已经有一台售货机。",
+    "error_database": "无法保存售货机，请检查服务器控制台。",
+    "error_not_for_sale": "这台售货机不出售。",
+    "error_purchase_disabled": "当前无法购买售货机。",
+    "error_max_machines": "你最多只能拥有 %s 台售货机。",
+    "error_not_enough_money": "你的钱不够。",
+    "error_payment_not_accepted": "这台售货机不接受该支付方式。",
+    "error_too_far": "你离售货机太远了。",
+    "error_machine_closed": "这台售货机已关闭。",
+    "error_machine_disabled": "管理员已禁用这台售货机，无法打开。",
+    "error_invalid_description": "描述最多 %s 个字符。",
+    "error_invalid_schedule": "营业和关闭时间必须为不同的 HH:MM 格式时间。",
+    "error_invalid_threshold": "低库存阈值必须在 0 到 %s 之间。",
+    "error_invalid_payments": "请至少接受一种支付方式。",
+    "error_invalid_amount": "请输入 $1 到 $%s 之间的整数金额。",
+    "error_not_enough_balance": "售货机里没有这么多钱。",
+    "error_invalid_status": "这里只能禁用或启用售货机。",
+    "error_invalid_settings": "%s 的值无效。",
+    "error_import_empty": "没有可导入的售货机。",
+    "error_import_too_many": "一次最多只能导入 %s 台售货机。",
+    "error_import_entry": "售货机 #%s：%s",
+    "error_import_duplicate": "同一位置被列出了两次。",
+    "error_invalid_items": "物品列表无效。",
+    "error_too_many_items": "每个订单中同一物品最多 %s 个。",
+    "error_over_capacity": "%s 将超出售货机的容量 %s。",
+    "error_out_of_stock": "%s 库存不足。",
+    "error_cannot_carry": "你拿不了这么多 %s。",
+    "error_player_not_found": "售货机附近没有该 ID 的玩家。",
+    "error_already_staff": "该玩家已经在这里工作了。",
+    "error_invalid_permissions": "请至少选择一项你自己拥有的权限。",
+    "error_staff_not_found": "该员工已不在这里工作。",
+    "error_transfer_self": "你已经拥有这台售货机。",
+    "error_target_max_machines": "该玩家最多只能拥有 %s 台售货机。",
+    "error_machine_changed": "售货机在此期间已被更改，请重试。",
+
+    "ui": {
+        "common": {
+            "cancel": "取消",
+            "close": "关闭",
+            "clear": "清空",
+            "back": "返回",
+            "done": "完成",
+            "reset": "重置",
+            "total": "总计",
+            "decrease_quantity": "减少数量",
+            "increase_quantity": "增加数量",
+            "save_bar": {
+                "unsaved": "你有未保存的更改。",
+                "saving": "保存中...",
+                "save_changes": "保存更改"
+            },
+            "time_picker": {
+                "title": "选择时间",
+                "hour": "时",
+                "minute": "分"
+            },
+            "errors": {
+                "no_response": "服务器没有响应。"
+            }
+        },
+        "shop": {
+            "default_name": "自动售货机",
+            "navbar": {
+                "products": "%s 件商品",
+                "all": "全部",
+                "search": "搜索商品..."
+            },
+            "empty": {
+                "title": "未找到商品",
+                "description": "试试其他分类或搜索词。"
+            },
+            "item": {
+                "out_of_stock": "缺货",
+                "in_stock": "库存 %s",
+                "add": "添加",
+                "remove": "移除"
+            },
+            "cart": {
+                "title": "购物车",
+                "empty_title": "购物车是空的",
+                "empty_description": "添加商品后会显示在这里。",
+                "each": "每件 %s",
+                "remove_item": "移除商品",
+                "checkout": "结账"
+            },
+            "checkout": {
+                "title": "结账",
+                "payment_method": "支付方式",
+                "cash": "现金",
+                "bank": "银行",
+                "available": "可用",
+                "not_accepted": "此处不支持",
+                "not_enough_money": "余额不足",
+                "processing": "处理中...",
+                "pay": "支付 %s"
+            }
+        },
+        "screen": {
+            "subtitle": "选择商品并加入购物车",
+            "remove_from_cart": "从购物车移除",
+            "empty": {
+                "title": "暂无商品",
+                "description": "这台售货机还没有任何在售商品。"
+            },
+            "bar": {
+                "items_one": "%s 件",
+                "items_other": "%s 件",
+                "cart": "购物车",
+                "quick_order": "快速下单"
+            },
+            "cart": {
+                "title": "购物车",
+                "summary": "%s 种商品 · %s 件",
+                "each": "每件 %s",
+                "confirm": "确认购物车"
+            },
+            "item": {
+                "add_to_cart": "加入购物车",
+                "out_of_stock": "缺货"
+            }
+        },
+        "idle": {
+            "use_to_order": "使用即可下单"
+        },
+        "purchase": {
+            "title": "购买售货机",
+            "unknown_area": "未知区域",
+            "type": "类型",
+            "capacity": "容量",
+            "capacity_value": "每种商品 %s 件",
+            "sells_one": "出售 %s 种商品",
+            "sells_other": "出售 %s 种商品",
+            "price": "价格",
+            "cash_balance": "现金余额",
+            "bank_balance": "银行余额",
+            "not_enough_money": "你的钱不够。",
+            "buying": "购买中...",
+            "buy": "购买售货机",
+            "placement": {
+                "start_failed": "无法开始放置。"
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "取消",
+                "import": "导入",
+                "new_machine": "新建售货机",
+                "for_sale": "出售中",
+                "no_area": "无区域",
+                "teleport": "传送",
+                "player_fallback": "玩家 %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "概览",
+                    "description": "全服售货机统计数据。"
+                },
+                "machines": {
+                    "label": "售货机",
+                    "description": "服务器上的所有售货机。"
+                },
+                "settings": {
+                    "label": "设置",
+                    "description": "适用于所有售货机的全局规则。"
+                }
+            },
+            "header": {
+                "machine_settings": "售货机设置",
+                "editing": "正在编辑 %s",
+                "machines": "售货机",
+                "open_count": "%s 台营业中",
+                "badge": "管理员"
+            },
+            "status": {
+                "open": "营业中",
+                "closed": "已关闭",
+                "for_sale": "出售中",
+                "disabled": "已禁用"
+            },
+            "models": {
+                "soda": "汽水售货机",
+                "snack": "零食售货机",
+                "coffee": "咖啡售货机",
+                "water": "饮用水售货机",
+                "custom": "自定义售货机",
+                "glass": "玻璃售货机",
+                "glass_ecola": "玻璃售货机 (eCola)",
+                "glass_sprunk": "玻璃售货机 (Sprunk)",
+                "glass_raine": "玻璃售货机 (Raine)",
+                "glass_junk": "玻璃售货机 (Junk)",
+                "glass_beanmachine": "玻璃售货机 (Bean Machine)",
+                "glass_phatchips": "玻璃售货机 (Phat Chips)",
+                "glass_egochaser": "玻璃售货机 (Ego Chaser)",
+                "glass_cluckinbell": "玻璃售货机 (Cluckin' Bell)",
+                "glass_burgershot": "玻璃售货机 (Burger Shot)",
+                "glass_247": "玻璃售货机 (24/7)"
+            },
+            "validation": {
+                "name_empty": "售货机名称不能为空。",
+                "location_missing": "请为售货机设置位置。",
+                "products_empty": "请至少选择一个商品。"
+            },
+            "create": {
+                "title": "新建售货机",
+                "creating": "创建中...",
+                "submit": "创建售货机",
+                "error": "无法创建售货机。"
+            },
+            "dashboard": {
+                "empty_title": "还没有售货机",
+                "empty_description": "创建你的第一台售货机，或导入从其他服务器导出的售货机。",
+                "stat_machines": "售货机",
+                "stat_machines_open": "当前 %s 台营业中",
+                "stat_revenue": "收入",
+                "stat_items_sold": "售出数量",
+                "stat_all_machines": "最近 7 天，所有售货机",
+                "stat_owners": "所有者",
+                "stat_for_sale_one": "%s 台售货机出售中",
+                "stat_for_sale_other": "%s 台售货机出售中",
+                "server_revenue": "全服收入",
+                "last_7_days": "最近 7 天",
+                "no_sales": "最近 7 天没有销售",
+                "top_machines": "热门售货机",
+                "revenue_currency": "收入 (%s)",
+                "no_top_machines": "还没有售货机产生销售",
+                "needs_attention": "需要关注",
+                "machine_count": "%s 台售货机",
+                "all_fine": "所有售货机运行正常。",
+                "open": "打开",
+                "newest_machines": "最新售货机",
+                "view_all": "查看全部",
+                "reason_disabled": "已被管理员禁用",
+                "reason_low_stock": "库存 %s%%",
+                "series_revenue": "收入",
+                "tooltip_sales": "%s 笔销售"
+            },
+            "detail": {
+                "back": "返回售货机列表",
+                "machines": "售货机",
+                "created": "创建于 %s",
+                "enable": "启用",
+                "disable": "禁用",
+                "stat_balance": "余额",
+                "stat_balance_hint": "售货机内的资金",
+                "stat_revenue": "收入",
+                "stat_items_sold": "售出数量",
+                "last_7_days": "最近 7 天",
+                "stat_stock": "库存水平",
+                "stat_stock_hint": "所有商品的平均值",
+                "danger_zone": "危险区域",
+                "reset_balance": "重置余额",
+                "reset_balance_description": "移除售货机内当前的 %s。",
+                "reset": "重置",
+                "delete_machine": "删除售货机",
+                "delete_machine_description": "永久移除模型及其库存、订单和历史记录。",
+                "delete": "删除",
+                "confirm_delete": "这将永久删除 %s，且无法撤销。",
+                "confirm_reset": "这将把 %s 从 %s 中移除。",
+                "working": "处理中...",
+                "owner_fallback": "一名玩家",
+                "error": "出了点问题。"
+            },
+            "machines": {
+                "search_placeholder": "搜索名称、所有者或区域...",
+                "empty_search": "没有符合搜索条件的售货机",
+                "empty": "还没有售货机。创建一台或导入。",
+                "show_on_map": "在地图上显示",
+                "manage": "管理",
+                "map": "地图",
+                "map_hint": "点击图标以管理售货机",
+                "column_machine": "售货机",
+                "column_owner": "所有者",
+                "column_status": "状态",
+                "column_balance": "余额"
+            },
+            "settings": {
+                "economy": "经济",
+                "wholesale_multiplier": "批发价格倍率",
+                "wholesale_hint": "所有者支付供应商基础价格的 %s%%。",
+                "sales_tax": "销售税 (%)",
+                "max_machines": "每位玩家的售货机数量",
+                "max_machines_description": "一名玩家最多可以拥有多少台售货机。",
+                "stock_orders": "进货订单",
+                "delivery_minutes": "每个订单阶段的分钟数",
+                "delivery_hint": "一个订单从备货到送达大约需要 %s 分钟。",
+                "defaults": "新售货机默认值",
+                "default_capacity": "每种商品的容量",
+                "default_price": "默认售价",
+                "default_price_description": "创建售货机时使用。",
+                "allow_purchase": "玩家可购买售货机",
+                "allow_purchase_description": "标记为出售的售货机可在游戏内购买。",
+                "logging": "日志",
+                "webhook": "Discord webhook URL",
+                "log_purchases": "记录购买",
+                "log_purchases_description": "将每次售货机购买发送到 webhook。",
+                "log_admin_actions": "记录管理员操作",
+                "log_admin_actions_description": "创建、编辑和删除售货机。",
+                "share": "分享售货机",
+                "export": "导出售货机",
+                "export_description": "以 JSON 导出名称、模型、位置、价格和商品。可在其他服务器的售货机页面导入。",
+                "export_button": "导出",
+                "error_webhook_invalid": "webhook 必须是 Discord webhook URL。",
+                "error_webhook_missing": "请添加 webhook URL 或关闭日志。"
+            },
+            "export": {
+                "title": "导出售货机",
+                "summary_one": "%s 台售货机。仅包含名称、模型、位置、价格和商品；所有者、余额和库存保留在本服务器。",
+                "summary_other": "%s 台售货机。仅包含名称、模型、位置、价格和商品；所有者、余额和库存保留在本服务器。",
+                "output_label": "导出的售货机",
+                "copy_failed": "无法自动复制。请点击文本并按 Ctrl+C。",
+                "download": "下载",
+                "copied": "已复制",
+                "copy": "复制 JSON"
+            },
+            "import": {
+                "title": "导入售货机",
+                "description": "粘贴从其他服务器设置中导出的售货机数据。导入的售货机处于出售状态，没有所有者、资金或库存。",
+                "load_file": "加载文件",
+                "ready": "%s 台可导入",
+                "skipped": "%s 台已跳过",
+                "importing": "导入中...",
+                "submit_one": "导入 %s 台售货机",
+                "submit_other": "导入 %s 台售货机",
+                "error": "无法导入售货机。",
+                "error_invalid_json": "这不是有效的 JSON。",
+                "error_empty": "此 JSON 中没有找到售货机。",
+                "unnamed": "售货机 %s",
+                "skip_name": "缺少名称。",
+                "skip_location": "缺少位置。",
+                "skip_occupied": "此处已有一台售货机。",
+                "skip_duplicate": "在此 JSON 中重复出现。",
+                "skip_products": "其商品在本服务器上都不存在。"
+            },
+            "form": {
+                "details": "详情",
+                "name": "售货机名称",
+                "name_placeholder": "例如 Legion Square #2",
+                "prop_model": "模型",
+                "machine_type": "售货机类型",
+                "location": "位置",
+                "placing": "放置中...",
+                "set_position": "设置售货机位置",
+                "area": "区域标签",
+                "area_placeholder": "例如 Legion Square",
+                "no_position": "尚未设置位置",
+                "ownership": "所有权",
+                "owned_warning": "所有者为 %s。填写新所有者或将其设为出售将使其失去这台售货机。",
+                "for_sale": "出售中",
+                "for_sale_description": "玩家可以购买这台售货机，而不是由指定所有者拥有。",
+                "transfer_to": "转让给",
+                "owner_id": "所有者 ID",
+                "transfer_placeholder": "新所有者的服务器 ID 或 citizen ID",
+                "owner_placeholder": "留空则设为出售",
+                "price": "售价 (%s)",
+                "products": "商品",
+                "selected": "已选 %s 个",
+                "select_all": "全选",
+                "clear": "清空",
+                "sell_product": "出售 %s"
+            },
+            "placement": {
+                "title": "售货机位置",
+                "heading": "朝向",
+                "move": "移动",
+                "rotate": "旋转",
+                "snap": "贴合地面",
+                "key_left_alt": "左 Alt",
+                "walk": "走动和环顾四周",
+                "cursor": "返回光标",
+                "confirm": "确认"
+            },
+            "map": {
+                "zoom_in": "放大",
+                "zoom_out": "缩小"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "取消",
+                "save": "保存",
+                "saving": "保存中...",
+                "working": "处理中...",
+                "player_id": "玩家 ID",
+                "error": "出了点问题。"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "仪表盘",
+                    "description": "这台售货机的收入和销售概览。"
+                },
+                "products": {
+                    "label": "商品",
+                    "description": "库存水平和价格。"
+                },
+                "restock": {
+                    "label": "补货",
+                    "description": "向供应商订购新库存。"
+                },
+                "transactions": {
+                    "label": "交易",
+                    "description": "这台售货机的每一笔购买。"
+                },
+                "cash": {
+                    "label": "现金",
+                    "description": "从售货机取款和存款。"
+                },
+                "staff": {
+                    "label": "员工",
+                    "description": "雇用员工并设置他们的权限。"
+                },
+                "settings": {
+                    "label": "设置",
+                    "description": "售货机名称和营业状态。"
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "查看统计",
+                    "description": "查看收入、销售和热门商品。"
+                },
+                "products_prices": {
+                    "label": "修改价格",
+                    "description": "设置顾客支付的价格。"
+                },
+                "restock_order": {
+                    "label": "订购库存",
+                    "description": "用售货机余额向供应商购买库存。"
+                },
+                "transactions_view": {
+                    "label": "查看销售",
+                    "description": "查看这台售货机的每一笔购买。"
+                },
+                "cash_deposit": {
+                    "label": "存款",
+                    "description": "把自己的现金存入售货机。"
+                },
+                "cash_withdraw": {
+                    "label": "取款",
+                    "description": "从售货机余额中取钱。"
+                },
+                "cash_history": {
+                    "label": "查看记录",
+                    "description": "查看余额和过去的资金流动。"
+                },
+                "staff_view": {
+                    "label": "查看员工",
+                    "description": "查看谁在这里工作及其角色。"
+                },
+                "staff_manage": {
+                    "label": "管理员工",
+                    "description": "雇用、解雇员工，并修改自己拥有的权限。"
+                },
+                "settings_general": {
+                    "label": "常规",
+                    "description": "重命名售货机并开启或关闭营业。"
+                },
+                "settings_hours": {
+                    "label": "营业时间",
+                    "description": "修改营业和关闭时间表。"
+                },
+                "settings_stock": {
+                    "label": "库存与提醒",
+                    "description": "低库存阈值、自动补货和通知。"
+                },
+                "settings_payments": {
+                    "label": "支付",
+                    "description": "选择接受哪些支付方式。"
+                }
+            },
+            "roles": {
+                "owner": "所有者",
+                "employee": "员工",
+                "supervisor": "主管",
+                "manager": "经理",
+                "custom": "自定义"
+            },
+            "header": {
+                "open": "营业中",
+                "closed": "已关闭",
+                "balance": "余额",
+                "no_access_title": "无权访问",
+                "no_access_description": "请让所有者为你分配这台售货机的权限。"
+            },
+            "no_products": {
+                "title": "暂无商品",
+                "description": "这台售货机没有可出售的商品。管理员添加商品后，销售、库存和订单将显示在这里。"
+            },
+            "dashboard": {
+                "today_revenue": "今日收入",
+                "vs_yesterday": "较昨日",
+                "weekly_revenue": "本周收入",
+                "last_7_days": "最近 7 天",
+                "items_sold": "售出数量",
+                "low_stock": "低库存",
+                "products_suffix": "种商品",
+                "low_stock_hint": "剩余 %s 件或更少",
+                "revenue": "收入",
+                "no_sales_week": "最近 7 天没有销售",
+                "top_products": "热门商品",
+                "units_sold": "售出件数",
+                "units_sold_tooltip": "件已售出",
+                "nothing_sold": "还没有售出任何商品",
+                "recent_sales": "最近销售",
+                "view_all": "查看全部",
+                "no_sales": "还没有销售。",
+                "sales_count": "%s 笔销售"
+            },
+            "products": {
+                "empty": "暂无商品",
+                "product": "商品",
+                "category": "分类",
+                "sold": "已售",
+                "stock": "库存",
+                "price": "价格 (%s)",
+                "low_stock": "低库存"
+            },
+            "restock": {
+                "catalog": "供应商目录",
+                "low_stock_only": "仅显示低库存",
+                "all_stocked_title": "库存充足",
+                "all_stocked_description": "目前没有商品库存不足。",
+                "incoming": "+%s 运送中",
+                "per_unit": "每件 %s",
+                "decrease": "减少数量",
+                "increase": "增加数量",
+                "fill": "补满",
+                "summary": "订单摘要",
+                "clear": "清空",
+                "summary_empty": "从目录中选择数量来创建订单。",
+                "machine_balance": "售货机余额",
+                "order_total": "订单总额",
+                "balance_after": "下单后余额",
+                "ordering": "下单中...",
+                "place_order": "下单",
+                "orders": "订单",
+                "in_progress": "%s 个进行中",
+                "insufficient": "售货机内资金不足以支付此订单。",
+                "failed": "下单失败。"
+            },
+            "orders": {
+                "preparing": "备货中",
+                "prepared": "已备好",
+                "shipping": "运送中",
+                "completed": "已完成",
+                "cancelled": "已取消",
+                "status_aria": "订单状态：%s",
+                "pick_up": "取货"
+            },
+            "transactions": {
+                "empty": "还没有销售",
+                "time": "时间",
+                "buyer": "买家",
+                "product": "商品",
+                "quantity": "数量",
+                "total": "总计"
+            },
+            "cash": {
+                "balance": "余额",
+                "balance_hint": "售货机内可用资金",
+                "deposited": "已存入",
+                "withdrawn": "已取出",
+                "all_time": "全部时间",
+                "amount": "金额 (%s)",
+                "all": "全部",
+                "withdraw_hint": "你最多可以取出 %s。",
+                "deposit_hint": "资金将从你身上的现金中扣除。你有 %s。",
+                "processing": "处理中...",
+                "withdraw": "取款",
+                "deposit": "存款",
+                "stock_order": "进货订单",
+                "history": "资金记录",
+                "movements": "%s 条记录",
+                "no_movements": "还没有资金流动",
+                "not_enough_balance": "售货机里的钱不够。",
+                "not_enough_cash": "你没有那么多现金。",
+                "failed": "交易失败。",
+                "by_you": "你"
+            },
+            "staff": {
+                "search": "搜索...",
+                "hire": "雇用",
+                "empty": "还没有员工",
+                "online": "在线",
+                "offline": "离线",
+                "you": "你",
+                "now": "现在",
+                "never": "从未",
+                "edit_permissions": "编辑权限",
+                "fire": "解雇",
+                "hire_title": "雇用员工",
+                "edit_title": "编辑权限",
+                "server_id": "服务器 ID",
+                "edit_description": "%s 在 %s 可以做什么。",
+                "role": "角色",
+                "role_hint": "选择自定义以逐项选择权限。",
+                "all": "全部",
+                "none": "无",
+                "hire_hint": "该玩家必须在附近。员工可以打开此面板，但永远不能出售或转让售货机。",
+                "fire_title": "解雇员工",
+                "fire_description": "%s 将立即失去对 %s 的访问权限。",
+                "employee": "员工",
+                "hired": "雇用时间",
+                "last_online": "最后在线",
+                "player_fallback": "玩家 %s"
+            },
+            "settings": {
+                "general": "常规",
+                "name": "售货机名称",
+                "description": "描述",
+                "description_placeholder": "向顾客显示",
+                "open": "对顾客开放",
+                "open_description": "关闭的售货机无法被其他玩家使用。",
+                "hours": "营业时间",
+                "schedule": "使用时间表",
+                "schedule_description": "按游戏内时间自动开启和关闭。",
+                "opens_at": "开门时间",
+                "closes_at": "关门时间",
+                "schedule_on": "营业时间 %s 至 %s。",
+                "schedule_off": "仅由营业开关控制是否可用。",
+                "stock": "库存与提醒",
+                "low_stock_threshold": "低库存阈值",
+                "auto_restock": "自动补货",
+                "auto_restock_description": "商品达到阈值时自动订购至满容量。",
+                "low_stock_alerts": "低库存提醒",
+                "low_stock_alerts_description": "库存不足时收到通知。",
+                "sale_notifications": "销售通知",
+                "sale_notifications_description": "每次购买都收到通知。",
+                "payments": "支付",
+                "cash": "现金",
+                "cash_description": "顾客用随身现金支付。",
+                "accept_cash": "接受现金",
+                "bank": "银行卡",
+                "bank_description": "顾客从银行账户支付。",
+                "accept_bank": "接受银行卡",
+                "danger_zone": "危险区域",
+                "transfer_title": "转让所有权",
+                "transfer_description": "把这台售货机交给其他玩家。你将失去所有权限。",
+                "transfer": "转让",
+                "sell": "出售售货机",
+                "sell_description": "将售货机卖回。库存和进行中的订单将会丢失。",
+                "sell_confirm": "这将永久出售 %s，且无法撤销。",
+                "transfer_prompt": "输入将拥有这台售货机的玩家的服务器 ID。",
+                "name_empty": "售货机名称不能为空。",
+                "payment_required": "请至少接受一种支付方式。",
+                "same_times": "开门和关门时间不能相同。"
+            }
+        }
+    }
+}

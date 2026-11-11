@@ -1,9 +1,9 @@
 <template>
     <div class="flex flex-col gap-4">
         <div v-if="owner.can('cash.history')" class="grid grid-cols-3 gap-3">
-            <StatCard label="Balance" :value="formatMoney(owner.balance)" :icon="Banknote" change-label="Available in the machine" />
-            <StatCard label="Deposited" :value="formatMoney(owner.totalDeposited)" :icon="ArrowDownLeft" change-label="All time" />
-            <StatCard label="Withdrawn" :value="formatMoney(owner.totalWithdrawn)" :icon="ArrowUpRight" change-label="All time" />
+            <StatCard :label="t('owner.cash.balance')" :value="formatMoney(owner.balance)" :icon="Banknote" :change-label="t('owner.cash.balance_hint')" />
+            <StatCard :label="t('owner.cash.deposited')" :value="formatMoney(owner.totalDeposited)" :icon="ArrowDownLeft" :change-label="t('owner.cash.all_time')" />
+            <StatCard :label="t('owner.cash.withdrawn')" :value="formatMoney(owner.totalWithdrawn)" :icon="ArrowUpRight" :change-label="t('owner.cash.all_time')" />
         </div>
 
         <div class="grid grid-cols-5 gap-3">
@@ -14,7 +14,7 @@
                 </h3>
 
                 <label class="grid gap-1.5 text-sm text-text-muted">
-                    Amount ({{ currencySymbol() }})
+                    {{ t("owner.cash.amount", currencySymbol()) }}
                     <Inputs v-model="amount" type="number" :min="1" placeholder="0" />
                 </label>
 
@@ -36,7 +36,7 @@
                         :disabled="available < 1"
                         @click="amount = available"
                     >
-                        All
+                        {{ t("owner.cash.all") }}
                     </Button>
                 </div>
 
@@ -46,13 +46,13 @@
                 </p>
                 <p v-else class="text-xs text-text-faint">
                     {{ mode === "withdraw"
-                        ? `You can withdraw up to ${formatMoney(owner.balance)}.`
-                        : `Money is taken from your cash on hand. You have ${formatMoney(owner.wallet)}.` }}
+                        ? t("owner.cash.withdraw_hint", formatMoney(owner.balance))
+                        : t("owner.cash.deposit_hint", formatMoney(owner.wallet)) }}
                 </p>
 
                 <Button class="mt-auto w-full" :disabled="!canSubmit" @click="submit">
                     <component :is="mode === 'withdraw' ? ArrowUpRight : ArrowDownLeft" class="size-4" />
-                    {{ owner.cashBusy ? "Processing..." : mode === "withdraw" ? "Withdraw" : "Deposit" }}
+                    {{ owner.cashBusy ? t("owner.cash.processing") : mode === "withdraw" ? t("owner.cash.withdraw") : t("owner.cash.deposit") }}
                 </Button>
             </section>
 
@@ -62,13 +62,13 @@
                 :class="tabs.length ? 'col-span-3' : 'col-span-5'"
             >
                 <header class="flex items-baseline justify-between px-4 py-3">
-                    <h3 class="text-sm font-semibold text-text-primary">Cash history</h3>
-                    <span class="text-xs text-text-faint">{{ owner.cashMovements.length }} movements</span>
+                    <h3 class="text-sm font-semibold text-text-primary">{{ t("owner.cash.history") }}</h3>
+                    <span class="text-xs text-text-faint">{{ t("owner.cash.movements", owner.cashMovements.length) }}</span>
                 </header>
 
                 <EmptyState
                     v-if="!owner.cashMovements.length"
-                    title="No cash movements yet"
+                    :title="t('owner.cash.no_movements')"
                     :icon="Banknote"
                     class="border-none bg-transparent"
                 />
@@ -82,7 +82,7 @@
                             <component :is="movementMeta[movement.type].icon" class="size-4" />
                         </span>
                         <div class="min-w-0 flex-1 leading-tight">
-                            <p class="text-sm font-medium text-text-primary">{{ movementMeta[movement.type].label }}</p>
+                            <p class="text-sm font-medium text-text-primary">{{ t(movementMeta[movement.type].label) }}</p>
                             <p class="text-xs tabular-nums text-text-faint">{{ formatDateTime(movement.time) }} · {{ movement.by }}</p>
                         </div>
                         <span
@@ -104,22 +104,25 @@ import { ArrowDownLeft, ArrowUpRight, Banknote, CircleAlert, Truck } from "@luci
 import { Button, EmptyState, Inputs, StatCard, Tabs } from "@vezironi/veyra-ui";
 import { useOwnerStore, type CashMovementType } from "@/stores/owner";
 import { currencySymbol, formatDateTime, formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 
 const owner = useOwnerStore();
 
 const allTabs = [
-    { label: "Withdraw", value: "withdraw", icon: ArrowUpRight, permission: "cash.withdraw" as const },
-    { label: "Deposit", value: "deposit", icon: ArrowDownLeft, permission: "cash.deposit" as const },
+    { label: "owner.cash.withdraw", value: "withdraw", icon: ArrowUpRight, permission: "cash.withdraw" as const },
+    { label: "owner.cash.deposit", value: "deposit", icon: ArrowDownLeft, permission: "cash.deposit" as const },
 ];
 
-const tabs = computed(() => allTabs.filter((tab) => owner.can(tab.permission)));
+const tabs = computed(() => allTabs
+    .filter((tab) => owner.can(tab.permission))
+    .map((tab) => ({ ...tab, label: t(tab.label) })));
 
 const presets = [100, 500, 1000];
 
 const movementMeta = {
-    deposit: { label: "Deposit", icon: ArrowDownLeft },
-    withdraw: { label: "Withdraw", icon: ArrowUpRight },
-    order: { label: "Stock order", icon: Truck },
+    deposit: { label: "owner.cash.deposit", icon: ArrowDownLeft },
+    withdraw: { label: "owner.cash.withdraw", icon: ArrowUpRight },
+    order: { label: "owner.cash.stock_order", icon: Truck },
 };
 
 const mode = ref<string | undefined>();
@@ -148,7 +151,7 @@ watch([mode, amount], () => {
     error.value = undefined;
 
     if (parsedAmount.value > available.value) {
-        error.value = mode.value === "withdraw" ? "Not enough money in the machine." : "You don't have that much cash.";
+        error.value = mode.value === "withdraw" ? t("owner.cash.not_enough_balance") : t("owner.cash.not_enough_cash");
     }
 });
 
@@ -160,7 +163,7 @@ async function submit() {
     if (response?.success) {
         amount.value = undefined;
     } else if (response) {
-        error.value = response.error ?? "Transaction failed.";
+        error.value = response.error ?? t("owner.cash.failed");
     }
 };
 </script>

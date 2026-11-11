@@ -4,6 +4,7 @@ import { asList, asRecord, FetchNUI } from "@/utils";
 import { mockTime } from "@/utils/format";
 import { mockProducts, type Product } from "@/stores";
 import { seriesSlots } from "@/utils/chart";
+import { t } from "@/utils/locale";
 
 export type AdminSection = 'dashboard' | 'machines' | 'settings';
 
@@ -65,25 +66,25 @@ export interface AdminSettings {
 };
 
 export const machineModels = [
-    { label: "Soda machine", value: "prop_vend_soda_01" },
-    { label: "Snack machine", value: "prop_vend_snak_01" },
-    { label: "Coffee machine", value: "prop_vend_coffe_01" },
-    { label: "Water machine", value: "prop_vend_water_01" },
+    { label: "admin.models.soda", value: "prop_vend_soda_01" },
+    { label: "admin.models.snack", value: "prop_vend_snak_01" },
+    { label: "admin.models.coffee", value: "prop_vend_coffe_01" },
+    { label: "admin.models.water", value: "prop_vend_water_01" },
 ];
 
 // olentrix_vending machines, picked in a second menu once "Custom Vending Machine" is the prop model
 export const customMachineModels = [
-    { label: "Glass machine", value: "olentrix_vend" },
-    { label: "Glass machine (eCola)", value: "olentrix_vend_ecola" },
-    { label: "Glass machine (Sprunk)", value: "olentrix_vend_sprunk" },
-    { label: "Glass machine (Raine)", value: "olentrix_vend_raine" },
-    { label: "Glass machine (Junk)", value: "olentrix_vend_junk" },
-    { label: "Glass machine (Bean Machine)", value: "olentrix_vend_beanmachine" },
-    { label: "Glass machine (Phat Chips)", value: "olentrix_vend_phatchips" },
-    { label: "Glass machine (Ego Chaser)", value: "olentrix_vend_egochaser" },
-    { label: "Glass machine (Cluckin' Bell)", value: "olentrix_vend_cluckinbell" },
-    { label: "Glass machine (Burger Shot)", value: "olentrix_vend_burgershot" },
-    { label: "Glass machine (24/7)", value: "olentrix_vend_247" },
+    { label: "admin.models.glass", value: "olentrix_vend" },
+    { label: "admin.models.glass_ecola", value: "olentrix_vend_ecola" },
+    { label: "admin.models.glass_sprunk", value: "olentrix_vend_sprunk" },
+    { label: "admin.models.glass_raine", value: "olentrix_vend_raine" },
+    { label: "admin.models.glass_junk", value: "olentrix_vend_junk" },
+    { label: "admin.models.glass_beanmachine", value: "olentrix_vend_beanmachine" },
+    { label: "admin.models.glass_phatchips", value: "olentrix_vend_phatchips" },
+    { label: "admin.models.glass_egochaser", value: "olentrix_vend_egochaser" },
+    { label: "admin.models.glass_cluckinbell", value: "olentrix_vend_cluckinbell" },
+    { label: "admin.models.glass_burgershot", value: "olentrix_vend_burgershot" },
+    { label: "admin.models.glass_247", value: "olentrix_vend_247" },
 ];
 
 const location = (label: string, x: number, y: number, z: number, heading = 0): MachineLocation => ({ label, x, y, z, heading });
@@ -150,9 +151,9 @@ export function emptyMachineConfig(settings: AdminSettings): MachineConfig {
 };
 
 export function validateMachine(config: MachineConfig): string | undefined {
-    if (!config.name.trim()) return "Machine name can't be empty.";
-    if (!config.location.x && !config.location.y && !config.location.z) return "Set a location for the machine.";
-    if (!config.products.length) return "Pick at least one product.";
+    if (!config.name.trim()) return t("admin.validation.name_empty");
+    if (!config.location.x && !config.location.y && !config.location.z) return t("admin.validation.location_missing");
+    if (!config.products.length) return t("admin.validation.products_empty");
     return undefined;
 };
 
@@ -237,7 +238,7 @@ export const useAdminStore = defineStore("admin", () => {
             ...JSON.parse(JSON.stringify(config)),
             id,
             colorSlot: nextColorSlot(),
-            ownerName: config.forSale ? null : ownerName ?? `Player ${config.ownerId}`,
+            ownerName: config.forSale ? null : ownerName ?? t("admin.common.player_fallback", config.ownerId),
             status: "closed",
             balance: 0,
             revenue: 0,
@@ -300,7 +301,7 @@ export const useAdminStore = defineStore("admin", () => {
                 if (config.forSale) {
                     machine.ownerName = null;
                 } else if (ownerChanged) {
-                    machine.ownerName = response.data?.ownerName ?? `Player ${config.ownerId}`;
+                    machine.ownerName = response.data?.ownerName ?? t("admin.common.player_fallback", config.ownerId);
                 }
             }
 

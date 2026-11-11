@@ -1,48 +1,43 @@
 local Config <const> = require 'config.config'
+local AdminMenu <const> = Config.Commands.AdminMenu
 
 local machineModels = {}
 for _, machine in ipairs(Config.Machines) do
     machineModels[machine.value] = true
 end
 
-lib.addCommand(Config.Commands.AdminMenu.name, {
-    help = Config.Commands.AdminMenu.help,
-    params = {},
-    restricted = "group.admin"
-}, function(source, args, raw)
-    if not source then return end
-    local playerId = source
+local settingRanges <const> = {
+    wholesaleMultiplier = { min = 0.5, max = 2 },
+    salesTax = { min = 0, max = 30, integer = true },
+    maxMachinesPerPlayer = { min = 1, max = 100, integer = true },
+    deliveryMinutes = { min = 1, max = 30, integer = true },
+    defaultCapacity = { min = 1, max = Config.Limits.maxCapacity, integer = true },
+    defaultPrice = { min = 0, max = Config.Limits.maxMachinePrice, integer = true },
+}
 
-    if not exports['hype-core']:IsAdmin(playerId) then
-        Debug("warning", "player %s used /%s without being an admin", playerId, Config.Commands.AdminMenu.name)
-        return
-    end
+lib.addCommand(AdminMenu.name, {
+    help = AdminMenu.help,
+    restricted = AdminMenu.permission,
+}, function(source)
+    if source == 0 or not exports['hype-core']:IsAdmin(source) then return end
 
-    Debug("info", "opening the admin menu for player %s", playerId)
-    TriggerClientEvent('hype-vendingmachine:client:open-admin-menu', playerId)
+    TriggerClientEvent('hype-vendingmachine:client:open-admin-menu', source)
 end)
 
-lib.callback.register('hype-vendingmachine:server:is-admin', function(source)
-    if not source then return false end
-    local playerId = source
-
+local function isAdmin(playerId)
     return exports['hype-core']:IsAdmin(playerId)
-end)
+end
 
---- @param value any
---- @param min number
---- @param max number
---- @return integer?
 local function toInteger(value, min, max)
     value = tonumber(value)
     if not value or value ~= math.floor(value) or value < min or value > max then return nil end
     return math.tointeger(value)
 end
 
---- Checks everything the UI sent and returns a clean copy
---- @param data MachineConfig
---- @return MachineConfig? config
---- @return string? error
+local function round(value)
+    return math.floor(value * 100 + 0.5) / 100
+end
+
 local function validateMachine(data)
     if type(data) ~= "table" then return nil, locale("error_invalid_machine") end
 
@@ -77,7 +72,6 @@ local function validateMachine(data)
     end
     if #products == 0 then return nil, locale("error_invalid_products") end
 
-    -- A machine without an owner goes up for sale
     local ownerId = Trim(data.ownerId)
     local forSale = data.forSale == true or ownerId == ""
 
@@ -85,7 +79,7 @@ local function validateMachine(data)
         name = name,
         model = data.model,
         location = {
-            label = Trim(location.label):sub(1, 64), -- `area` column
+            label = Trim(location.label):sub(1, 64),
             x = x,
             y = y,
             z = z,
@@ -99,10 +93,6 @@ local function validateMachine(data)
     }
 end
 
---- Finds an online player by server id or citizen id
---- @param ownerId string
---- @return string? identifier
---- @return string? name
 local function resolveOwner(ownerId)
     local playerId = tonumber(ownerId)
 
@@ -118,8 +108,6 @@ local function resolveOwner(ownerId)
     return identifier, GetPlayerDisplayName(playerId)
 end
 
---- Least used chart color first, so machines spread across the palette
---- @return integer
 local function nextColorSlot()
     local used = {}
     for _, row in ipairs(MySQL.query.await(Queries.GetColorSlotUsage) or {}) do
@@ -138,17 +126,6 @@ local function nextColorSlot()
     return slot
 end
 
---- @param value number
---- @return number
-local function round(value)
-    return math.floor(value * 100 + 0.5) / 100
-end
-
---- Turns a hype_vending_machines row into the Machine shape the admin panel uses
---- @param row MachineRow
---- @param products ProductRow[]
---- @param totals? { revenue: number, sales: number }
---- @return AdminMachine
 local function formatMachine(row, products, totals)
     local items, fill = {}, 0
 
@@ -184,13 +161,50 @@ local function formatMachine(row, products, totals)
     }
 end
 
-lib.callback.register('hype-vendingmachine:server:get-admin-data', function(source)
-    if not source then return { success = false } end
-    local playerId = source
+local function logAdmin(playerId, key, ...)
+    SendWebhookLog("logAdminActions", locale("log_title_admin"), locale(key, exports['hype-core']:FormatPlayerForLog(playerId), ...))
+end
 
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
+local function findMachine(data)
+    local machineId = toInteger(type(data) == "table" and data.id, 1, math.maxinteger)
+    return machineId and MySQL.single.await(Queries.GetMachine, { machineId })
+end
+
+local function isTooClose(location, skipId)
+    return MySQL.scalar.await(Queries.GetMachineNearPosition, { skipId or 0, location.x, location.y, location.z, Config.Limits.machineSpacing }) ~= nil
+end
+
+local function insertMachine(machine)
+    local location = machine.location
+
+    local machineId = MySQL.insert.await(Queries.InsertMachine, {
+        machine.name,
+        machine.model,
+        location.label,
+        location.x,
+        location.y,
+        location.z,
+        location.heading,
+        machine.price,
+        machine.capacity,
+        nextColorSlot(),
+        json.encode(Config.DefaultOwnerSettings),
+    })
+
+    if not machineId then return nil end
+
+    local products = {}
+    for index, item in ipairs(machine.products) do
+        products[index] = { machineId, item, ProductsById[item].price }
     end
+
+    MySQL.prepare.await(Queries.InsertProduct, products)
+
+    return machineId
+end
+
+lib.callback.register('hype-vendingmachine:server:get-admin-data', function(source)
+    if not isAdmin(source) then return Fail(locale("error_no_permission")) end
 
     local productsByMachine = {}
     for _, row in ipairs(MySQL.query.await(Queries.GetAllProducts) or {}) do
@@ -209,7 +223,6 @@ lib.callback.register('hype-vendingmachine:server:get-admin-data', function(sour
         machines[index] = formatMachine(row, productsByMachine[row.id] or {}, totalsByMachine[row.id])
     end
 
-    -- Days without a sale still show up on the chart as 0
     local revenueByDay = {}
     for _, row in ipairs(MySQL.query.await(Queries.GetTotalDailyRevenue, { Config.Limits.revenueDays - 1 }) or {}) do
         revenueByDay[row.day] = tonumber(row.revenue) or 0
@@ -219,8 +232,6 @@ lib.callback.register('hype-vendingmachine:server:get-admin-data', function(sour
     for index, day in ipairs(LastDays(Config.Limits.revenueDays)) do
         revenue[index] = { date = day, revenue = revenueByDay[day] or 0 }
     end
-
-    Debug("info", "sent %d machine(s) to admin %s", #machines, playerId)
 
     return {
         success = true,
@@ -233,60 +244,12 @@ lib.callback.register('hype-vendingmachine:server:get-admin-data', function(sour
     }
 end)
 
---- Sends an admin action to the webhook, if logAdminActions is on
---- @param playerId integer The admin
---- @param key string Locale key; the admin is its first argument
---- @param ... any The locale's other arguments
-local function logAdmin(playerId, key, ...)
-    SendWebhookLog("logAdminActions", locale("log_title_admin"), locale(key, exports['hype-core']:FormatPlayerForLog(playerId), ...))
-end
-
---- Saves a validated machine, for sale and closed, with its products at the catalog price
---- @param machine MachineConfig
---- @return integer? machineId
-local function insertMachine(machine)
-    local location = machine.location
-
-    local machineId = MySQL.insert.await(Queries.InsertMachine, {
-        machine.name,
-        machine.model,
-        location.label,
-        location.x,
-        location.y,
-        location.z,
-        location.heading,
-        machine.price,
-        machine.capacity,
-        nextColorSlot(),
-        json.encode(Config.DefaultOwnerSettings),
-    })
-
-    if not machineId then
-        Debug("error", "could not insert machine '%s'", machine.name)
-        return nil
-    end
-
-    -- Products start at the catalog price; the owner changes it later
-    local products = {}
-    for index, item in ipairs(machine.products) do
-        products[index] = { machineId, item, ProductsById[item].price }
-    end
-
-    MySQL.prepare.await(Queries.InsertProduct, products)
-
-    return machineId
-end
-
 lib.callback.register('hype-vendingmachine:server:create-machine', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local machine, err = validateMachine(data)
-    if not machine then return Fail(err --[[@as string]]) end
+    if not machine then return Fail(err) end
 
     local owner, ownerName
     if not machine.forSale then
@@ -294,10 +257,7 @@ lib.callback.register('hype-vendingmachine:server:create-machine', function(sour
         if not owner then return Fail(locale("error_owner_not_found")) end
     end
 
-    local location = machine.location
-    if MySQL.scalar.await(Queries.GetMachineNearPosition, { 0, location.x, location.y, location.z, Config.Limits.machineSpacing }) then
-        return Fail(locale("error_machine_too_close"))
-    end
+    if isTooClose(machine.location) then return Fail(locale("error_machine_too_close")) end
 
     local machineId = insertMachine(machine)
     if not machineId then return Fail(locale("error_database")) end
@@ -305,8 +265,6 @@ lib.callback.register('hype-vendingmachine:server:create-machine', function(sour
     if owner then
         MySQL.update.await(Queries.SetMachineOwner, { owner, ownerName, machineId })
     end
-
-    Debug("success", "admin %s created machine %s '%s' (owner: %s)", playerId, machineId, machine.name, owner or "for sale")
 
     SyncMachine(machineId)
     logAdmin(playerId, "log_machine_created", machine.name, machineId)
@@ -320,29 +278,17 @@ lib.callback.register('hype-vendingmachine:server:create-machine', function(sour
     }
 end)
 
---- @param data any The callback payload, expected to carry `id`
---- @return MachineRow? row
-local function findMachine(data)
-    local machineId = toInteger(type(data) == "table" and data.id, 1, math.maxinteger)
-    return machineId and MySQL.single.await(Queries.GetMachine, { machineId })
-end
-
 lib.callback.register('hype-vendingmachine:server:update-machine', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local row = findMachine(data)
     if not row then return Fail(locale("error_machine_not_found")) end
 
     local machineId = row.id
     local machine, err = validateMachine(data)
-    if not machine then return Fail(err --[[@as string]]) end
+    if not machine then return Fail(err) end
 
-    -- The UI always sends the current owner back, so an unchanged owner needs no lookup and can be offline
     local owner, ownerName
     if not machine.forSale then
         if machine.ownerId == row.owner then
@@ -355,8 +301,6 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
 
     local location = machine.location
 
-    -- The panel sends coordinates rounded to 2 decimals. Unless the machine was really moved,
-    -- keep the stored ones so the prop isn't respawned on every save
     local moved = math.abs(row.x - location.x) > 0.01 or math.abs(row.y - location.y) > 0.01
         or math.abs(row.z - location.z) > 0.01 or math.abs(row.heading - location.heading) > 0.01
 
@@ -364,9 +308,7 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
         location.x, location.y, location.z, location.heading = row.x, row.y, row.z, row.heading
     end
 
-    if MySQL.scalar.await(Queries.GetMachineNearPosition, { machineId, location.x, location.y, location.z, Config.Limits.machineSpacing }) then
-        return Fail(locale("error_machine_too_close"))
-    end
+    if isTooClose(location, machineId) then return Fail(locale("error_machine_too_close")) end
 
     local queries = {
         {
@@ -384,7 +326,6 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
                 machineId,
             }
         },
-        -- Products that stay keep their price, stock and sales; new ones start at the catalog price
         { query = Queries.DeleteRemovedProducts, values = { machineId, machine.products } },
         { query = Queries.ClampStock, values = { machine.capacity, machineId } },
     }
@@ -393,7 +334,6 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
         queries[#queries + 1] = { query = Queries.InsertProduct, values = { machineId, item, ProductsById[item].price } }
     end
 
-    -- A new owner or going up for sale lets the old owner's staff go
     if owner ~= row.owner then
         if owner then
             queries[#queries + 1] = { query = Queries.SetMachineOwner, values = { owner, ownerName, machineId } }
@@ -409,10 +349,8 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
         return Fail(locale("error_database"))
     end
 
-    Debug("success", "admin %s updated machine %s (moved: %s, owner changed: %s)", playerId, machineId, moved, owner ~= row.owner)
-
-    -- Clients only respawn the prop when the model or position changed
     SyncMachine(machineId)
+    SyncStock({ id = machineId, model = machine.model, x = location.x, y = location.y, z = location.z })
     logAdmin(playerId, "log_machine_updated", machine.name, machineId)
 
     return {
@@ -424,22 +362,15 @@ lib.callback.register('hype-vendingmachine:server:update-machine', function(sour
 end)
 
 lib.callback.register('hype-vendingmachine:server:delete-machine', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local row = findMachine(data)
     if not row then return Fail(locale("error_machine_not_found")) end
 
-    -- Products, sales, cash movements, orders and staff go with it (ON DELETE CASCADE)
     if MySQL.update.await(Queries.DeleteMachine, { row.id }) == 0 then
         return Fail(locale("error_machine_not_found"))
     end
-
-    Debug("success", "admin %s deleted machine %s '%s'", playerId, row.id, row.name)
 
     RemoveMachine(row.id)
     logAdmin(playerId, "log_machine_deleted", row.name, row.id)
@@ -447,14 +378,9 @@ lib.callback.register('hype-vendingmachine:server:delete-machine', function(sour
     return { success = true }
 end)
 
--- Imported machines are always for sale, closed and empty. All entries are checked before any is saved
 lib.callback.register('hype-vendingmachine:server:import-machines', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local entries = type(data) == "table" and data.machines
     if type(entries) ~= "table" or #entries == 0 then
@@ -476,14 +402,13 @@ lib.callback.register('hype-vendingmachine:server:import-machines', function(sou
         if not machine then return Fail(locale("error_import_entry", index, err)) end
 
         local location = machine.location
-        if MySQL.scalar.await(Queries.GetMachineNearPosition, { 0, location.x, location.y, location.z, Config.Limits.machineSpacing }) then
+        if isTooClose(location) then
             return Fail(locale("error_import_entry", index, locale("error_machine_too_close")))
         end
 
+        local coords = vector3(location.x, location.y, location.z)
         for _, other in ipairs(machines) do
-            local distance = #(vector3(location.x, location.y, location.z) - vector3(other.location.x, other.location.y, other.location.z))
-
-            if distance < Config.Limits.machineSpacing then
+            if #(coords - vector3(other.location.x, other.location.y, other.location.z)) < Config.Limits.machineSpacing then
                 return Fail(locale("error_import_entry", index, locale("error_import_duplicate")))
             end
         end
@@ -495,23 +420,22 @@ lib.callback.register('hype-vendingmachine:server:import-machines', function(sou
     for index, machine in ipairs(machines) do
         local machineId = insertMachine(machine)
 
-        -- Undo the ones already saved so the import is all or nothing
         if not machineId then
             for _, savedId in ipairs(ids) do
-                MySQL.update.await(Queries.DeleteMachine, { tonumber(savedId) })
+                MySQL.update.await(Queries.DeleteMachine, { savedId })
             end
 
             Debug("error", "import failed at entry %d, rolled back %d machine(s)", index, #ids)
             return Fail(locale("error_database"))
         end
 
-        ids[index] = tostring(machineId)
+        ids[index] = machineId
     end
 
-    Debug("success", "admin %s imported %d machine(s)", playerId, #ids)
-
-    for _, machineId in ipairs(ids) do
-        SyncMachine(tonumber(machineId) --[[@as integer]])
+    local stringIds = {}
+    for index, machineId in ipairs(ids) do
+        SyncMachine(machineId)
+        stringIds[index] = tostring(machineId)
     end
 
     logAdmin(playerId, "log_machines_imported", #ids)
@@ -519,19 +443,14 @@ lib.callback.register('hype-vendingmachine:server:import-machines', function(sou
     return {
         success = true,
         data = {
-            ids = ids,
+            ids = stringIds,
         }
     }
 end)
 
--- The admin panel only switches between `disabled` and `closed`; opening is the owner's call
 lib.callback.register('hype-vendingmachine:server:set-machine-status', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local row = findMachine(data)
     if not row then return Fail(locale("error_machine_not_found")) end
@@ -542,7 +461,6 @@ lib.callback.register('hype-vendingmachine:server:set-machine-status', function(
     end
 
     MySQL.update.await(Queries.SetMachineStatus, { status, row.id })
-    Debug("success", "admin %s set machine %s to %s", playerId, row.id, status)
 
     SyncMachine(row.id)
     logAdmin(playerId, "log_machine_status", row.name, row.id, status)
@@ -551,45 +469,23 @@ lib.callback.register('hype-vendingmachine:server:set-machine-status', function(
 end)
 
 lib.callback.register('hype-vendingmachine:server:reset-machine-balance', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     local row = findMachine(data)
     if not row then return Fail(locale("error_machine_not_found")) end
 
     MySQL.update.await(Queries.ResetBalance, { row.id })
-    Debug("success", "admin %s reset the balance of machine %s (was %s)", playerId, row.id, row.balance)
-
     logAdmin(playerId, "log_balance_reset", row.name, row.id, lib.math.groupdigits(row.balance))
 
     return { success = true }
 end)
 
--- Same ranges as the admin panel's sliders and inputs
-local settingRanges = {
-    wholesaleMultiplier = { min = 0.5, max = 2 },
-    salesTax = { min = 0, max = 30, integer = true },
-    maxMachinesPerPlayer = { min = 1, max = 100, integer = true },
-    deliveryMinutes = { min = 1, max = 30, integer = true },
-    defaultCapacity = { min = 1, max = Config.Limits.maxCapacity, integer = true },
-    defaultPrice = { min = 0, max = Config.Limits.maxMachinePrice, integer = true },
-}
-
---- @param value string
---- @return boolean
 local function isDiscordWebhook(value)
     return value:find("^https://[%w%.]*discord%.com/api/webhooks/") ~= nil
         or value:find("^https://[%w%.]*discordapp%.com/api/webhooks/") ~= nil
 end
 
---- Checks one admin setting against the type of its default and its range
---- @param key string
---- @param value any
---- @return any? value
 local function readSetting(key, value)
     local default = Config.DefaultSettings[key]
 
@@ -603,7 +499,6 @@ local function readSetting(key, value)
         value = tonumber(value)
         if not value or (range and (value < range.min or value > range.max)) then return nil end
 
-        -- Sliders with a 0.1 step send values like 1.2000000000000002
         return range and range.integer and math.floor(value + 0.5) or math.floor(value * 100 + 0.5) / 100
     end
 
@@ -612,25 +507,20 @@ local function readSetting(key, value)
         if value ~= "" and (#value > 255 or not isDiscordWebhook(value)) then return nil end
         return value
     end
-
-    return nil
 end
 
 lib.callback.register('hype-vendingmachine:server:save-admin-settings', function(source, data)
-    if not source then return { success = false } end
     local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(playerId) then return Fail(locale("error_no_permission")) end
 
     if type(data) ~= "table" then return Fail(locale("error_invalid_settings", "?")) end
 
-    local queries = {}
+    local values, queries = {}, {}
     for key in pairs(Config.DefaultSettings) do
         local value = readSetting(key, data[key])
         if value == nil then return Fail(locale("error_invalid_settings", key)) end
 
+        values[key] = value
         queries[#queries + 1] = { query = Queries.SaveSetting, values = { key, json.encode(value) } }
     end
 
@@ -639,26 +529,17 @@ lib.callback.register('hype-vendingmachine:server:save-admin-settings', function
         return Fail(locale("error_database"))
     end
 
-    Debug("success", "admin %s saved the admin settings", playerId)
-
+    SetSettings(values)
     logAdmin(playerId, "log_settings_saved")
 
     return { success = true }
 end)
 
--- The client does the teleport; the server only hands the position to admins
 lib.callback.register('hype-vendingmachine:server:get-machine-position', function(source, data)
-    if not source then return { success = false } end
-    local playerId = source
-
-    if not exports['hype-core']:IsAdmin(playerId) then
-        return Fail(locale("error_no_permission"))
-    end
+    if not isAdmin(source) then return Fail(locale("error_no_permission")) end
 
     local row = findMachine(data)
     if not row then return Fail(locale("error_machine_not_found")) end
-
-    Debug("info", "admin %s is teleporting to machine %s", playerId, row.id)
 
     return {
         success = true,

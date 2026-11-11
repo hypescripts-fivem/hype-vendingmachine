@@ -5,16 +5,14 @@ for _, permission in ipairs(Config.StaffPermissions) do
     knownPermissions[permission] = true
 end
 
---- What the owner pays the supplier per unit. The panel shows the same number, so orders match what was quoted
---- @param product CatalogProduct
---- @param multiplier number Admin setting wholesaleMultiplier
---- @return integer
+local panelViewers = {}
+local schedules = {}
+local restocking = {}
+
 local function wholesalePrice(product, multiplier)
     return math.floor(product.wholesale * multiplier + 0.5)
 end
 
---- @param value any JSON array from the staff table
---- @return string[]
 local function readPermissions(value)
     local permissions = {}
 
@@ -27,12 +25,6 @@ local function readPermissions(value)
     return permissions
 end
 
---- What the player may do at this machine: everything as the owner, their permissions as staff, nil otherwise
---- @param playerId integer
---- @param row MachineRow
---- @return OwnerAccess? access
---- @return string? identifier
---- @return integer? memberId Staff row id, nil for the owner
 local function getAccess(playerId, row)
     local identifier = exports['hype-core']:GetPlayerIdentifier(playerId)
     if not identifier or ToBoolean(row.for_sale) then return nil end
@@ -50,16 +42,20 @@ local function getAccess(playerId, row)
     return { owner = false, permissions = permissions }, identifier, member.id
 end
 
---- @param access OwnerAccess
---- @param permission string
---- @return boolean
 local function can(access, permission)
     return access.owner or lib.table.contains(access.permissions, permission)
 end
 
---- Last days, oldest first; days without a sale are 0
---- @param machineId integer
---- @return DailyRevenue[]
+function SetOrderStatus(orderId, machineId, status)
+    MySQL.update.await(Queries.UpdateOrderStatus, { status, orderId })
+
+    for playerId, viewing in pairs(panelViewers) do
+        if viewing == machineId then
+            TriggerClientEvent("hype-vendingmachine:client:order-status", playerId, machineId, tostring(orderId), status)
+        end
+    end
+end
+
 local function getRevenue(machineId)
     local byDay = {}
     for _, row in ipairs(MySQL.query.await(Queries.GetDailyRevenue, { machineId, Config.Limits.revenueDays - 1 }) or {}) do
@@ -79,8 +75,6 @@ local function getRevenue(machineId)
     return revenue
 end
 
---- @param machineId integer
---- @return Transaction[]
 local function getTransactions(machineId)
     local transactions = {}
 
@@ -98,8 +92,6 @@ local function getTransactions(machineId)
     return transactions
 end
 
---- @param machineId integer
---- @return CashMovement[]
 local function getCashMovements(machineId)
     local movements = {}
 
@@ -116,8 +108,6 @@ local function getCashMovements(machineId)
     return movements
 end
 
---- @param machineId integer
---- @return StockOrder[]
 local function getOrders(machineId)
     local orders, byId, ids = {}, {}, {}
 
@@ -135,7 +125,6 @@ local function getOrders(machineId)
         ids[index] = row.id
     end
 
-    -- IN () with no ids is invalid SQL
     if #ids > 0 then
         for _, row in ipairs(MySQL.query.await(Queries.GetOrderItems, { ids }) or {}) do
             local items = byId[row.order_id].items
@@ -146,8 +135,6 @@ local function getOrders(machineId)
     return orders
 end
 
---- @param machineId integer
---- @return StaffMember[]
 local function getStaff(machineId)
     local staff = {}
 
@@ -165,14 +152,11 @@ local function getStaff(machineId)
     return staff
 end
 
--- Checked before the owner panel opens; the result is what owner:get-data hands to the UI.
--- Sections the viewer has no permission for are sent empty
 lib.callback.register("hype-vendingmachine:server:get-owner-data", function(source, machineId)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return Fail(err --[[@as string]]) end
+    if not row then return Fail(err) end
 
     local access, identifier, memberId = getAccess(playerId, row)
     if not access then return Fail(locale("error_no_permission")) end
@@ -181,19 +165,18 @@ lib.callback.register("hype-vendingmachine:server:get-owner-data", function(sour
         MySQL.update(Queries.UpdateStaffLastOnline, { row.id, identifier })
     end
 
-    local settings = GetSettings()
+    local multiplier = GetSettings().wholesaleMultiplier
     local products, sold = GetProducts(row.id)
 
     local wholesale = {}
     for _, product in ipairs(Config.Products) do
-        wholesale[product.id] = wholesalePrice(product, settings.wholesaleMultiplier)
+        wholesale[product.id] = wholesalePrice(product, multiplier)
     end
 
     local data = {
         access = access,
         settings = GetOwnerSettings(row),
         balance = row.balance,
-        -- The viewer's own money, for the Deposit tab's "All"
         wallet = can(access, "cash.deposit") and exports['hype-core']:GetPlayerMoney(playerId, Config.CashAccount) or 0,
         capacity = row.capacity,
         products = products,
@@ -204,7 +187,6 @@ lib.callback.register("hype-vendingmachine:server:get-owner-data", function(sour
         cashMovements = {},
         orders = {},
         staff = {},
-        -- So the viewer can find themselves in the staff list
         selfId = access.owner and "owner" or tostring(memberId),
     }
 
@@ -216,74 +198,64 @@ lib.callback.register("hype-vendingmachine:server:get-owner-data", function(sour
     if can(access, "transactions.view") then data.transactions = getTransactions(row.id) end
     if can(access, "cash.history") then data.cashMovements = getCashMovements(row.id) end
     if can(access, "restock.order") then data.orders = getOrders(row.id) end
+
     if can(access, "staff.view") or can(access, "staff.manage") then
         data.staff = getStaff(row.id)
-        -- Listed above the staff; owner_name is cached on the machine so this works while they're offline
         data.ownerMember = {
             name = row.owner_name or "",
             online = exports['hype-core']:GetPlayerSource(row.owner) ~= nil,
         }
     end
 
-    Debug("info", "player %s opened the owner panel of machine %s as %s", playerId, row.id, access.owner and "owner" or "staff")
+    panelViewers[playerId] = row.id
 
     return { success = true, data = data }
 end)
 
---- @param value any
---- @return boolean
 local function isTime(value)
     local hours, minutes = Trim(value):match("^(%d%d):(%d%d)$")
     return hours ~= nil and tonumber(hours) < 24 and tonumber(minutes) < 60
 end
 
---- @param value string "HH:MM", checked with isTime when it was saved
---- @return integer minutes Since midnight
 local function toMinutes(value)
     local hours, minutes = value:match("^(%d%d):(%d%d)$")
     return tonumber(hours) * 60 + tonumber(minutes)
 end
 
---- Whether `time` comes after `from` and no later than `to`, going round midnight. All in minutes since midnight
---- @param time integer
---- @param from integer
---- @param to integer
---- @return boolean
+local function setSchedule(machineId, schedule)
+    if type(schedule) == "table" and schedule.enabled and isTime(schedule.opensAt) and isTime(schedule.closesAt) then
+        schedules[machineId] = { opensAt = toMinutes(schedule.opensAt), closesAt = toMinutes(schedule.closesAt) }
+    else
+        schedules[machineId] = nil
+    end
+end
+
 local function passedBetween(time, from, to)
     local offset = (time - from) % 1440
     return offset > 0 and offset <= (to - from) % 1440
 end
 
---- Opens or closes the scheduled machines whose opening or closing time came between two checks of the in-game time.
---- In between, the owner's open switch still decides
---- @param from integer Minutes since midnight at the last check
---- @param to integer Minutes since midnight now
---- @return nil
 local function applySchedules(from, to)
-    for _, row in ipairs(MySQL.query.await(Queries.GetScheduledMachines) or {}) do
-        local schedule = GetOwnerSettings(row).schedule
-        local opensAt, closesAt = toMinutes(schedule.opensAt), toMinutes(schedule.closesAt)
+    for machineId, schedule in pairs(schedules) do
+        local opensAt, closesAt = schedule.opensAt, schedule.closesAt
 
         if passedBetween(opensAt, from, to) or passedBetween(closesAt, from, to) then
-            -- Open from opensAt until closesAt, which can be past midnight
             local status = (to - opensAt) % 1440 < (closesAt - opensAt) % 1440 and "open" or "closed"
 
-            if MySQL.update.await(Queries.SetScheduledStatus, { status, row.id, status }) > 0 then
-                Debug("info", "machine %s is now %s by its schedule", row.id, status)
-                SyncMachine(row.id)
+            if MySQL.update.await(Queries.SetScheduledStatus, { status, machineId, status }) > 0 then
+                SyncMachine(machineId)
             end
         end
     end
 end
 
--- Checks the in-game time from hype-core; an in-game minute is only a few seconds
-CreateThread(function()
+local function scheduleLoop()
     local last, warned
 
     while true do
         Wait(1000)
 
-        local time = exports['hype-core']:GetGameTime() --[[@as GameTime?]]
+        local time = exports['hype-core']:GetGameTime()
 
         if not time then
             if not warned then
@@ -295,22 +267,20 @@ CreateThread(function()
         else
             local now = time.hour * 60 + time.minute
 
-            if last and now ~= last then
+            if last and now ~= last and next(schedules) then
                 applySchedules(last, now)
             end
 
             last = now
         end
     end
-end)
+end
 
--- Each group is only taken from the request if the viewer has its permission; the rest keeps its current value
 lib.callback.register("hype-vendingmachine:server:save-owner-settings", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return Fail(err --[[@as string]]) end
+    if not row then return Fail(err) end
 
     local access = getAccess(playerId, row)
     if not access then return Fail(locale("error_no_permission")) end
@@ -392,25 +362,18 @@ lib.callback.register("hype-vendingmachine:server:save-owner-settings", function
         row.id,
     })
 
-    Debug("success", "player %s saved the settings of machine %s", playerId, row.id)
+    setSchedule(row.id, settings.schedule)
 
-    -- Name and open/closed show up in other players' target options
-    SyncMachine(row.id)
+    if settings.name ~= row.name or (settings.open and "open" or "closed") ~= row.status then
+        SyncMachine(row.id)
+    end
 
     return { success = true }
 end)
 
---- Checks the machine, the viewer's permission and the amount for a deposit or withdrawal
---- @param playerId integer
---- @param machineId any
---- @param amount any
---- @param permission string
---- @return MachineRow? row
---- @return integer|string amountOrError
---- @return string? identifier
 local function prepareCashMove(playerId, machineId, amount, permission)
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return nil, err --[[@as string]] end
+    if not row then return nil, err end
 
     local access, identifier = getAccess(playerId, row)
     if not access or not can(access, permission) then return nil, locale("error_no_permission") end
@@ -423,28 +386,23 @@ local function prepareCashMove(playerId, machineId, amount, permission)
     return row, amount, identifier
 end
 
--- Money goes from the player's Config.CashAccount into the machine balance
 lib.callback.register("hype-vendingmachine:server:owner-deposit", function(source, machineId, amount)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, result, identifier = prepareCashMove(playerId, machineId, amount, "cash.deposit")
-    if not row then return Fail(result --[[@as string]]) end
+    if not row then return Fail(result) end
     amount = result
 
     if not exports['hype-core']:RemovePlayerMoney(playerId, Config.CashAccount, amount) then
         return Fail(locale("error_not_enough_money"))
     end
 
-    -- The machine was deleted in the meantime: give the money back
     if MySQL.update.await(Queries.AddBalance, { amount, row.id }) == 0 then
         exports['hype-core']:AddPlayerMoney(playerId, Config.CashAccount, amount)
-        Debug("warning", "machine %s was gone during player %s's deposit, refunded %s", row.id, playerId, amount)
         return Fail(locale("error_machine_not_found"))
     end
 
     MySQL.insert(Queries.InsertCashMovement, { row.id, "deposit", amount, identifier, GetPlayerDisplayName(playerId) })
-    Debug("success", "player %s deposited %s into machine %s", playerId, amount, row.id)
 
     return {
         success = true,
@@ -455,13 +413,11 @@ lib.callback.register("hype-vendingmachine:server:owner-deposit", function(sourc
     }
 end)
 
--- The balance is taken first, so two withdrawals at once can't both spend the same money
 lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(source, machineId, amount)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, result, identifier = prepareCashMove(playerId, machineId, amount, "cash.withdraw")
-    if not row then return Fail(result --[[@as string]]) end
+    if not row then return Fail(result) end
     amount = result
 
     if MySQL.update.await(Queries.RemoveBalance, { amount, row.id, amount }) == 0 then
@@ -475,7 +431,6 @@ lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(sour
     end
 
     MySQL.insert(Queries.InsertCashMovement, { row.id, "withdraw", amount, identifier, GetPlayerDisplayName(playerId) })
-    Debug("success", "player %s withdrew %s from machine %s", playerId, amount, row.id)
 
     return {
         success = true,
@@ -486,56 +441,39 @@ lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(sour
     }
 end)
 
---- `preparing` -> `prepared`. From there the player picks the order up (sv-cargo.lua)
---- @param orderId integer
 local function advanceOrder(orderId)
     local order = MySQL.single.await(Queries.GetOrder, { orderId })
-
-    -- Gone with its machine
-    if not order or order.status ~= "preparing" then
-        Debug("info", "order %s is gone or no longer preparing", orderId)
-        return
-    end
+    if not order or order.status ~= "preparing" then return end
 
     SetOrderStatus(orderId, order.machine_id, "prepared")
 end
 
---- @param orderId integer
---- @param delay number Milliseconds
 local function scheduleOrder(orderId, delay)
     SetTimeout(math.max(math.floor(delay), 0), function()
         advanceOrder(orderId)
     end)
 end
 
---- @return integer
-local function stageDelay()
+local function deliveryDelay()
     return GetSettings().deliveryMinutes * 60000
 end
 
--- Orders still preparing when the resource stopped pick up where they left off
 MySQL.ready(function()
     MySQL.update.await(Queries.ResetShippingOrders)
 
-    local delay, now = stageDelay(), os.time() * 1000
-    local orders = MySQL.query.await(Queries.GetPendingOrders) or {}
-
-    for _, order in ipairs(orders) do
+    local delay, now = deliveryDelay(), os.time() * 1000
+    for _, order in ipairs(MySQL.query.await(Queries.GetPendingOrders) or {}) do
         local elapsed = type(order.updated_at) == "number" and now - order.updated_at or 0
         scheduleOrder(order.id, delay - elapsed)
     end
 
-    Debug("info", "resumed %d pending order(s)", #orders)
+    for _, row in ipairs(MySQL.query.await(Queries.GetScheduledMachines) or {}) do
+        setSchedule(row.id, GetOwnerSettings(row).schedule)
+    end
+
+    CreateThread(scheduleLoop)
 end)
 
---- Pays a stock order from the machine balance, saves it and starts its timer
---- @param row MachineRow
---- @param lines StockOrderLine[]
---- @param total integer
---- @param orderedBy string Identifier saved on the order and its cash movement
---- @param byName string Shown in the cash history
---- @return integer? orderId
---- @return string? error
 local function placeOrder(row, lines, total, orderedBy, byName)
     if MySQL.update.await(Queries.RemoveBalance, { total, row.id, total }) == 0 then
         return nil, locale("error_not_enough_balance")
@@ -557,14 +495,11 @@ local function placeOrder(row, lines, total, orderedBy, byName)
     MySQL.prepare.await(Queries.InsertOrderItem, values)
     MySQL.insert(Queries.InsertCashMovement, { row.id, "order", total, orderedBy, byName })
 
-    scheduleOrder(orderId, stageDelay())
+    scheduleOrder(orderId, deliveryDelay())
 
     return orderId
 end
 
---- Units ordered but not delivered yet, by item
---- @param machineId integer
---- @return table<string, integer>
 local function getIncomingStock(machineId)
     local incoming = {}
     for _, line in ipairs(MySQL.query.await(Queries.GetIncomingStock, { machineId }) or {}) do
@@ -574,14 +509,6 @@ local function getIncomingStock(machineId)
     return incoming
 end
 
---- Machines placing an automatic order right now, so two sales at once don't both order
---- @type table<integer, boolean>
-local restocking = {}
-
---- Called after every sale. With autoRestock on, every product at or below the low stock threshold is ordered
---- up to capacity, paid from the machine balance. Products with an order on its way are left out
---- @param row MachineRow
---- @return nil
 function AutoRestock(row)
     if not row.owner or restocking[row.id] then return end
 
@@ -592,7 +519,6 @@ function AutoRestock(row)
 
     local incoming = getIncomingStock(row.id)
     local multiplier = GetSettings().wholesaleMultiplier
-    --- @type StockOrderLine[]
     local lines, total = {}, 0
 
     for _, product in ipairs(MySQL.query.await(Queries.GetMachineProducts, { row.id }) or {}) do
@@ -610,9 +536,7 @@ function AutoRestock(row)
     if #lines > 0 then
         local orderId, err = placeOrder(row, lines, total, row.owner, locale("auto_restock"))
 
-        if orderId then
-            Debug("success", "auto restock placed order %s for machine %s (total %s)", orderId, row.id, total)
-        else
+        if not orderId then
             Debug("warning", "auto restock of machine %s failed: %s", row.id, err)
         end
     end
@@ -620,19 +544,17 @@ function AutoRestock(row)
     restocking[row.id] = nil
 end
 
--- Paid from the machine balance up front. Units already on their way count against capacity
 lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(source, machineId, items)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return Fail(err --[[@as string]]) end
+    if not row then return Fail(err) end
 
     local access, identifier = getAccess(playerId, row)
     if not access or not can(access, "restock.order") then return Fail(locale("error_no_permission")) end
 
     local requested, itemsError = ReadItems(items, "productId", Config.Limits.maxOrderQuantity)
-    if not requested then return Fail(itemsError --[[@as string]]) end
+    if not requested then return Fail(itemsError) end
 
     local stock = {}
     for _, product in ipairs(MySQL.query.await(Queries.GetMachineProducts, { row.id }) or {}) do
@@ -640,9 +562,7 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
     end
 
     local incoming = getIncomingStock(row.id)
-
     local multiplier = GetSettings().wholesaleMultiplier
-    --- @type StockOrderLine[]
     local lines, total = {}, 0
 
     for item, quantity in pairs(requested) do
@@ -658,10 +578,8 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
         total = total + unitPrice * quantity
     end
 
-    local orderId, orderError = placeOrder(row, lines, total, identifier --[[@as string]], GetPlayerDisplayName(playerId))
-    if not orderId then return Fail(orderError --[[@as string]]) end
-
-    Debug("success", "player %s placed order %s for machine %s (total %s)", playerId, orderId, row.id, total)
+    local orderId, orderError = placeOrder(row, lines, total, identifier, GetPlayerDisplayName(playerId))
+    if not orderId then return Fail(orderError) end
 
     return {
         success = true,
@@ -672,13 +590,11 @@ lib.callback.register("hype-vendingmachine:server:owner-order-stock", function(s
     }
 end)
 
--- Starts picking up a `prepared` order; the rest of the job is in sv-cargo.lua
 lib.callback.register("hype-vendingmachine:server:owner-pickup-order", function(source, machineId, orderId)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return Fail(err --[[@as string]]) end
+    if not row then return Fail(err) end
 
     local access = getAccess(playerId, row)
     if not access or not can(access, "restock.order") then return Fail(locale("error_no_permission")) end
@@ -687,11 +603,10 @@ lib.callback.register("hype-vendingmachine:server:owner-pickup-order", function(
 end)
 
 lib.callback.register("hype-vendingmachine:server:owner-update-price", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return Fail(err --[[@as string]]) end
+    if not row then return Fail(err) end
 
     local access = getAccess(playerId, row)
     if not access or not can(access, "products.prices") then return Fail(locale("error_no_permission")) end
@@ -707,15 +622,9 @@ lib.callback.register("hype-vendingmachine:server:owner-update-price", function(
         return Fail(locale("error_invalid_products"))
     end
 
-    Debug("success", "player %s set the price of %s on machine %s to %s", playerId, data.id, row.id, price)
-
     return { success = true }
 end)
 
---- Staff can only hand out permissions they have themselves. Kept in Config.StaffPermissions order
---- @param access OwnerAccess
---- @param requested any
---- @return string[]? permissions nil if empty or something the viewer doesn't have
 local function readGrant(access, requested)
     if type(requested) ~= "table" then return nil end
 
@@ -730,10 +639,6 @@ local function readGrant(access, requested)
     return #permissions > 0 and permissions or nil
 end
 
---- Nobody edits or fires someone who can do more than they can
---- @param access OwnerAccess
---- @param permissions string[] The member's permissions
---- @return boolean
 local function canManageMember(access, permissions)
     for _, permission in ipairs(permissions) do
         if not can(access, permission) then return false end
@@ -742,14 +647,9 @@ local function canManageMember(access, permissions)
     return true
 end
 
---- Checks the machine and that the viewer has staff.manage
---- @param playerId integer
---- @param machineId any
---- @return MachineRow? row
---- @return OwnerAccess|string accessOrError
 local function prepareStaffAction(playerId, machineId)
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return nil, err --[[@as string]] end
+    if not row then return nil, err end
 
     local access = getAccess(playerId, row)
     if not access or not can(access, "staff.manage") then return nil, locale("error_no_permission") end
@@ -758,12 +658,10 @@ local function prepareStaffAction(playerId, machineId)
 end
 
 lib.callback.register("hype-vendingmachine:server:owner-hire-staff", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, access = prepareStaffAction(playerId, machineId)
-    if not row then return Fail(access --[[@as string]]) end
-    --- @cast access OwnerAccess
+    if not row then return Fail(access) end
 
     if type(data) ~= "table" then return Fail(locale("error_player_not_found")) end
 
@@ -787,9 +685,6 @@ lib.callback.register("hype-vendingmachine:server:owner-hire-staff", function(so
     local memberId = MySQL.insert.await(Queries.InsertStaff, { row.id, identifier, name, json.encode(permissions) })
     if not memberId then return Fail(locale("error_database")) end
 
-    Debug("success", "player %s hired player %s (%s) at machine %s", playerId, targetId, identifier, row.id)
-
-    -- Shows "Manage machine" for them right away
     TriggerClientEvent("hype-vendingmachine:client:set-staff", targetId, row.id, true)
     Notify(targetId, locale("notify_hired", row.name))
 
@@ -808,12 +703,10 @@ lib.callback.register("hype-vendingmachine:server:owner-hire-staff", function(so
 end)
 
 lib.callback.register("hype-vendingmachine:server:owner-update-staff", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, access = prepareStaffAction(playerId, machineId)
-    if not row then return Fail(access --[[@as string]]) end
-    --- @cast access OwnerAccess
+    if not row then return Fail(access) end
 
     local member = type(data) == "table" and MySQL.single.await(Queries.GetStaffMemberById, { tonumber(data.id), row.id })
     if not member then return Fail(locale("error_staff_not_found")) end
@@ -824,14 +717,10 @@ lib.callback.register("hype-vendingmachine:server:owner-update-staff", function(
     if not permissions then return Fail(locale("error_invalid_permissions")) end
 
     MySQL.update.await(Queries.UpdateStaffPermissions, { json.encode(permissions), member.id, row.id })
-    Debug("success", "player %s updated staff member %s at machine %s", playerId, member.id, row.id)
 
     return { success = true }
 end)
 
---- Takes "Manage machine" away from a removed staff member and tells them, if they're online
---- @param identifier string
---- @param row MachineRow
 local function sendStaffRemoved(identifier, row)
     local memberSource = exports['hype-core']:GetPlayerSource(identifier)
     if not memberSource then return end
@@ -841,12 +730,10 @@ local function sendStaffRemoved(identifier, row)
 end
 
 lib.callback.register("hype-vendingmachine:server:owner-fire-staff", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, access = prepareStaffAction(playerId, machineId)
-    if not row then return Fail(access --[[@as string]]) end
-    --- @cast access OwnerAccess
+    if not row then return Fail(access) end
 
     local member = type(data) == "table" and MySQL.single.await(Queries.GetStaffMemberById, { tonumber(data.id), row.id })
     if not member then return Fail(locale("error_staff_not_found")) end
@@ -854,40 +741,31 @@ lib.callback.register("hype-vendingmachine:server:owner-fire-staff", function(so
     if not canManageMember(access, readPermissions(member.permissions)) then return Fail(locale("error_no_permission")) end
 
     MySQL.update.await(Queries.DeleteStaff, { member.id, row.id })
-    Debug("success", "player %s fired staff member %s at machine %s", playerId, member.id, row.id)
-
     sendStaffRemoved(member.identifier, row)
 
     return { success = true }
 end)
 
---- Checks the machine and that the viewer is its owner; staff can never transfer or sell
---- @param playerId integer
---- @param machineId any
---- @return MachineRow? row
---- @return string identifierOrError
 local function prepareOwnerAction(playerId, machineId)
     local row, err = GetNearbyMachine(playerId, machineId)
-    if not row then return nil, err --[[@as string]] end
+    if not row then return nil, err end
 
     local access, identifier = getAccess(playerId, row)
     if not access or not access.owner then return nil, locale("error_no_permission") end
 
-    return row, identifier --[[@as string]]
+    return row, identifier
 end
 
---- Tells every member in the list they lost access. Read the list before deleting them
---- @param members { identifier: string }[]
---- @param row MachineRow
-local function sendAllStaffRemoved(members, row)
+local function removeAllStaff(row)
+    local members = MySQL.query.await(Queries.GetStaff, { row.id }) or {}
+    MySQL.update.await(Queries.DeleteAllStaff, { row.id })
+
     for _, member in ipairs(members) do
         sendStaffRemoved(member.identifier, row)
     end
 end
 
--- The new owner starts with the old owner's balance and stock, but none of their staff
 lib.callback.register("hype-vendingmachine:server:owner-transfer", function(source, machineId, data)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, identifier = prepareOwnerAction(playerId, machineId)
@@ -904,52 +782,43 @@ lib.callback.register("hype-vendingmachine:server:owner-transfer", function(sour
         return Fail(locale("error_target_max_machines", maxMachines))
     end
 
-    local members = MySQL.query.await(Queries.GetStaff, { row.id }) or {}
-    local targetName = GetPlayerDisplayName(targetId --[[@as integer]])
+    local targetName = GetPlayerDisplayName(targetId)
 
-    local queries = {
-        { query = Queries.SetMachineOwner, values = { targetIdentifier, targetName, row.id } },
-        { query = Queries.DeleteAllStaff, values = { row.id } },
-    }
+    if MySQL.update.await(Queries.TransferMachine, { targetIdentifier, targetName, row.id, identifier }) == 0 then
+        return Fail(locale("error_machine_changed"))
+    end
 
-    if not MySQL.transaction.await(queries) then return Fail(locale("error_database")) end
+    removeAllStaff(row)
+    SyncMachine(row.id)
 
     Debug("success", "player %s transferred machine %s to player %s (%s)", playerId, row.id, targetId, targetIdentifier)
 
-    sendAllStaffRemoved(members, row)
-    SyncMachine(row.id)
-
     Notify(playerId, locale("notify_machine_transferred", row.name, targetName))
-    Notify(targetId --[[@as integer]], locale("notify_machine_received", GetPlayerDisplayName(playerId), row.name))
+    Notify(targetId, locale("notify_machine_received", GetPlayerDisplayName(playerId), row.name))
 
     return { success = true }
 end)
 
--- Pays the owner Config.SellRefund percent of the machine price plus what's left in the balance.
--- Stock, orders on their way and staff are dropped
 lib.callback.register("hype-vendingmachine:server:owner-sell", function(source, machineId)
-    if not source then return Fail(locale("error_machine_not_found")) end
     local playerId = source
 
     local row, identifier = prepareOwnerAction(playerId, machineId)
     if not row then return Fail(identifier) end
 
-    -- Only one request gets past this, so the refund can't be paid twice
-    if MySQL.update.await(Queries.SellMachine, { row.id, identifier }) == 0 then
-        return Fail(locale("error_no_permission"))
+    local balance = MySQL.scalar.await(Queries.GetMachineBalance, { row.id }) or 0
+
+    if MySQL.update.await(Queries.SellMachine, { row.id, identifier, balance }) == 0 then
+        return Fail(locale("error_machine_changed"))
     end
 
-    local members = MySQL.query.await(Queries.GetStaff, { row.id }) or {}
-
     MySQL.transaction.await({
-        { query = Queries.DeleteAllStaff, values = { row.id } },
         { query = Queries.ClampStock, values = { 0, row.id } },
         { query = Queries.DeletePendingOrders, values = { row.id } },
     })
 
-    sendAllStaffRemoved(members, row)
+    removeAllStaff(row)
 
-    local payout = math.floor(row.price * Config.SellRefund / 100) + row.balance
+    local payout = math.floor(row.price * Config.SellRefund / 100) + balance
     if payout > 0 then
         exports['hype-core']:AddPlayerMoney(playerId, Config.PurchaseAccount, payout)
     end
@@ -957,7 +826,12 @@ lib.callback.register("hype-vendingmachine:server:owner-sell", function(source, 
     Debug("success", "player %s sold machine %s for %s", playerId, row.id, payout)
 
     SyncMachine(row.id)
+    SyncStock(row)
     Notify(playerId, locale("notify_machine_sold", row.name, lib.math.groupdigits(payout)))
 
     return { success = true }
+end)
+
+AddEventHandler("playerDropped", function()
+    panelViewers[source] = nil
 end)

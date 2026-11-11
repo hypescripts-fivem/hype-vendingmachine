@@ -25,7 +25,7 @@
                     <QuantityStepper :quantity="quantity" :max="product.stock" @update="shop.setQuantity(product.id, $event)" />
                     <button
                         type="button"
-                        aria-label="Remove from cart"
+                        :aria-label="t('screen.remove_from_cart')"
                         class="flex size-12 items-center justify-center rounded-lg border border-danger/40 bg-danger/15 text-danger transition-colors hover:bg-danger/25"
                         @click="shop.removeFromCart(product.id)"
                     >
@@ -35,7 +35,7 @@
                 <button
                     v-else-if="!outOfStock"
                     type="button"
-                    aria-label="Add to cart"
+                    :aria-label="t('screen.item.add_to_cart')"
                     class="flex size-12 items-center justify-center rounded-lg bg-inverse text-text-inverse transition-opacity hover:opacity-90"
                     @click="shop.addToCart(product, 1)"
                 >
@@ -43,7 +43,7 @@
                 </button>
             </div>
 
-            <span v-if="outOfStock" class="absolute bottom-3 text-xl font-medium text-danger">Out of stock</span>
+            <span v-if="outOfStock" class="absolute bottom-3 text-xl font-medium text-danger">{{ t("screen.item.out_of_stock") }}</span>
         </div>
 
         <div class="flex items-baseline justify-between gap-3 px-4 py-3">
@@ -59,6 +59,7 @@ import { Package, Plus, Trash2 } from "@lucide/vue";
 import { useShopStore } from "@/stores";
 import type { Product } from "@/stores";
 import { formatMoney } from "@/utils/format";
+import { t } from "@/utils/locale";
 import QuantityStepper from "./QuantityStepper.vue";
 
 const props = defineProps<{

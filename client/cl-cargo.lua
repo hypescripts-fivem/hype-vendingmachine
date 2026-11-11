@@ -1,45 +1,33 @@
 local Config <const> = require 'config.config'
 local Cargo <const> = Config.Cargo
+local Keys <const> = Config.Interaction.keys
+
+local UPDATE_INTERVAL <const> = 250
 
 local useTarget = Config.Interaction.target and (GetResourceState("ox_target") == "started" or GetResourceState("qb-target") == "started")
 
---- @type CargoState?
 local job
-
---- What the player can use during the job: the cart, a vehicle and the machine.
---- With a target resource they're handed to it, otherwise the job loop shows them as TextUI
---- @type table<string, CargoPoint>
 local points = {}
-
--- TextUI only: what's on screen, so it's only sent again when it changes
---- @type string?
 local shownText
 
---- @param message string
---- @param type? "success" | "error" | "info" | "warning"
 local function notify(message, type)
     exports['hype-core']:SendNotify(locale("notify_title"), message, 5000, type or "success")
 end
 
---- @param name string
---- @param point CargoPoint
 local function addPoint(name, point)
     points[name] = point
     if not useTarget then return end
 
     local options = {}
     for index, option in ipairs(point.options) do
-        -- The label doubles as the name: ox_target removes options by name, qb-target by label
         options[index] = {
             name = option.label,
             label = option.label,
             icon = option.icon,
             distance = Config.Interaction.distance,
-            -- In metres from the entity, like the TextUI; without absoluteOffset ox_target reads it as a fraction of the model size
             offset = point.offset,
             absoluteOffset = point.offset ~= nil,
             bones = point.bones,
-            -- ox_target can still ask right after the job ended
             canInteract = function() return job ~= nil and option.canInteract() end,
             onSelect = option.onSelect,
         }
@@ -52,7 +40,6 @@ local function addPoint(name, point)
     end
 end
 
---- @param name string
 local function removePoint(name)
     local point = points[name]
     if not point then return end
@@ -70,10 +57,6 @@ local function removePoint(name)
     end
 end
 
---- Where the point's TextUI is reached from: its coords, the bone nearest the player, or the entity offset
---- @param point CargoPoint
---- @param from vector3 The player's position
---- @return vector3
 local function pointCoords(point, from)
     if point.coords then return point.coords end
 
@@ -90,9 +73,6 @@ local function pointCoords(point, from)
     return nearest or GetOffsetFromEntityInWorldCoords(point.entity, point.offset or vec3(0.0, 0.0, 0.0))
 end
 
---- @param model string
---- @param coords vector3
---- @return integer
 local function createProp(model, coords)
     local hash = lib.requestModel(model)
     local entity = CreateObject(hash, coords.x, coords.y, coords.z, true, true, false)
@@ -101,7 +81,6 @@ local function createProp(model, coords)
     return entity
 end
 
---- Tells the server which props to delete if the player drops
 local function syncProps()
     local netIds = {}
 
@@ -112,32 +91,24 @@ local function syncProps()
     TriggerServerEvent("hype-vendingmachine:server:cargo-props", netIds)
 end
 
---- @param anim? CargoAnim Stops the current one when omitted
 local function playAnim(anim)
-    local ped = PlayerPedId()
-
     if not anim then
-        ClearPedTasks(ped)
+        ClearPedTasks(cache.ped)
         return
     end
 
     lib.requestAnimDict(anim.dict)
-    -- 49: loop, upper body only, the player keeps control (legs walk). The 8th argument is where it starts, 0-1
-    TaskPlayAnim(ped, anim.dict, anim.name, 8.0, -8.0, -1, 49, anim.time or 0.0, false, false, false)
+    TaskPlayAnim(cache.ped, anim.dict, anim.name, 8.0, -8.0, -1, 49, anim.time or 0.0, false, false, false)
     RemoveAnimDict(anim.dict)
 end
 
---- @param entity integer
---- @param attach CargoAttach
 local function attachToPed(entity, attach)
-    local ped = PlayerPedId()
+    local ped = cache.ped
     local offset, rotation = attach.offset, attach.rotation
 
     AttachEntityToEntity(entity, ped, GetPedBoneIndex(ped, attach.bone), offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z, true, true, false, true, 2, true)
 end
 
---- @param box integer
---- @param fromCart boolean
 local function carry(box, fromCart)
     attachToPed(box, Cargo.boxAttach)
     playAnim(Cargo.boxAnim)
@@ -157,7 +128,6 @@ local function deleteCart()
     job.cart = nil
 
     syncProps()
-    Debug("info", "cart removed")
 end
 
 local function grabCart()
@@ -177,19 +147,16 @@ local function dropCart()
 
     job.holding = false
 
-    -- Emptied and back where it was picked up
     if #job.cartBoxes == 0 and #(GetEntityCoords(job.cart) - job.spawn.xyz) <= Config.Interaction.maxDistance then
         deleteCart()
     end
 end
 
---- @param vehicle integer
 local function loadBox(vehicle)
     exports['hype-core']:RemoveEntity(job.carrying)
     job.carrying = nil
     playAnim()
 
-    -- The first vehicle loaded is the job's
     job.vehicle = vehicle
     job.inVehicle = job.inVehicle + 1
 
@@ -216,10 +183,8 @@ local function endJob()
     end
 
     job = nil
-    Debug("info", "cargo job ended")
 end
 
--- Awaits the server, so it runs in its own thread: target callbacks come from another resource
 local function deliverBox()
     CreateThread(function()
         if not lib.callback.await("hype-vendingmachine:server:cargo-deliver", false) or not job then return end
@@ -237,9 +202,6 @@ local function deliverBox()
     end)
 end
 
---- Load and unload options on the vehicle's trunk, or the rear doors of a van like the burrito
---- @param vehicle integer
---- @return CargoPoint
 local function vehiclePoint(vehicle)
     return {
         entity = vehicle,
@@ -257,7 +219,7 @@ local function vehiclePoint(vehicle)
                 canInteract = function() return not job.carrying and not job.holding and job.inVehicle > 0 end,
                 onSelect = function()
                     job.inVehicle = job.inVehicle - 1
-                    carry(createProp(Cargo.boxModel, GetEntityCoords(PlayerPedId())), false)
+                    carry(createProp(Cargo.boxModel, GetEntityCoords(cache.ped)), false)
                     syncProps()
                 end,
             },
@@ -265,11 +227,9 @@ local function vehiclePoint(vehicle)
     }
 end
 
---- Puts the cart and its boxes at the spawn once the player gets there
 local function spawnProps()
     local spawn = job.spawn
 
-    -- The configured height is the player's; the ground is loaded by now, so the cart goes down onto it
     local cart = createProp(Cargo.model, spawn.xyz)
     SetEntityHeading(cart, spawn.w)
     PlaceObjectOnGroundProperly(cart)
@@ -306,10 +266,116 @@ local function spawnProps()
     })
 
     syncProps()
-    Debug("info", "cargo props spawned")
 end
 
---- @param data { spawn: integer, boxes: integer, machine: { x: number, y: number, z: number } }
+local function availableOptions(coords)
+    if job.holding then return { job.dropOption } end
+    if useTarget then return {} end
+
+    local nearest, nearestDistance = nil, Config.Interaction.distance
+    for _, point in pairs(points) do
+        local distance = #(coords - pointCoords(point, coords))
+        if distance <= nearestDistance then nearest, nearestDistance = point, distance end
+    end
+
+    local options = {}
+    for _, option in ipairs(nearest and nearest.options or {}) do
+        if option.canInteract() then options[#options + 1] = option end
+    end
+
+    return options
+end
+
+local function showOptions(options)
+    local text
+    if options[1] then
+        text = locale("textui_cargo", Keys.primary.label, options[1].label)
+        if options[2] then
+            text = text .. "  \n" .. locale("textui_cargo", Keys.secondary.label, options[2].label)
+        end
+    end
+
+    if text == shownText then return end
+    shownText = text
+
+    if text then
+        exports['hype-core']:ShowTextUI(text)
+    else
+        exports['hype-core']:HideTextUI()
+    end
+end
+
+local function update()
+    local ped = cache.ped
+    local coords = GetEntityCoords(ped)
+    local distance = #(coords - job.spawn.xyz)
+
+    if not job.arrived and distance <= Config.Interaction.spawnDistance then
+        spawnProps()
+    end
+
+    local away = job.arrived and distance > Cargo.cancelDistance
+
+    if away and job.loaded < job.total then
+        TriggerServerEvent("hype-vendingmachine:server:cargo-cancel")
+        endJob()
+        return {}
+    end
+
+    if away and job.cart then deleteCart() end
+
+    local vehicle = job.vehicle or (job.carrying and lib.getClosestVehicle(coords, 5.0, false))
+    if vehicle ~= (points.vehicle and points.vehicle.entity) then
+        removePoint("vehicle")
+        if vehicle then addPoint("vehicle", vehiclePoint(vehicle)) end
+    end
+
+    local anim = job.holding and Cargo.cartAnim or job.carrying and Cargo.boxAnim
+    if anim and not IsEntityPlayingAnim(ped, anim.dict, anim.name, 3) then
+        playAnim(anim)
+    end
+
+    local options = availableOptions(coords)
+    showOptions(options)
+
+    return options
+end
+
+local function jobLoop()
+    local options, nextUpdate = {}, 0
+
+    while job do
+        local now = GetGameTimer()
+        if now >= nextUpdate then
+            options = update()
+            nextUpdate = now + UPDATE_INTERVAL
+        end
+
+        if not job then break end
+
+        local held = job.holding and Cargo.cartAnim
+        if held and held.time then
+            SetEntityAnimSpeed(cache.ped, held.dict, held.name, 0.0)
+        end
+
+        if options[1] then
+            local selected
+            if IsControlJustReleased(0, Keys.primary.control) then
+                selected = options[1]
+            elseif options[2] and IsControlJustReleased(0, Keys.secondary.control) then
+                selected = options[2]
+            end
+
+            if selected then
+                selected.onSelect()
+                nextUpdate = 0
+            end
+        end
+
+        Wait((options[1] or held) and 0 or UPDATE_INTERVAL)
+    end
+end
+
 local function startJob(data)
     local spawn = Cargo.spawns[data.spawn]
 
@@ -323,6 +389,7 @@ local function startJob(data)
         delivered = 0,
         holding = false,
         fromCart = false,
+        dropOption = { label = locale("target_cargo_drop"), canInteract = function() return true end, onSelect = dropCart },
     }
 
     addPoint("machine", {
@@ -331,7 +398,6 @@ local function startJob(data)
             {
                 label = locale("target_cargo_deliver"),
                 icon = "fa-solid fa-box",
-                -- Only boxes that came out of the vehicle
                 canInteract = function() return job.carrying ~= nil and not job.fromCart end,
                 onSelect = deliverBox,
             },
@@ -340,101 +406,10 @@ local function startJob(data)
 
     SetNewWaypoint(spawn.x, spawn.y)
     notify(locale("notify_cargo_started"), "info")
-    Debug("success", "cargo job started at spawn %d with %d box(es)", data.spawn, data.boxes)
 
-    local dropOption = { label = locale("target_cargo_drop"), canInteract = function() return true end, onSelect = dropCart }
-
-    CreateThread(function()
-        while job do
-            local ped = PlayerPedId()
-            local coords = GetEntityCoords(ped)
-            local distance = #(coords - job.spawn.xyz)
-            local sleep = 500
-
-            if not job.arrived and distance <= Config.Interaction.spawnDistance then
-                spawnProps()
-            end
-
-            -- Leaving only counts once the cart is there
-            local away = job.arrived and distance > Cargo.cancelDistance
-
-            if away and job.loaded < job.total then
-                Debug("warning", "left the pickup area, cancelling the order")
-                TriggerServerEvent("hype-vendingmachine:server:cargo-cancel")
-                endJob()
-                break
-            end
-
-            -- Every box is loaded and the cart wasn't brought back
-            if away and job.cart then deleteCart() end
-
-            -- Until the first load any vehicle nearby can take the box
-            local vehicle = job.vehicle or (job.carrying and lib.getClosestVehicle(coords, 5.0, false))
-            if vehicle ~= (points.vehicle and points.vehicle.entity) then
-                removePoint("vehicle")
-                if vehicle then addPoint("vehicle", vehiclePoint(vehicle)) end
-            end
-
-            -- Ragdoll, entering a vehicle and the like stop the animation
-            local anim = job.holding and Cargo.cartAnim or job.carrying and Cargo.boxAnim
-            if anim and not IsEntityPlayingAnim(ped, anim.dict, anim.name, 3) then
-                playAnim(anim)
-            elseif anim and anim.time then
-                -- Started at anim.time by playAnim; held there once it's playing
-                SetEntityAnimSpeed(ped, anim.dict, anim.name, 0.0)
-            end
-
-            local options = {}
-
-            if job.holding then
-                options = { dropOption }
-            elseif not useTarget then
-                local nearest, nearestDistance = nil, Config.Interaction.distance
-
-                for _, point in pairs(points) do
-                    local distance = #(coords - pointCoords(point, coords))
-                    if distance <= nearestDistance then nearest, nearestDistance = point, distance end
-                end
-
-                for _, option in ipairs(nearest and nearest.options or {}) do
-                    if option.canInteract() then options[#options + 1] = option end
-                end
-            end
-
-            local keys = Config.Interaction.keys
-            local lines = {}
-            for index, key in ipairs({ keys.primary, keys.secondary }) do
-                if options[index] then lines[index] = locale("textui_cargo", key.label, options[index].label) end
-            end
-
-            local text = #lines > 0 and table.concat(lines, "  \n") or nil
-            if text ~= shownText then
-                shownText = text
-
-                if text then
-                    exports['hype-core']:ShowTextUI(text)
-                else
-                    exports['hype-core']:HideTextUI()
-                end
-            end
-
-            if text then
-                sleep = 0
-
-                if IsControlJustReleased(0, keys.primary.control) then
-                    options[1].onSelect()
-                elseif options[2] and IsControlJustReleased(0, keys.secondary.control) then
-                    options[2].onSelect()
-                end
-            end
-
-            Wait(sleep)
-        end
-    end)
+    CreateThread(jobLoop)
 end
 
---- cl-main.lua keeps the machine's own TextUI out of the way while a box is carried to it
---- @return boolean
 function IsCarryingCargo()
     return job ~= nil and job.carrying ~= nil
 end
@@ -450,10 +425,7 @@ RegisterNuiCallback("owner:pickup-order", function(data, cb)
 
     if not response or not response.success then return end
 
-    SetNuiFocus(false, false)
-    NuiMessage("close", {})
-    TriggerEvent("hype-vendingmachine:client:ui-closed")
-
+    CloseUi()
     startJob(response.data)
 end)
 

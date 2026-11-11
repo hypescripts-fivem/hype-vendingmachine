@@ -84,5 +84,620 @@
     "error_invalid_permissions": "Pick at least one permission you have yourself.",
     "error_staff_not_found": "That employee no longer works here.",
     "error_transfer_self": "You already own this machine.",
-    "error_target_max_machines": "That player can't own more than %s machines."
+    "error_target_max_machines": "That player can't own more than %s machines.",
+    "error_machine_changed": "The machine changed in the meantime, try again.",
+
+    "ui": {
+        "common": {
+            "cancel": "Cancel",
+            "close": "Close",
+            "clear": "Clear",
+            "back": "Back",
+            "done": "Done",
+            "reset": "Reset",
+            "total": "Total",
+            "decrease_quantity": "Decrease quantity",
+            "increase_quantity": "Increase quantity",
+            "save_bar": {
+                "unsaved": "You have unsaved changes.",
+                "saving": "Saving...",
+                "save_changes": "Save changes"
+            },
+            "time_picker": {
+                "title": "Pick a time",
+                "hour": "Hour",
+                "minute": "Minute"
+            },
+            "errors": {
+                "no_response": "No response from the server."
+            }
+        },
+        "shop": {
+            "default_name": "Vending Machine",
+            "navbar": {
+                "products": "%s products",
+                "all": "All",
+                "search": "Search products..."
+            },
+            "empty": {
+                "title": "No products found",
+                "description": "Try a different category or search term."
+            },
+            "item": {
+                "out_of_stock": "Out of stock",
+                "in_stock": "%s in stock",
+                "add": "Add",
+                "remove": "Remove"
+            },
+            "cart": {
+                "title": "Cart",
+                "empty_title": "Your cart is empty",
+                "empty_description": "Add products to see them here.",
+                "each": "%s each",
+                "remove_item": "Remove item",
+                "checkout": "Checkout"
+            },
+            "checkout": {
+                "title": "Checkout",
+                "payment_method": "Payment method",
+                "cash": "Cash",
+                "bank": "Bank",
+                "available": "Available",
+                "not_accepted": "Not accepted here",
+                "not_enough_money": "Not enough money",
+                "processing": "Processing...",
+                "pay": "Pay %s"
+            }
+        },
+        "screen": {
+            "subtitle": "Pick a product and add it to the cart",
+            "remove_from_cart": "Remove from cart",
+            "empty": {
+                "title": "No products",
+                "description": "This machine has nothing for sale yet."
+            },
+            "bar": {
+                "items_one": "%s item",
+                "items_other": "%s items",
+                "cart": "Cart",
+                "quick_order": "Quick order"
+            },
+            "cart": {
+                "title": "Cart",
+                "summary": "%s products · %s items",
+                "each": "%s each",
+                "confirm": "Confirm cart"
+            },
+            "item": {
+                "add_to_cart": "Add to cart",
+                "out_of_stock": "Out of stock"
+            }
+        },
+        "idle": {
+            "use_to_order": "Use to order"
+        },
+        "purchase": {
+            "title": "Buy machine",
+            "unknown_area": "Unknown area",
+            "type": "Type",
+            "capacity": "Capacity",
+            "capacity_value": "%s per product",
+            "sells_one": "Sells %s product",
+            "sells_other": "Sells %s products",
+            "price": "Price",
+            "cash_balance": "Cash balance",
+            "bank_balance": "Bank balance",
+            "not_enough_money": "You don't have enough money.",
+            "buying": "Buying...",
+            "buy": "Buy machine",
+            "placement": {
+                "start_failed": "The placement could not start."
+            }
+        },
+        "admin": {
+            "common": {
+                "cancel": "Cancel",
+                "import": "Import",
+                "new_machine": "New machine",
+                "for_sale": "For sale",
+                "no_area": "No area",
+                "teleport": "Teleport",
+                "player_fallback": "Player %s"
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Overview",
+                    "description": "Server-wide vending statistics."
+                },
+                "machines": {
+                    "label": "Machines",
+                    "description": "Every vending machine on the server."
+                },
+                "settings": {
+                    "label": "Settings",
+                    "description": "Global rules for all vending machines."
+                }
+            },
+            "header": {
+                "machine_settings": "Machine settings",
+                "editing": "Editing %s",
+                "machines": "Machines",
+                "open_count": "%s open",
+                "badge": "Admin"
+            },
+            "status": {
+                "open": "Open",
+                "closed": "Closed",
+                "for_sale": "For sale",
+                "disabled": "Disabled"
+            },
+            "models": {
+                "soda": "Soda machine",
+                "snack": "Snack machine",
+                "coffee": "Coffee machine",
+                "water": "Water machine",
+                "custom": "Custom Vending Machine",
+                "glass": "Glass machine",
+                "glass_ecola": "Glass machine (eCola)",
+                "glass_sprunk": "Glass machine (Sprunk)",
+                "glass_raine": "Glass machine (Raine)",
+                "glass_junk": "Glass machine (Junk)",
+                "glass_beanmachine": "Glass machine (Bean Machine)",
+                "glass_phatchips": "Glass machine (Phat Chips)",
+                "glass_egochaser": "Glass machine (Ego Chaser)",
+                "glass_cluckinbell": "Glass machine (Cluckin' Bell)",
+                "glass_burgershot": "Glass machine (Burger Shot)",
+                "glass_247": "Glass machine (24/7)"
+            },
+            "validation": {
+                "name_empty": "Machine name can't be empty.",
+                "location_missing": "Set a location for the machine.",
+                "products_empty": "Pick at least one product."
+            },
+            "create": {
+                "title": "New machine",
+                "creating": "Creating...",
+                "submit": "Create machine",
+                "error": "The machine could not be created."
+            },
+            "dashboard": {
+                "empty_title": "No machines yet",
+                "empty_description": "Create your first vending machine, or import machines exported from another server.",
+                "stat_machines": "Machines",
+                "stat_machines_open": "%s open right now",
+                "stat_revenue": "Revenue",
+                "stat_items_sold": "Items sold",
+                "stat_all_machines": "Last 7 days, all machines",
+                "stat_owners": "Owners",
+                "stat_for_sale_one": "%s machine for sale",
+                "stat_for_sale_other": "%s machines for sale",
+                "server_revenue": "Server revenue",
+                "last_7_days": "Last 7 days",
+                "no_sales": "No sales in the last 7 days",
+                "top_machines": "Top machines",
+                "revenue_currency": "Revenue (%s)",
+                "no_top_machines": "No machine has made a sale yet",
+                "needs_attention": "Needs attention",
+                "machine_count": "%s machines",
+                "all_fine": "All machines are running fine.",
+                "open": "Open",
+                "newest_machines": "Newest machines",
+                "view_all": "View all",
+                "reason_disabled": "Disabled by an admin",
+                "reason_low_stock": "Stock at %s%%",
+                "series_revenue": "Revenue",
+                "tooltip_sales": "%s sales"
+            },
+            "detail": {
+                "back": "Back to machines",
+                "machines": "Machines",
+                "created": "Created %s",
+                "enable": "Enable",
+                "disable": "Disable",
+                "stat_balance": "Balance",
+                "stat_balance_hint": "Money in the machine",
+                "stat_revenue": "Revenue",
+                "stat_items_sold": "Items sold",
+                "last_7_days": "Last 7 days",
+                "stat_stock": "Stock level",
+                "stat_stock_hint": "Average across products",
+                "danger_zone": "Danger zone",
+                "reset_balance": "Reset balance",
+                "reset_balance_description": "Remove the %s currently in the machine.",
+                "reset": "Reset",
+                "delete_machine": "Delete machine",
+                "delete_machine_description": "Removes the prop, its stock, orders and history for good.",
+                "delete": "Delete",
+                "confirm_delete": "This permanently deletes %s. This can't be undone.",
+                "confirm_reset": "This removes %s from %s.",
+                "working": "Working...",
+                "owner_fallback": "a player",
+                "error": "Something went wrong."
+            },
+            "machines": {
+                "search_placeholder": "Search name, owner or area...",
+                "empty_search": "No machines match your search",
+                "empty": "No machines yet. Create one or import them.",
+                "show_on_map": "Show on map",
+                "manage": "Manage",
+                "map": "Map",
+                "map_hint": "Click a blip to manage the machine",
+                "column_machine": "Machine",
+                "column_owner": "Owner",
+                "column_status": "Status",
+                "column_balance": "Balance"
+            },
+            "settings": {
+                "economy": "Economy",
+                "wholesale_multiplier": "Wholesale price multiplier",
+                "wholesale_hint": "Owners pay %s%% of the base supplier price.",
+                "sales_tax": "Sales tax (%)",
+                "max_machines": "Machines per player",
+                "max_machines_description": "How many machines one player can own.",
+                "stock_orders": "Stock orders",
+                "delivery_minutes": "Minutes per order stage",
+                "delivery_hint": "An order takes about %s minutes from preparing to delivered.",
+                "defaults": "New machine defaults",
+                "default_capacity": "Capacity per product",
+                "default_price": "Default sale price",
+                "default_price_description": "Used when creating a machine.",
+                "allow_purchase": "Players can buy machines",
+                "allow_purchase_description": "Machines marked for sale can be purchased in game.",
+                "logging": "Logging",
+                "webhook": "Discord webhook URL",
+                "log_purchases": "Log purchases",
+                "log_purchases_description": "Send every machine purchase to the webhook.",
+                "log_admin_actions": "Log admin actions",
+                "log_admin_actions_description": "Creating, editing and deleting machines.",
+                "share": "Share machines",
+                "export": "Export machines",
+                "export_description": "Names, models, locations, prices and products as JSON. Import it from the Machines page on another server.",
+                "export_button": "Export",
+                "error_webhook_invalid": "The webhook must be a Discord webhook URL.",
+                "error_webhook_missing": "Add a webhook URL or turn logging off."
+            },
+            "export": {
+                "title": "Export machines",
+                "summary_one": "%s machine. Only names, models, locations, prices and products are included; owners, balances and stock stay on this server.",
+                "summary_other": "%s machines. Only names, models, locations, prices and products are included; owners, balances and stock stay on this server.",
+                "output_label": "Exported machines",
+                "copy_failed": "Couldn't copy automatically. Click the text and press Ctrl+C.",
+                "download": "Download",
+                "copied": "Copied",
+                "copy": "Copy JSON"
+            },
+            "import": {
+                "title": "Import machines",
+                "description": "Paste a machine export from Settings on another server. Machines arrive for sale with no owner, money or stock.",
+                "load_file": "Load file",
+                "ready": "%s ready to import",
+                "skipped": "%s skipped",
+                "importing": "Importing...",
+                "submit_one": "Import %s machine",
+                "submit_other": "Import %s machines",
+                "error": "The machines could not be imported.",
+                "error_invalid_json": "This isn't valid JSON.",
+                "error_empty": "No machines found in this JSON.",
+                "unnamed": "Machine %s",
+                "skip_name": "Missing a name.",
+                "skip_location": "Missing a location.",
+                "skip_occupied": "A machine already stands here.",
+                "skip_duplicate": "Listed twice in this JSON.",
+                "skip_products": "None of its products exist on this server."
+            },
+            "form": {
+                "details": "Details",
+                "name": "Machine name",
+                "name_placeholder": "e.g. Legion Square #2",
+                "prop_model": "Prop model",
+                "machine_type": "Machine type",
+                "location": "Location",
+                "placing": "Placing...",
+                "set_position": "Set machine position",
+                "area": "Area label",
+                "area_placeholder": "e.g. Legion Square",
+                "no_position": "No position yet",
+                "ownership": "Ownership",
+                "owned_warning": "Owned by %s. Entering a new owner or putting it up for sale takes it away from them.",
+                "for_sale": "For sale",
+                "for_sale_description": "Players can buy this machine instead of it having an owner.",
+                "transfer_to": "Transfer to",
+                "owner_id": "Owner ID",
+                "transfer_placeholder": "Server or citizen ID of the new owner",
+                "owner_placeholder": "Leave empty to put it up for sale",
+                "price": "Sale price (%s)",
+                "products": "Products",
+                "selected": "%s selected",
+                "select_all": "Select all",
+                "clear": "Clear",
+                "sell_product": "Sell %s"
+            },
+            "placement": {
+                "title": "Machine position",
+                "heading": "Heading",
+                "move": "Move",
+                "rotate": "Rotate",
+                "snap": "Snap to ground",
+                "key_left_alt": "Left Alt",
+                "walk": "walk and look around",
+                "cursor": "back to the cursor",
+                "confirm": "Confirm"
+            },
+            "map": {
+                "zoom_in": "Zoom in",
+                "zoom_out": "Zoom out"
+            }
+        },
+        "owner": {
+            "common": {
+                "cancel": "Cancel",
+                "save": "Save",
+                "saving": "Saving...",
+                "working": "Working...",
+                "player_id": "Player ID",
+                "error": "Something went wrong."
+            },
+            "sections": {
+                "dashboard": {
+                    "label": "Dashboard",
+                    "description": "Revenue and sales overview for this machine."
+                },
+                "products": {
+                    "label": "Products",
+                    "description": "Stock levels and prices."
+                },
+                "restock": {
+                    "label": "Restock",
+                    "description": "Order new stock from the supplier."
+                },
+                "transactions": {
+                    "label": "Transactions",
+                    "description": "Every purchase made at this machine."
+                },
+                "cash": {
+                    "label": "Cash",
+                    "description": "Withdraw and deposit money in the machine."
+                },
+                "staff": {
+                    "label": "Staff",
+                    "description": "Hire employees and choose what they can do."
+                },
+                "settings": {
+                    "label": "Settings",
+                    "description": "Machine name and availability."
+                }
+            },
+            "permissions": {
+                "dashboard_view": {
+                    "label": "View stats",
+                    "description": "See revenue, sales and top products."
+                },
+                "products_prices": {
+                    "label": "Change prices",
+                    "description": "Set the price customers pay."
+                },
+                "restock_order": {
+                    "label": "Order stock",
+                    "description": "Buy stock from the supplier with the machine balance."
+                },
+                "transactions_view": {
+                    "label": "View sales",
+                    "description": "See every purchase made at the machine."
+                },
+                "cash_deposit": {
+                    "label": "Deposit money",
+                    "description": "Put their own cash into the machine."
+                },
+                "cash_withdraw": {
+                    "label": "Withdraw money",
+                    "description": "Take money out of the machine balance."
+                },
+                "cash_history": {
+                    "label": "View history",
+                    "description": "See the balance and past cash movements."
+                },
+                "staff_view": {
+                    "label": "View staff",
+                    "description": "See who works here and their roles."
+                },
+                "staff_manage": {
+                    "label": "Manage staff",
+                    "description": "Hire, fire and change permissions they have themselves."
+                },
+                "settings_general": {
+                    "label": "General",
+                    "description": "Rename the machine and open or close it."
+                },
+                "settings_hours": {
+                    "label": "Operating hours",
+                    "description": "Change the open and close schedule."
+                },
+                "settings_stock": {
+                    "label": "Stock & alerts",
+                    "description": "Low stock threshold, auto restock and notifications."
+                },
+                "settings_payments": {
+                    "label": "Payments",
+                    "description": "Choose which payment methods are accepted."
+                }
+            },
+            "roles": {
+                "owner": "Owner",
+                "employee": "Employee",
+                "supervisor": "Supervisor",
+                "manager": "Manager",
+                "custom": "Custom"
+            },
+            "header": {
+                "open": "Open",
+                "closed": "Closed",
+                "balance": "Balance",
+                "no_access_title": "No access",
+                "no_access_description": "Ask the owner to give you permissions for this machine."
+            },
+            "no_products": {
+                "title": "No products yet",
+                "description": "This machine has nothing to sell. Once an admin adds products to it, sales, stock and orders show up here."
+            },
+            "dashboard": {
+                "today_revenue": "Today's revenue",
+                "vs_yesterday": "vs yesterday",
+                "weekly_revenue": "Weekly revenue",
+                "last_7_days": "Last 7 days",
+                "items_sold": "Items sold",
+                "low_stock": "Low stock",
+                "products_suffix": "products",
+                "low_stock_hint": "%s or fewer left",
+                "revenue": "Revenue",
+                "no_sales_week": "No sales in the last 7 days",
+                "top_products": "Top products",
+                "units_sold": "Units sold",
+                "units_sold_tooltip": "units sold",
+                "nothing_sold": "Nothing sold yet",
+                "recent_sales": "Recent sales",
+                "view_all": "View all",
+                "no_sales": "No sales yet.",
+                "sales_count": "%s sales"
+            },
+            "products": {
+                "empty": "No products",
+                "product": "Product",
+                "category": "Category",
+                "sold": "Sold",
+                "stock": "Stock",
+                "price": "Price (%s)",
+                "low_stock": "Low stock"
+            },
+            "restock": {
+                "catalog": "Supplier catalog",
+                "low_stock_only": "Low stock only",
+                "all_stocked_title": "Everything is stocked",
+                "all_stocked_description": "No products are running low right now.",
+                "incoming": "+%s incoming",
+                "per_unit": "%s per unit",
+                "decrease": "Decrease quantity",
+                "increase": "Increase quantity",
+                "fill": "Fill",
+                "summary": "Order summary",
+                "clear": "Clear",
+                "summary_empty": "Pick quantities from the catalog to build an order.",
+                "machine_balance": "Machine balance",
+                "order_total": "Order total",
+                "balance_after": "Balance after",
+                "ordering": "Ordering...",
+                "place_order": "Place order",
+                "orders": "Orders",
+                "in_progress": "%s in progress",
+                "insufficient": "Not enough money in the machine for this order.",
+                "failed": "Order failed."
+            },
+            "orders": {
+                "preparing": "Preparing",
+                "prepared": "Prepared",
+                "shipping": "On the way",
+                "completed": "Completed",
+                "cancelled": "Cancelled",
+                "status_aria": "Order status: %s",
+                "pick_up": "Pick up"
+            },
+            "transactions": {
+                "empty": "No sales yet",
+                "time": "Time",
+                "buyer": "Buyer",
+                "product": "Product",
+                "quantity": "Qty",
+                "total": "Total"
+            },
+            "cash": {
+                "balance": "Balance",
+                "balance_hint": "Available in the machine",
+                "deposited": "Deposited",
+                "withdrawn": "Withdrawn",
+                "all_time": "All time",
+                "amount": "Amount (%s)",
+                "all": "All",
+                "withdraw_hint": "You can withdraw up to %s.",
+                "deposit_hint": "Money is taken from your cash on hand. You have %s.",
+                "processing": "Processing...",
+                "withdraw": "Withdraw",
+                "deposit": "Deposit",
+                "stock_order": "Stock order",
+                "history": "Cash history",
+                "movements": "%s movements",
+                "no_movements": "No cash movements yet",
+                "not_enough_balance": "Not enough money in the machine.",
+                "not_enough_cash": "You don't have that much cash.",
+                "failed": "Transaction failed.",
+                "by_you": "You"
+            },
+            "staff": {
+                "search": "Search...",
+                "hire": "Hire",
+                "empty": "No staff yet",
+                "online": "Online",
+                "offline": "Offline",
+                "you": "You",
+                "now": "Now",
+                "never": "Never",
+                "edit_permissions": "Edit Permissions",
+                "fire": "Fire",
+                "hire_title": "Hire staff",
+                "edit_title": "Edit permissions",
+                "server_id": "Server ID",
+                "edit_description": "What %s can do at %s.",
+                "role": "Role",
+                "role_hint": "Choose Custom to pick permissions one by one.",
+                "all": "All",
+                "none": "None",
+                "hire_hint": "The player must be nearby. Staff can open this panel but never sell or transfer the machine.",
+                "fire_title": "Fire employee",
+                "fire_description": "%s loses access to %s right away.",
+                "employee": "Employee",
+                "hired": "Hired",
+                "last_online": "Last Online",
+                "player_fallback": "Player %s"
+            },
+            "settings": {
+                "general": "General",
+                "name": "Machine name",
+                "description": "Description",
+                "description_placeholder": "Shown to customers",
+                "open": "Open for customers",
+                "open_description": "Closed machines can't be used by other players.",
+                "hours": "Operating hours",
+                "schedule": "Use a schedule",
+                "schedule_description": "Open and close automatically by in-game time.",
+                "opens_at": "Opens at",
+                "closes_at": "Closes at",
+                "schedule_on": "Open from %s to %s.",
+                "schedule_off": "The open switch alone controls availability.",
+                "stock": "Stock & alerts",
+                "low_stock_threshold": "Low stock threshold",
+                "auto_restock": "Auto restock",
+                "auto_restock_description": "Order up to capacity when a product hits the threshold.",
+                "low_stock_alerts": "Low stock alerts",
+                "low_stock_alerts_description": "Get a notification when stock runs low.",
+                "sale_notifications": "Sale notifications",
+                "sale_notifications_description": "Get a notification for every purchase.",
+                "payments": "Payments",
+                "cash": "Cash",
+                "cash_description": "Customers pay with cash on hand.",
+                "accept_cash": "Accept cash",
+                "bank": "Bank card",
+                "bank_description": "Customers pay from their bank account.",
+                "accept_bank": "Accept bank card",
+                "danger_zone": "Danger zone",
+                "transfer_title": "Transfer ownership",
+                "transfer_description": "Give this machine to another player. You lose all access.",
+                "transfer": "Transfer",
+                "sell": "Sell machine",
+                "sell_description": "Sell the machine back. Stock and orders in progress are lost.",
+                "sell_confirm": "This permanently sells %s. This can't be undone.",
+                "transfer_prompt": "Enter the server ID of the player who will own this machine.",
+                "name_empty": "Machine name can't be empty.",
+                "payment_required": "Accept at least one payment method.",
+                "same_times": "Opening and closing times can't be the same."
+            }
+        }
+    }
 }

@@ -3,11 +3,11 @@ import type { PanelSection } from "@/components/PanelSidebar.vue";
 import type { OwnerSection } from "@/stores/owner";
 
 export const sections: PanelSection<OwnerSection>[] = [
-    { value: "dashboard", label: "Dashboard", description: "Revenue and sales overview for this machine.", icon: LayoutDashboard },
-    { value: "products", label: "Products", description: "Stock levels and prices.", icon: Package },
-    { value: "restock", label: "Restock", description: "Order new stock from the supplier.", icon: Truck },
-    { value: "transactions", label: "Transactions", description: "Every purchase made at this machine.", icon: ReceiptText },
-    { value: "cash", label: "Cash", description: "Withdraw and deposit money in the machine.", icon: Banknote },
-    { value: "staff", label: "Staff", description: "Hire employees and choose what they can do.", icon: Users },
-    { value: "settings", label: "Settings", description: "Machine name and availability.", icon: Settings },
+    { value: "dashboard", label: "owner.sections.dashboard.label", description: "owner.sections.dashboard.description", icon: LayoutDashboard },
+    { value: "products", label: "owner.sections.products.label", description: "owner.sections.products.description", icon: Package },
+    { value: "restock", label: "owner.sections.restock.label", description: "owner.sections.restock.description", icon: Truck },
+    { value: "transactions", label: "owner.sections.transactions.label", description: "owner.sections.transactions.description", icon: ReceiptText },
+    { value: "cash", label: "owner.sections.cash.label", description: "owner.sections.cash.description", icon: Banknote },
+    { value: "staff", label: "owner.sections.staff.label", description: "owner.sections.staff.description", icon: Users },
+    { value: "settings", label: "owner.sections.settings.label", description: "owner.sections.settings.description", icon: Settings },
 ];

@@ -1,5 +1,5 @@
 <template>
-    <Modal title="New machine" :icon="SquarePlus" width="44rem" @close="emit('close')" >
+    <Modal :title="t('admin.create.title')" :icon="SquarePlus" width="44rem" @close="emit('close')" >
         <!-- The form is taller than the panel, so only the body scrolls and the footer stays in reach -->
         <div class="flex max-h-[70vh] flex-col gap-3 overflow-y-auto px-5 py-4">
             <Alert v-if="createError" variant="danger" :title="createError" />
@@ -12,9 +12,9 @@
                 <CircleAlert class="size-3.5 shrink-0" />
                 {{ error }}
             </p>
-            <Button variant="outline" size="sm" @click="emit('close')">Cancel</Button>
+            <Button variant="outline" size="sm" @click="emit('close')">{{ t("admin.common.cancel") }}</Button>
             <Button size="sm" :disabled="!!error || admin.saving" @click="create">
-                {{ admin.saving ? "Creating..." : "Create machine" }}
+                {{ admin.saving ? t("admin.create.creating") : t("admin.create.submit") }}
             </Button>
         </template>
     </Modal>
@@ -26,6 +26,7 @@ import { CircleAlert, SquarePlus } from "@lucide/vue";
 import { Alert, Button, Modal } from "@vezironi/veyra-ui";
 import { emptyMachineConfig, useAdminStore, validateMachine, type MachineConfig } from "@/stores/admin";
 import MachineForm from "./MachineForm.vue";
+import { t } from "@/utils/locale";
 
 const emit = defineEmits<{ close: [] }>();
 
@@ -52,7 +53,7 @@ async function create() {
         emit("close");
         admin.openMachine(response.data.id);
     } else {
-        createError.value = response.error ?? "The machine could not be created.";
+        createError.value = response.error ?? t("admin.create.error");
     }
 };
 </script>

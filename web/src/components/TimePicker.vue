@@ -6,20 +6,20 @@
             <Clock class="size-4 text-text-faint" />
         </Button>
 
-        <Modal v-if="open" :title="label ?? 'Pick a time'" :icon="Clock" width="20rem" @close="open = false">
+        <Modal v-if="open" :title="label ?? t('common.time_picker.title')" :icon="Clock" width="20rem" @close="open = false">
             <div class="flex items-end gap-2 px-5 py-4">
-                <WheelPicker v-model="hour" :options="hourOptions" label="Hour" class="flex-1" />
+                <WheelPicker v-model="hour" :options="hourOptions" :label="t('common.time_picker.hour')" class="flex-1" />
                 <!-- Same height as a wheel so the colon lines up with the selection band -->
                 <span
                     aria-hidden="true"
                     class="flex items-center text-lg font-semibold text-text-faint"
                     :style="{ height: `${wheelHeight}px` }"
                 >:</span>
-                <WheelPicker v-model="minute" :options="minuteOptions" label="Minute" class="flex-1" />
+                <WheelPicker v-model="minute" :options="minuteOptions" :label="t('common.time_picker.minute')" class="flex-1" />
             </div>
             <template #footer>
-                <Button variant="outline" size="sm" @click="open = false">Cancel</Button>
-                <Button size="sm" @click="confirm">Done</Button>
+                <Button variant="outline" size="sm" @click="open = false">{{ t("common.cancel") }}</Button>
+                <Button size="sm" @click="confirm">{{ t("common.done") }}</Button>
             </template>
         </Modal>
     </div>
@@ -30,6 +30,7 @@ import { computed, ref } from "vue";
 import { Clock } from "@lucide/vue";
 import { Button, Modal } from "@vezironi/veyra-ui";
 import WheelPicker from "@/components/WheelPicker.vue";
+import { t } from "@/utils/locale";
 
 defineProps<{
     label?: string;
