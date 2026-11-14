@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { debug, FetchNUI, isDui, isNative } from "@/utils";
+import { demoView } from "@/utils/demo";
 import { applyConfig, type UiConfig } from "@/utils/events";
 import { useShopStore } from "@/stores";
 import { useOwnerStore } from "@/stores/owner";
@@ -76,7 +77,8 @@ export const useAppStore = defineStore("app", () => {
         view.value = next;
         visible.value = true;
 
-        if (!isNative) {
+        // The website demo keeps its own ?view= (utils/demo.ts)
+        if (!isNative && !demoView) {
             const url = new URL(window.location.href);
             url.searchParams.set('view', next);
             window.history.pushState(null, '', url);
@@ -104,13 +106,13 @@ export const useAppStore = defineStore("app", () => {
         ready.value = false;
     };
 
-    // The browser preview and the machine's screen get no setView, so they load right away
-    if (isDui || !isNative) {
+    // The browser preview and the machine's screen get no setView, so they load right away. The website demo sends one (startDemo)
+    if ((isDui || !isNative) && !demoView) {
         visible.value = true;
         load(view.value);
     }
 
-    if (!isDui && !isNative) {
+    if (!isDui && !isNative && !demoView) {
         window.addEventListener('popstate', () => {
             view.value = viewFromUrl();
             load(view.value);

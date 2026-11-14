@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { asList, asNumber, asRecord, FetchNUI, isNative } from "@/utils";
+import { demoView } from "@/utils/demo";
 import { mockTime } from "@/utils/format";
 import { t } from "@/utils/locale";
 import { mockProducts, useShopStore, type Product } from "@/stores";
@@ -394,7 +395,8 @@ export const useOwnerStore = defineStore("owner", () => {
                 orders.value.unshift({ id, time, items: order, total, status: "preparing" });
                 cashMovements.value.unshift({ id: `c${Date.now()}`, time, type: "order", amount: total, by: t("owner.cash.by_you") });
 
-                if (!isNative) simulateDelivery(id);
+                // The website demo follows the game's flow instead: prepared, then picked up (utils/demo-nui.ts)
+                if (!isNative && !demoView) simulateDelivery(id);
             }
 
             return response;
@@ -451,7 +453,7 @@ export const useOwnerStore = defineStore("owner", () => {
             ownerMember.value = typeof data.ownerMember?.name === "string" ? data.ownerMember : null;
             selfId.value = typeof data.selfId === "string" ? data.selfId : null;
 
-            if (!isNative) {
+            if (!isNative && !demoView) {
                 for (const order of activeOrders.value) simulateDelivery(order.id);
             }
         }

@@ -26,14 +26,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { ShoppingCart } from "@lucide/vue";
-import { useShopStore } from "@/stores";
+import { itemImageUrl } from "@/stores";
 import { asList, FetchNUI } from "@/utils";
 import { t } from "@/utils/locale";
 
 // How long each product image stays before the next one fades in
 const IMAGE_MS = 4000;
-
-const shop = useShopStore();
 
 // Only the images that loaded: a missing one would show as a broken image
 const images = ref<string[]>([]);
@@ -58,7 +56,7 @@ function preload(src: string): Promise<boolean> {
 
 onMounted(async () => {
     const response = await FetchNUI<string[]>("screen:idle", {}, ["water.png", "cola.png", "chips.png", "chocolate.png", "donut.png"]);
-    const urls = asList<string>(response.data).map((name) => "nui://" + shop.inventoryImagePath + name);
+    const urls = asList<string>(response.data).map(itemImageUrl);
     const loaded = await Promise.all(urls.map(preload));
 
     images.value = urls.filter((_, i) => loaded[i]);

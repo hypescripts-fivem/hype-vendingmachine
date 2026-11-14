@@ -1,6 +1,10 @@
 <template>
-    <!-- The model's screen crops the bottom of the texture, the padding keeps the buttons in view -->
-    <main class="flex h-screen w-screen flex-col overflow-hidden bg-bg-base pb-[20px]">
+    <!-- The model's screen crops the bottom of the texture, the padding keeps the buttons in view.
+         The website demo has no DUI, it draws the screen at the DUI's size (Config.Screen) -->
+    <main
+        class="flex flex-col overflow-hidden bg-bg-base pb-[20px]"
+        :class="demoView ? 'h-[1600px] w-[900px] rounded-[2rem] border border-border' : 'h-screen w-screen'"
+    >
         <template v-if="page === 'products'">
             <header class="px-6 pb-4 pt-6 leading-tight">
                 <h1 class="text-3xl font-semibold text-text-primary">{{ shop.name || t("shop.default_name") }}</h1>
@@ -32,8 +36,13 @@
 
         <ScreenCart v-else @back="page = 'products'" @confirm="paying = true" />
 
-        <!-- The menu's payment dialog, scaled up to the screen's text size -->
-        <CheckoutModal v-if="paying" class="[zoom:1.75]" @close="paying = false" />
+        <!-- The menu's payment dialog, scaled up to the screen's text size. It opens over the whole window, so the website demo
+             scales it down with the screen (--demo-scale, utils/demo-nui.ts) -->
+        <CheckoutModal
+            v-if="paying"
+            :class="demoView ? '[zoom:calc(1.75*var(--demo-scale,1))]' : '[zoom:1.75]'"
+            @close="paying = false"
+        />
     </main>
 </template>
 
@@ -46,6 +55,7 @@ import ScreenBar from "@/components/screen/ScreenBar.vue";
 import ScreenCart from "@/components/screen/ScreenCart.vue";
 import ScreenItem from "@/components/screen/ScreenItem.vue";
 import { useShopStore } from "@/stores";
+import { demoView } from "@/utils/demo";
 import { t } from "@/utils/locale";
 
 const shop = useShopStore();

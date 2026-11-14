@@ -37,7 +37,7 @@
                         <div class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-bg-inset">
                             <img
                                 v-if="item.product.image && !failedImages.has(item.product.id)"
-                                :src="'nui://' + shop.inventoryImagePath + item.product.image"
+                                :src="itemImageUrl(item.product.image)"
                                 :alt="item.product.name"
                                 class="size-8 object-contain"
                                 @error="failedImages.add(item.product.id)"
@@ -111,7 +111,7 @@
 import { reactive, ref } from "vue";
 import { Minus, Package, Plus, ShoppingCart, Trash2 } from "@lucide/vue";
 import { Badge, Button, EmptyState, Separator } from "@vezironi/veyra-ui";
-import { useShopStore } from "@/stores";
+import { itemImageUrl, useShopStore } from "@/stores";
 import CheckoutModal from "./CheckoutModal.vue";
 import { formatMoney } from "@/utils/format";
 import { t } from "@/utils/locale";

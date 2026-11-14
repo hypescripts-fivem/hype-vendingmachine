@@ -17,7 +17,7 @@
                 <div class="flex size-16 shrink-0 items-center justify-center rounded-lg border border-border bg-bg-inset">
                     <img
                         v-if="item.product.image && !failedImages.has(item.product.id)"
-                        :src="'nui://' + shop.inventoryImagePath + item.product.image"
+                        :src="itemImageUrl(item.product.image)"
                         :alt="item.product.name"
                         class="size-12 object-contain"
                         @error="failedImages.add(item.product.id)"
@@ -65,7 +65,7 @@
 import { reactive } from "vue";
 import { ArrowLeft, Package, Trash2 } from "@lucide/vue";
 import { Button } from "@vezironi/veyra-ui";
-import { useShopStore } from "@/stores";
+import { itemImageUrl, useShopStore } from "@/stores";
 import { formatMoney } from "@/utils/format";
 import { t } from "@/utils/locale";
 import QuantityStepper from "./QuantityStepper.vue";

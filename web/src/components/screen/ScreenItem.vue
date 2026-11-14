@@ -9,7 +9,7 @@
         <div class="relative flex h-56 items-center justify-center border-b border-border bg-bg-inset">
             <img
                 v-if="product.image && !imageFailed"
-                :src="'nui://' + shop.inventoryImagePath + product.image"
+                :src="itemImageUrl(product.image)"
                 :alt="product.name"
                 class="size-36 object-contain"
                 @error="imageFailed = true"
@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { Package, Plus, Trash2 } from "@lucide/vue";
-import { useShopStore } from "@/stores";
+import { itemImageUrl, useShopStore } from "@/stores";
 import type { Product } from "@/stores";
 import { formatMoney } from "@/utils/format";
 import { t } from "@/utils/locale";

@@ -8,7 +8,7 @@
         <div class="relative flex h-32 items-center justify-center border-b border-border bg-bg-inset">
             <img
                 v-if="product.image && !imageFailed"
-                :src="'nui://' + useShopStore().inventoryImagePath + product.image"
+                :src="itemImageUrl(product.image)"
                 :alt="product.name"
                 class="size-24 object-contain transition-transform duration-200 group-hover:scale-105"
                 @error="imageFailed = true"
@@ -50,7 +50,7 @@
 import { computed, ref, watch } from "vue";
 import { Package, Plus, Trash2 } from "@lucide/vue";
 import { Button } from "@vezironi/veyra-ui";
-import { useShopStore } from "@/stores";
+import { itemImageUrl } from "@/stores";
 import type { Product } from "@/stores";
 import { formatMoney } from "@/utils/format";
 import { t } from "@/utils/locale";

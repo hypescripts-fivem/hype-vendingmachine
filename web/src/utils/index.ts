@@ -1,4 +1,5 @@
 import { t } from './locale';
+import { demoNui } from './demo';
 
 const resourceName = (): string => (window as any).GetParentResourceName?.() ?? 'hype-vendingmachine';
 
@@ -30,6 +31,9 @@ export async function FetchNUI<T = unknown>(event: string, data?: unknown, mock?
     debug(`FetchNUI(${event})`, data);
 
     if (!isNative && !isDui) {
+        // Website demo build: believable answers and the server's follow-up messages (utils/demo-nui.ts)
+        if (demoNui.respond) return demoNui.respond(event, data, mock);
+
         return { success: true, data: mock };
     }
 

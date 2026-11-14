@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { asList, asNumber, FetchNUI } from "@/utils";
+import { demoView } from "@/utils/demo";
 
 export interface Product {
     id: string;
@@ -28,6 +29,14 @@ export const mockProducts: Product[] = [
     { id: "sandwich", name: "Sandwich", description: "Ham and cheese sandwich", category: "food", price: 15, stock: 8, image: "nui://ox_inventory/web/images/sandwich.png" },
     { id: "donut", name: "Donut", description: "Glazed donut", category: "food", price: 9, stock: 10, image: "nui://ox_inventory/web/images/donut.png" },
 ];
+
+// Inventory image of a product, from the inventory resource set in setConfig
+export function itemImageUrl(image: string | undefined): string {
+    // The website demo has no inventory to read from, it ships its own copies (web/demo/items)
+    if (demoView) return `${import.meta.env.BASE_URL}demo/items/${image?.replace(/\.\w+$/, "")}.webp`;
+
+    return "nui://" + useShopStore().inventoryImagePath + image;
+};
 
 export type PaymentMethod = 'cash' | 'bank';
 
