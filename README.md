@@ -289,12 +289,10 @@ Config, locale, shared and server files are open and can be edited, the rest is 
 
 ## Credits
 
-Made by **HypeScripts**. For support, questions and updates, join the Discord.
-
 | | |
 | --- | --- |
-| Discord | https://discord.gg/K5CufCxqUU |
-| Discord username | `turtle8782` |
+| Script | **HypeScripts** |
+| Custom props | **turtle8782** · Discord: https://discord.gg/K5CufCxqUU |
 
 ## License
 
