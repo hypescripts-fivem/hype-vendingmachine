@@ -293,7 +293,7 @@ Config, locale, shared and server files are open and can be edited, the rest is 
 
 | | |
 | --- | --- |
-| Profile photo | <img src="tebex/credits/turtle8782.png" alt="turtle8782" width="64"> |
+| Profile photo | <img src="https://r2.fivemanage.com/WMPatUNDYyBm1F6ujPzIp/turtle8782.png" alt="turtle8782" width="64"> |
 | Username | `turtle8782` |
 | Discord server | https://discord.gg/K5CufCxqUU |
 
