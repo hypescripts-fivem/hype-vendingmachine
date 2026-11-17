@@ -6,14 +6,14 @@
 
 **Player-owned vending machines with restock deliveries, staff and an admin panel**
 
-Admins place machines and put them up for sale, players buy them, set their prices and earn from every sale. Stock is ordered from a supplier and picked up by hand: grab the cart, load the boxes into a vehicle and put them into the machine. Owners can hire staff, and admins get a panel with a map of every machine on the server.
+Hype Vending Machine adds player-owned vending machines to FiveM. Owners buy machines, set prices, hire staff and earn from every sale, while stock is ordered from a supplier and delivered by hand with a cart. Admins place and manage every machine from an in-game panel.
 
 ![FiveM](https://img.shields.io/badge/FiveM-cerulean-f40552?style=flat-square)
 ![Lua](https://img.shields.io/badge/Lua-5.4-2c2d72?style=flat-square&logo=lua)
 ![Frameworks](https://img.shields.io/badge/ESX%20·%20QB%20·%20QBX-via%20hype--core-3b82f6?style=flat-square)
 ![Version](https://img.shields.io/badge/version-1.0.0-22c55e?style=flat-square)
 
-[Features](#features) · [Screenshots](#screenshots) · [Installation](#installation) · [Configuration](#configuration) · [Usage](#usage) · [Admin panel](#admin-panel)
+[Features](#features) · [Screenshots](#screenshots) · [Installation](#installation) · [Configuration](#configuration) · [Usage](#usage) · [Admin panel](#admin-panel) · [Credits](#credits)
 
 </div>
 
@@ -286,6 +286,15 @@ Everything goes through hype-core, so the same bridges are used:
 | Inventory | ox_inventory, qb-inventory, ps-inventory, codem-inventory, core_inventory, jpr-inventory, origen_inventory, tgiann-inventory |
 
 Config, locale, shared and server files are open and can be edited, the rest is protected with Cfx.re Asset Escrow.
+
+## Credits
+
+Made by **HypeScripts**. For support, questions and updates, join the Discord.
+
+| | |
+| --- | --- |
+| Discord | https://discord.gg/K5CufCxqUU |
+| Discord username | `turtle8782` |
 
 ## License
 
