@@ -289,10 +289,13 @@ Config, locale, shared and server files are open and can be edited, the rest is 
 
 ## Credits
 
+### Custom props
+
 | | |
 | --- | --- |
-| Script | **HypeScripts** |
-| Custom props | **turtle8782** · Discord: https://discord.gg/K5CufCxqUU |
+| Profile photo | <img src="tebex/credits/turtle8782.png" alt="turtle8782" width="64"> |
+| Username | `turtle8782` |
+| Discord server | https://discord.gg/K5CufCxqUU |
 
 ## License
 
