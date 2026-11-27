@@ -323,7 +323,6 @@ MachineConfig & {
     defaultCapacity: number;
     defaultPrice: number;
     allowPlayerPurchase: boolean;
-    webhook: string;
     logPurchases: boolean;
     logAdminActions: boolean;
 }

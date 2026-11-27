@@ -11,7 +11,7 @@ local points = {}
 local shownText
 
 local function notify(message, type)
-    exports['hype-core']:SendNotify(locale("notify_title"), message, 5000, type or "success")
+    Modules.Client.Notify.SendNotify(locale("notify_title"), message, 5000, type or "success")
 end
 
 local function addPoint(name, point)
@@ -34,9 +34,9 @@ local function addPoint(name, point)
     end
 
     if point.entity then
-        exports['hype-core']:AddLocalEntity(point.entity, options)
+        Modules.Client.Target.AddLocalEntity(point.entity, options)
     else
-        exports['hype-core']:AddSphereZone("hype-vendingmachine:cargo-" .. name, point.coords, Config.Interaction.distance, options)
+        Modules.Client.Target.AddSphereZone("hype-vendingmachine:cargo-" .. name, point.coords, Config.Interaction.distance, options)
     end
 end
 
@@ -48,12 +48,12 @@ local function removePoint(name)
     if not useTarget then return end
 
     if not point.entity then
-        exports['hype-core']:RemoveZone("hype-vendingmachine:cargo-" .. name)
+        Modules.Client.Target.RemoveZone("hype-vendingmachine:cargo-" .. name)
     elseif DoesEntityExist(point.entity) then
         local labels = {}
         for index, option in ipairs(point.options) do labels[index] = option.label end
 
-        exports['hype-core']:RemoveLocalEntity(point.entity, labels)
+        Modules.Client.Target.RemoveLocalEntity(point.entity, labels)
     end
 end
 
@@ -124,7 +124,7 @@ local function deleteCart()
     end
 
     removePoint("cart")
-    exports['hype-core']:RemoveEntity(job.cart)
+    RemoveEntity(job.cart)
     job.cart = nil
 
     syncProps()
@@ -153,7 +153,7 @@ local function dropCart()
 end
 
 local function loadBox(vehicle)
-    exports['hype-core']:RemoveEntity(job.carrying)
+    RemoveEntity(job.carrying)
     job.carrying = nil
     playAnim()
 
@@ -171,15 +171,15 @@ end
 local function endJob()
     for name in pairs(points) do removePoint(name) end
 
-    for _, box in ipairs(job.cartBoxes) do exports['hype-core']:RemoveEntity(box) end
-    exports['hype-core']:RemoveEntity(job.cart)
-    exports['hype-core']:RemoveEntity(job.carrying)
+    for _, box in ipairs(job.cartBoxes) do RemoveEntity(box) end
+    RemoveEntity(job.cart)
+    RemoveEntity(job.carrying)
 
     if job.holding or job.carrying then playAnim() end
 
     if shownText then
         shownText = nil
-        exports['hype-core']:HideTextUI()
+        Modules.Client.TextUI.HideTextUI()
     end
 
     job = nil
@@ -189,7 +189,7 @@ local function deliverBox()
     CreateThread(function()
         if not lib.callback.await("hype-vendingmachine:server:cargo-deliver", false) or not job then return end
 
-        exports['hype-core']:RemoveEntity(job.carrying)
+        RemoveEntity(job.carrying)
         job.carrying = nil
         job.delivered = job.delivered + 1
         playAnim()
@@ -240,7 +240,8 @@ local function spawnProps()
 
     for index = 1, job.total do
         local box = createProp(Cargo.boxModel, spawn.xyz)
-        local offset = Cargo.boxOffset + Cargo.boxStep * (index - 1)
+        local layer, front = (index - 1) // 2, (index - 1) % 2
+        local offset = Cargo.boxOffset + Cargo.boxStep * layer + Cargo.boxFront * front
 
         AttachEntityToEntity(box, cart, 0, offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
         job.cartBoxes[index] = box
@@ -299,9 +300,9 @@ local function showOptions(options)
     shownText = text
 
     if text then
-        exports['hype-core']:ShowTextUI(text)
+        Modules.Client.TextUI.ShowTextUI(text)
     else
-        exports['hype-core']:HideTextUI()
+        Modules.Client.TextUI.HideTextUI()
     end
 end
 

@@ -344,7 +344,6 @@
                 "allow_purchase": "খেলোয়াড়রা মেশিন কিনতে পারবে",
                 "allow_purchase_description": "বিক্রির জন্য চিহ্নিত মেশিন গেমের মধ্যে কেনা যাবে।",
                 "logging": "লগিং",
-                "webhook": "Discord webhook URL",
                 "log_purchases": "ক্রয় লগ করুন",
                 "log_purchases_description": "প্রতিটি মেশিন ক্রয় webhook-এ পাঠান।",
                 "log_admin_actions": "অ্যাডমিন কার্যক্রম লগ করুন",
@@ -352,9 +351,7 @@
                 "share": "মেশিন শেয়ার করুন",
                 "export": "মেশিন এক্সপোর্ট করুন",
                 "export_description": "নাম, মডেল, অবস্থান, দাম এবং পণ্য JSON হিসেবে। অন্য সার্ভারের মেশিন পেজ থেকে এটি ইমপোর্ট করুন।",
-                "export_button": "এক্সপোর্ট",
-                "error_webhook_invalid": "webhook অবশ্যই একটি Discord webhook URL হতে হবে।",
-                "error_webhook_missing": "একটি webhook URL যোগ করুন অথবা লগিং বন্ধ করুন।"
+                "export_button": "এক্সপোর্ট"
             },
             "export": {
                 "title": "মেশিন এক্সপোর্ট করুন",

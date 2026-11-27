@@ -344,7 +344,6 @@
                 "allow_purchase": "Les joueurs peuvent acheter des distributeurs",
                 "allow_purchase_description": "Les distributeurs mis en vente peuvent être achetés en jeu.",
                 "logging": "Journalisation",
-                "webhook": "URL du webhook Discord",
                 "log_purchases": "Journaliser les achats",
                 "log_purchases_description": "Envoyer chaque achat de distributeur au webhook.",
                 "log_admin_actions": "Journaliser les actions admin",
@@ -352,9 +351,7 @@
                 "share": "Partager les distributeurs",
                 "export": "Exporter les distributeurs",
                 "export_description": "Noms, modèles, emplacements, prix et produits au format JSON. Importe-les depuis la page Distributeurs sur un autre serveur.",
-                "export_button": "Exporter",
-                "error_webhook_invalid": "Le webhook doit être une URL de webhook Discord.",
-                "error_webhook_missing": "Ajoute une URL de webhook ou désactive la journalisation."
+                "export_button": "Exporter"
             },
             "export": {
                 "title": "Exporter les distributeurs",

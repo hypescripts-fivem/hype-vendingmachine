@@ -78,7 +78,7 @@ RegisterNetEvent("hype-vendingmachine:server:cargo-load", function()
     local job = jobs[playerId]
     if not job or job.loaded >= #job.boxes then return end
 
-    if not exports['hype-core']:IsPlayerNearCoords(playerId, job.spawn, Cargo.cancelDistance) then return end
+    if not IsPlayerNearCoords(playerId, job.spawn, Cargo.cancelDistance) then return end
 
     job.loaded = job.loaded + 1
 end)
@@ -101,7 +101,7 @@ lib.callback.register("hype-vendingmachine:server:cargo-deliver", function(sourc
     if not job or job.delivered >= job.loaded then return false end
 
     local row = MySQL.single.await(Queries.GetMachine, { job.machineId })
-    if not row or not exports['hype-core']:IsPlayerNearCoords(playerId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
+    if not row or not IsPlayerNearCoords(playerId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
         return false
     end
 

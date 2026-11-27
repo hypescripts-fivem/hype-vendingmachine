@@ -260,7 +260,6 @@ export function demoAdmin(): AdminData {
             defaultCapacity: 50,
             defaultPrice: 20000,
             allowPlayerPurchase: true,
-            webhook: "",
             logPurchases: true,
             logAdminActions: true,
         },

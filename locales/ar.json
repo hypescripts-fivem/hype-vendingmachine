@@ -344,7 +344,6 @@
                 "allow_purchase": "يمكن للاعبين شراء الآلات",
                 "allow_purchase_description": "يمكن شراء الآلات المعروضة للبيع داخل اللعبة.",
                 "logging": "السجلات",
-                "webhook": "رابط webhook الخاص بـ Discord",
                 "log_purchases": "تسجيل المشتريات",
                 "log_purchases_description": "إرسال كل عملية شراء آلة إلى الـ webhook.",
                 "log_admin_actions": "تسجيل إجراءات المشرفين",
@@ -352,9 +351,7 @@
                 "share": "مشاركة الآلات",
                 "export": "تصدير الآلات",
                 "export_description": "الأسماء والطرازات والمواقع والأسعار والمنتجات بصيغة JSON. استوردها من صفحة الآلات على خادم آخر.",
-                "export_button": "تصدير",
-                "error_webhook_invalid": "يجب أن يكون الـ webhook رابط webhook من Discord.",
-                "error_webhook_missing": "أضف رابط webhook أو أوقف التسجيل."
+                "export_button": "تصدير"
             },
             "export": {
                 "title": "تصدير الآلات",

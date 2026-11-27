@@ -10,7 +10,7 @@ Hype Vending Machine adds player-owned vending machines to FiveM. Owners buy mac
 
 ![FiveM](https://img.shields.io/badge/FiveM-cerulean-f40552?style=flat-square)
 ![Lua](https://img.shields.io/badge/Lua-5.4-2c2d72?style=flat-square&logo=lua)
-![Frameworks](https://img.shields.io/badge/ESX%20·%20QB%20·%20QBX-via%20hype--core-3b82f6?style=flat-square)
+![Frameworks](https://img.shields.io/badge/ESX%20·%20QB%20·%20QBX-standalone-3b82f6?style=flat-square)
 ![Version](https://img.shields.io/badge/version-1.0.0-22c55e?style=flat-square)
 
 [Features](#features) · [Screenshots](#screenshots) · [Installation](#installation) · [Configuration](#configuration) · [Usage](#usage) · [Admin panel](#admin-panel) · [Credits](#credits)
@@ -129,7 +129,6 @@ Hype Vending Machine adds player-owned vending machines to FiveM. Owners buy mac
 
 | Resource | Link / notes |
 | --- | --- |
-| hype-core | Included with the purchase. Bridges the framework, inventory, target, notify and text UI |
 | ox_lib | https://github.com/overextended/ox_lib/releases/latest |
 | oxmysql | https://github.com/overextended/oxmysql/releases/latest |
 | Framework | `qbx_core`, `qb-core` or `es_extended` |
@@ -147,7 +146,6 @@ Hype Vending Machine adds player-owned vending machines to FiveM. Owners buy mac
    ensure oxmysql
    ensure qbx_core          # or qb-core / es_extended
    ensure ox_target         # optional: ox_target or qb-target
-   ensure hype-core
    ensure olentrix_vending  # optional, glass machines
    ensure hype-vendingmachine
 
@@ -205,8 +203,7 @@ These are the fallbacks for the admin panel's Settings page:
 | `deliveryMinutes` | `5` | How long an order is `preparing` before it can be picked up |
 | `defaultCapacity` / `defaultPrice` | `50` / `20000` | Pre-filled when creating a machine |
 | `allowPlayerPurchase` | `true` | Players can buy machines that are for sale |
-| `webhook` | `""` | Discord webhook. Empty turns webhook logs off |
-| `logPurchases` / `logAdminActions` | `true` / `true` | What is sent to the webhook |
+| `logPurchases` / `logAdminActions` | `true` / `true` | What is sent to the webhook (the URL is set in `server/config.lua`) |
 
 ### How a delivery works
 
@@ -226,7 +223,7 @@ These are the fallbacks for the admin panel's Settings page:
 | `/vendingmenu` | Admins | Opens the admin panel |
 | `ESC` | | Back or close |
 
-The command is registered with ox_lib as `restricted = "group.admin"` and every admin action is checked again on the server through hype-core. The default `server.cfg` admin setup is enough:
+The command is registered with ox_lib as `restricted = "group.admin"` and every admin action is checked again on the server against the `command` ace. The default `server.cfg` admin setup is enough:
 
 ```cfg
 add_ace group.admin command allow
@@ -275,7 +272,7 @@ In-game texts come from `locales/*.json` through ox_lib. Included: `en`, `tr`, `
 
 ## Compatibility
 
-Everything goes through hype-core, so the same bridges are used:
+The bridges are built in (`frameworks/` and `modules/`), nothing else is needed. Each one is picked automatically, or set it in `config/config.lua` (`Framework`, `Inventory`, `Notifications`, `TextUI`):
 
 | Type | Supported |
 | --- | --- |
@@ -285,7 +282,7 @@ Everything goes through hype-core, so the same bridges are used:
 | Text UI | ox_lib, okokTextUI, jg-textui, ps-ui, qb-core |
 | Inventory | ox_inventory, qb-inventory, ps-inventory, codem-inventory, core_inventory, jpr-inventory, origen_inventory, tgiann-inventory |
 
-Config, locale, shared and server files are open and can be edited, the rest is protected with Cfx.re Asset Escrow.
+Config, locale, shared, server, framework and module files are open and can be edited, the rest is protected with Cfx.re Asset Escrow.
 
 ## Credits
 

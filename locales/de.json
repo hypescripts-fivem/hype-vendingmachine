@@ -344,7 +344,6 @@
                 "allow_purchase": "Spieler können Automaten kaufen",
                 "allow_purchase_description": "Zum Verkauf markierte Automaten können im Spiel gekauft werden.",
                 "logging": "Protokollierung",
-                "webhook": "Discord-Webhook-URL",
                 "log_purchases": "Käufe protokollieren",
                 "log_purchases_description": "Jeden Automatenkauf an den Webhook senden.",
                 "log_admin_actions": "Admin-Aktionen protokollieren",
@@ -352,9 +351,7 @@
                 "share": "Automaten teilen",
                 "export": "Automaten exportieren",
                 "export_description": "Namen, Modelle, Standorte, Preise und Produkte als JSON. Importiere sie auf einem anderen Server über die Seite Automaten.",
-                "export_button": "Exportieren",
-                "error_webhook_invalid": "Der Webhook muss eine Discord-Webhook-URL sein.",
-                "error_webhook_missing": "Füge eine Webhook-URL hinzu oder schalte die Protokollierung aus."
+                "export_button": "Exportieren"
             },
             "export": {
                 "title": "Automaten exportieren",

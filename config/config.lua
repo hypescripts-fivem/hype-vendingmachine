@@ -2,6 +2,14 @@ return {
     Debug = false,
     AutoRunSQL = true, -- automatically runs install/insert-me.sql on resource start, if it exists
 
+    -- Bridges. "auto" picks the first one that is running
+    Framework = "auto",     -- "auto" | "qbx" | "qb" | "esx"
+    Inventory = "auto",     -- "auto" | "ox_inventory" | "qb-inventory" | "ps-inventory" | "jpr-inventory" | "codem-inventory" | "core_inventory" | "origen_inventory" | "tgiann-inventory"
+    Notifications = "auto", -- "auto" | "okokNotify" | "ps-ui" | "ox_lib"
+    TextUI = "auto",        -- "auto" | "jg-textui" | "okokTextUI" | "ps-ui" | "ox_lib" | "qb-core"
+    -- Folder the product images are loaded from, as "resource/path/". nil picks the inventory's own image folder
+    InventoryImagePath = nil,
+
     -- Money and dates in the UI, e.g. "USD" with "en-US" shows $1,250 and Oct 24, "EUR" with "de-DE" shows 1.250 € and 24. Okt.
     Currency = "USD",              -- ISO 4217 currency code
     NumberAndDateFormat = "en-US", -- BCP 47 locale
@@ -15,7 +23,7 @@ return {
     },
 
     Interaction = {
-        target = true,        -- use ox_target / qb-target through hype-core when one is running, TextUI otherwise
+        target = true,        -- use ox_target / qb-target when one is running, TextUI otherwise
         distance = 1.5,       -- how close the player must be to open a machine
         maxDistance = 3.0,    -- the server rejects requests from players further than this
         spawnDistance = 75.0, -- machine props are spawned within this range
@@ -41,7 +49,6 @@ return {
         defaultCapacity = 50,
         defaultPrice = 20000,
         allowPlayerPurchase = true,
-        webhook = "",
         logPurchases = true,
         logAdminActions = true,
     },
@@ -94,8 +101,11 @@ return {
         cartAnim = { dict = "missfinale_c2ig_11", name = "pushcar_offcliff_f", time = 0.3 },
         boxAttach = { bone = 60309, offset = vec3(0.025, 0.08, 0.255), rotation = vec3(-145.0, 290.0, 0.0) },
         boxAnim = { dict = "anim@heists@box_carry@", name = "idle" },
+        -- Boxes are stacked in two rows: odd boxes at boxOffset, even boxes boxFront in front of them,
+        -- and every pair goes boxStep higher (1: back, 2: front, 3: back + up, 4: front + up, ...)
         boxOffset = vec3(-0.2, 0.0, 0.4), -- first box, from the cart
-        boxStep = vec3(0.0, 0.0, 0.3),   -- each next box is stacked this much further
+        boxFront = vec3(0.3, 0.0, 0.0),   -- the front row, from the back row
+        boxStep = vec3(0.0, 0.0, 0.3),    -- each next layer is stacked this much higher
     },
 
     StaffPermissions = {

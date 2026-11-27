@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-3">
-        <SaveBar :dirty="dirty" :error="error" :saving="admin.saving" @reset="reset" @save="save" />
+        <SaveBar :dirty="dirty" :saving="admin.saving" @reset="reset" @save="save" />
 
         <div class="flex flex-col gap-3">
             <section class="flex flex-col gap-4 rounded-2xl border border-border bg-bg-surface p-4">
@@ -60,14 +60,6 @@
                 <h3 class="flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <Webhook class="size-4 text-text-muted" /> {{ t("admin.settings.logging") }}
                 </h3>
-                <label class="grid gap-1.5 text-sm text-text-muted">
-                    {{ t("admin.settings.webhook") }}
-                    <Inputs
-                        :model-value="draft.webhook"
-                        placeholder="https://discord.com/api/webhooks/..."
-                        @update:model-value="draft.webhook = String($event ?? '').trim()"
-                    />
-                </label>
                 <SettingRow :label="t('admin.settings.log_purchases')" :description="t('admin.settings.log_purchases_description')">
                     <Switch v-model="draft.logPurchases" />
                 </SettingRow>
@@ -115,18 +107,6 @@ const exporting = ref(false);
 
 const dirty = computed(() => JSON.stringify(draft.value) !== JSON.stringify(admin.settings));
 
-const error = computed(() => {
-    const { webhook, logPurchases, logAdminActions } = draft.value;
-
-    if (webhook && !/^https:\/\/(\w+\.)?discord(app)?\.com\/api\/webhooks\//.test(webhook)) {
-        return t("admin.settings.error_webhook_invalid");
-    }
-    if (!webhook && (logPurchases || logAdminActions)) {
-        return t("admin.settings.error_webhook_missing");
-    }
-    return undefined;
-});
-
 function toInt(value: string | number | undefined, min: number): number {
     const number = Math.floor(Number(value));
     return Number.isFinite(number) ? Math.max(min, number) : min;
@@ -137,8 +117,6 @@ function reset() {
 };
 
 async function save() {
-    if (error.value) return;
-
     const response = await admin.saveSettings(draft.value);
     if (response.success) reset();
 };

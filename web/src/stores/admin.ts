@@ -60,7 +60,6 @@ export interface AdminSettings {
     defaultCapacity: number;
     defaultPrice: number;
     allowPlayerPurchase: boolean;
-    webhook: string;
     logPurchases: boolean;
     logAdminActions: boolean;
 };
@@ -120,7 +119,6 @@ const mockSettings: AdminSettings = {
     defaultCapacity: 50,
     defaultPrice: 20000,
     allowPlayerPurchase: true,
-    webhook: "",
     logPurchases: true,
     logAdminActions: true,
 };

@@ -19,13 +19,13 @@ lib.addCommand(AdminMenu.name, {
     help = AdminMenu.help,
     restricted = AdminMenu.permission,
 }, function(source)
-    if source == 0 or not exports['hype-core']:IsAdmin(source) then return end
+    if source == 0 or not IsAdmin(source) then return end
 
     TriggerClientEvent('hype-vendingmachine:client:open-admin-menu', source)
 end)
 
 local function isAdmin(playerId)
-    return exports['hype-core']:IsAdmin(playerId)
+    return IsAdmin(playerId)
 end
 
 local function toInteger(value, min, max)
@@ -96,13 +96,13 @@ end
 local function resolveOwner(ownerId)
     local playerId = tonumber(ownerId)
 
-    if not playerId or not exports['hype-core']:IsPlayerOnline(playerId) then
-        playerId = exports['hype-core']:GetPlayerSource(ownerId)
+    if not playerId or not IsPlayerOnline(playerId) then
+        playerId = Framework.Server.GetPlayerSource(ownerId)
     end
 
     if not playerId then return nil end
 
-    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId)
+    local identifier = Framework.Server.GetPlayerIdentifier(playerId)
     if not identifier then return nil end
 
     return identifier, GetPlayerDisplayName(playerId)
@@ -162,7 +162,7 @@ local function formatMachine(row, products, totals)
 end
 
 local function logAdmin(playerId, key, ...)
-    SendWebhookLog("logAdminActions", locale("log_title_admin"), locale(key, exports['hype-core']:FormatPlayerForLog(playerId), ...))
+    SendWebhookLog("logAdminActions", locale("log_title_admin"), locale(key, FormatPlayerForLog(playerId), ...))
 end
 
 local function findMachine(data)
@@ -481,11 +481,6 @@ lib.callback.register('hype-vendingmachine:server:reset-machine-balance', functi
     return { success = true }
 end)
 
-local function isDiscordWebhook(value)
-    return value:find("^https://[%w%.]*discord%.com/api/webhooks/") ~= nil
-        or value:find("^https://[%w%.]*discordapp%.com/api/webhooks/") ~= nil
-end
-
 local function readSetting(key, value)
     local default = Config.DefaultSettings[key]
 
@@ -500,12 +495,6 @@ local function readSetting(key, value)
         if not value or (range and (value < range.min or value > range.max)) then return nil end
 
         return range and range.integer and math.floor(value + 0.5) or math.floor(value * 100 + 0.5) / 100
-    end
-
-    if key == "webhook" then
-        value = Trim(value)
-        if value ~= "" and (#value > 255 or not isDiscordWebhook(value)) then return nil end
-        return value
     end
 end
 

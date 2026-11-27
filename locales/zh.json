@@ -344,7 +344,6 @@
                 "allow_purchase": "玩家可购买售货机",
                 "allow_purchase_description": "标记为出售的售货机可在游戏内购买。",
                 "logging": "日志",
-                "webhook": "Discord webhook URL",
                 "log_purchases": "记录购买",
                 "log_purchases_description": "将每次售货机购买发送到 webhook。",
                 "log_admin_actions": "记录管理员操作",
@@ -352,9 +351,7 @@
                 "share": "分享售货机",
                 "export": "导出售货机",
                 "export_description": "以 JSON 导出名称、模型、位置、价格和商品。可在其他服务器的售货机页面导入。",
-                "export_button": "导出",
-                "error_webhook_invalid": "webhook 必须是 Discord webhook URL。",
-                "error_webhook_missing": "请添加 webhook URL 或关闭日志。"
+                "export_button": "导出"
             },
             "export": {
                 "title": "导出售货机",

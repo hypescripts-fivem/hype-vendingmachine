@@ -344,7 +344,6 @@
                 "allow_purchase": "खिलाड़ी मशीनें खरीद सकते हैं",
                 "allow_purchase_description": "बिक्री के लिए चिह्नित मशीनें गेम में खरीदी जा सकती हैं।",
                 "logging": "लॉगिंग",
-                "webhook": "Discord webhook URL",
                 "log_purchases": "खरीद लॉग करें",
                 "log_purchases_description": "हर मशीन खरीद को webhook पर भेजें।",
                 "log_admin_actions": "एडमिन कार्रवाई लॉग करें",
@@ -352,9 +351,7 @@
                 "share": "मशीनें शेयर करें",
                 "export": "मशीनें एक्सपोर्ट करें",
                 "export_description": "नाम, मॉडल, लोकेशन, कीमतें और प्रोडक्ट JSON के रूप में। इसे दूसरे सर्वर पर मशीनें पेज से इम्पोर्ट करें।",
-                "export_button": "एक्सपोर्ट",
-                "error_webhook_invalid": "webhook एक Discord webhook URL होना चाहिए।",
-                "error_webhook_missing": "एक webhook URL जोड़ें या लॉगिंग बंद करें।"
+                "export_button": "एक्सपोर्ट"
             },
             "export": {
                 "title": "मशीनें एक्सपोर्ट करें",

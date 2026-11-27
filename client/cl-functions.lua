@@ -3,6 +3,33 @@ local Config <const> = require "config.config"
 local nuiLoaded = false
 local waitingForNui = false
 
+--- Spawns a local (non-networked) prop.
+---@param model string|number
+---@param coords vector4|vector3 The heading is used when coords has a `w`.
+---@param freeze boolean? Frozen unless false.
+---@return number? entity nil when the model can't be loaded.
+function CreateLocalProp(model, coords, freeze)
+    local ok, modelHash = pcall(lib.requestModel, model)
+    if not ok then return nil end
+
+    local object = CreateObject(modelHash, coords.x, coords.y, coords.z, false, false, false)
+    if coords.w then SetEntityHeading(object, coords.w) end
+    FreezeEntityPosition(object, freeze ~= false)
+    SetModelAsNoLongerNeeded(modelHash)
+
+    return object
+end
+
+--- Deletes an entity when it exists.
+---@param entity number?
+---@return nil
+function RemoveEntity(entity)
+    if not entity or not DoesEntityExist(entity) then return end
+
+    SetEntityAsMissionEntity(entity, true, true)
+    DeleteEntity(entity)
+end
+
 function NuiMessage(action, payload)
     while not nuiLoaded do Wait(100) end
 
@@ -26,7 +53,7 @@ end
 
 function UiConfig()
     return {
-        inventoryImagePath = exports['hype-core']:GetImagePath(),
+        inventoryImagePath = Modules.Client.Inventory.GetImagePath(),
         currency = Config.Currency,
         locale = Config.NumberAndDateFormat,
         locales = getUiLocales(),
@@ -60,7 +87,7 @@ AddEventHandler("onResourceStart", function(resource)
     end
 end)
 
-RegisterNetEvent("hype-core:client:player-loaded", initNui)
+AddEventHandler("hype-vendingmachine:client:player-loaded", initNui)
 
 RegisterNUICallback("nui-ready", function(_, cb)
     nuiLoaded = true

@@ -10,21 +10,27 @@ version '1.0.0'
 dependencies {
     'ox_lib',
     'oxmysql',
-    'hype-core',
 }
 
 shared_scripts {
     '@ox_lib/init.lua',
     'shared/utils.lua',
     'shared/main.lua',
+    'frameworks/main.lua',
+    'modules/main.lua',
+    'modules/inventory/main.lua',
 }
 
 client_scripts {
+    'frameworks/**/cl-main.lua',
+    'modules/**/cl-main.lua',
     'client/*.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
+    'frameworks/**/sv-main.lua',
+    'modules/**/sv-main.lua',
     'server/queries.lua',
     'server/sv-*.lua',
 }
@@ -32,6 +38,10 @@ server_scripts {
 escrow_ignore {
     'config/*.lua',
     'shared/*.lua',
+    'frameworks/main.lua',
+    'frameworks/**/*.lua',
+    'modules/main.lua',
+    'modules/**/*.lua',
     'server/*.lua',
     'INSTALL/*.sql',
     'locales/*.json',

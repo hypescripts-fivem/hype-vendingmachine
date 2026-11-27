@@ -130,6 +130,5 @@ INSERT IGNORE INTO `hype_vending_settings` (`key`, `value`) VALUES
     ('defaultCapacity', '50'),
     ('defaultPrice', '20000'),
     ('allowPlayerPurchase', 'true'),
-    ('webhook', '""'),
     ('logPurchases', 'true'),
     ('logAdminActions', 'true');

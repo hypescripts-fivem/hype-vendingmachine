@@ -19,7 +19,7 @@ local function notify(response)
     local message = response.success and response.data and response.data.message or response.error
     if not message then return end
 
-    exports['hype-core']:SendNotify(locale("notify_title"), message, 5000, response.success and "success" or "error")
+    Modules.Client.Notify.SendNotify(locale("notify_title"), message, 5000, response.success and "success" or "error")
 end
 
 local function canManage(data)
@@ -149,7 +149,7 @@ local function showText(machine)
 
     if data.forSale then
         if data.status == "disabled" then
-            exports['hype-core']:HideTextUI()
+            Modules.Client.TextUI.HideTextUI()
             return
         end
 
@@ -162,7 +162,7 @@ local function showText(machine)
         end
     end
 
-    exports['hype-core']:ShowTextUI(table.concat(lines, "  \n"))
+    Modules.Client.TextUI.ShowTextUI(table.concat(lines, "  \n"))
 end
 
 local function onTextKey(machine)
@@ -189,11 +189,11 @@ local function removeEntity(machine)
     end
 
     if useTarget then
-        exports['hype-core']:RemoveLocalEntity(machine.entity)
+        Modules.Client.Target.RemoveLocalEntity(machine.entity)
     end
 
     ClearShelf(machine)
-    exports['hype-core']:RemoveEntity(machine.entity)
+    RemoveEntity(machine.entity)
     machine.entity = nil
 end
 
@@ -210,7 +210,7 @@ local function removeMachine(machineId)
 
     if textMachine == machine then
         textMachine = nil
-        exports['hype-core']:HideTextUI()
+        Modules.Client.TextUI.HideTextUI()
     end
 
     removeEntity(machine)
@@ -218,14 +218,14 @@ end
 
 local function spawnProp(machine)
     local data = machine.data
-    local entity = exports['hype-core']:CreateLocalProp(data.model, vec4(data.x, data.y, data.z, data.heading))
+    local entity = CreateLocalProp(data.model, vec4(data.x, data.y, data.z, data.heading))
     if not entity then
         Debug("error", "could not spawn %s for machine %s", data.model, data.id)
         return
     end
 
     if machines[data.id] ~= machine or not machine.inside then
-        exports['hype-core']:RemoveEntity(entity)
+        RemoveEntity(entity)
         return
     end
 
@@ -233,7 +233,7 @@ local function spawnProp(machine)
     machine.entity = entity
 
     if useTarget then
-        exports['hype-core']:AddLocalEntity(entity, targetOptions(machine))
+        Modules.Client.Target.AddLocalEntity(entity, targetOptions(machine))
     end
 
     if ArmModels[data.model] then
@@ -288,7 +288,7 @@ local function setMachine(data)
                 if textMachine ~= machine then return end
 
                 textMachine = nil
-                exports['hype-core']:HideTextUI()
+                Modules.Client.TextUI.HideTextUI()
             end,
             nearby = function()
                 onTextKey(machine)
@@ -407,7 +407,7 @@ AddEventHandler("onResourceStart", function(resource)
     end
 end)
 
-RegisterNetEvent("hype-core:client:player-loaded", loadMachines)
+AddEventHandler("hype-vendingmachine:client:player-loaded", loadMachines)
 
 AddEventHandler("onResourceStop", function(resource)
     if resource ~= GetCurrentResourceName() then return end

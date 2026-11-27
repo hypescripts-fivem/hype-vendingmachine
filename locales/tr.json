@@ -344,7 +344,6 @@
                 "allow_purchase": "Oyuncular otomat satın alabilir",
                 "allow_purchase_description": "Satılık olarak işaretlenen otomatlar oyun içinde satın alınabilir.",
                 "logging": "Kayıt",
-                "webhook": "Discord webhook URL'si",
                 "log_purchases": "Satın alımları kaydet",
                 "log_purchases_description": "Her otomat satın alımını webhook'a gönder.",
                 "log_admin_actions": "Admin işlemlerini kaydet",
@@ -352,9 +351,7 @@
                 "share": "Otomatları paylaş",
                 "export": "Otomatları dışa aktar",
                 "export_description": "Adlar, modeller, konumlar, fiyatlar ve ürünler JSON olarak. Başka bir sunucuda Otomatlar sayfasından içe aktar.",
-                "export_button": "Dışa aktar",
-                "error_webhook_invalid": "Webhook bir Discord webhook URL'si olmalı.",
-                "error_webhook_missing": "Bir webhook URL'si ekle ya da kaydı kapat."
+                "export_button": "Dışa aktar"
             },
             "export": {
                 "title": "Otomatları dışa aktar",

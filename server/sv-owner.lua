@@ -26,7 +26,7 @@ local function readPermissions(value)
 end
 
 local function getAccess(playerId, row)
-    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId)
+    local identifier = Framework.Server.GetPlayerIdentifier(playerId)
     if not identifier or ToBoolean(row.for_sale) then return nil end
 
     if row.owner == identifier then
@@ -144,7 +144,7 @@ local function getStaff(machineId)
             name = row.name,
             hiredAt = row.hired_at,
             lastOnline = row.last_online,
-            online = exports['hype-core']:GetPlayerSource(row.identifier) ~= nil,
+            online = Framework.Server.GetPlayerSource(row.identifier) ~= nil,
             permissions = readPermissions(row.permissions),
         }
     end
@@ -177,7 +177,7 @@ lib.callback.register("hype-vendingmachine:server:get-owner-data", function(sour
         access = access,
         settings = GetOwnerSettings(row),
         balance = row.balance,
-        wallet = can(access, "cash.deposit") and exports['hype-core']:GetPlayerMoney(playerId, Config.CashAccount) or 0,
+        wallet = can(access, "cash.deposit") and Framework.Server.GetPlayerMoney(playerId, Config.CashAccount) or 0,
         capacity = row.capacity,
         products = products,
         wholesale = wholesale,
@@ -203,7 +203,7 @@ lib.callback.register("hype-vendingmachine:server:get-owner-data", function(sour
         data.staff = getStaff(row.id)
         data.ownerMember = {
             name = row.owner_name or "",
-            online = exports['hype-core']:GetPlayerSource(row.owner) ~= nil,
+            online = Framework.Server.GetPlayerSource(row.owner) ~= nil,
         }
     end
 
@@ -255,11 +255,11 @@ local function scheduleLoop()
     while true do
         Wait(1000)
 
-        local time = exports['hype-core']:GetGameTime()
+        local time = GetGameTime()
 
         if not time then
             if not warned then
-                print("^3[WARNING] hype-core has no in-game time, so machine operating hours are not applied^0")
+                print("^3[WARNING] no resource provides the in-game time (GlobalState.currentTime), so machine operating hours are not applied^0")
                 warned = true
             end
 
@@ -393,12 +393,12 @@ lib.callback.register("hype-vendingmachine:server:owner-deposit", function(sourc
     if not row then return Fail(result) end
     amount = result
 
-    if not exports['hype-core']:RemovePlayerMoney(playerId, Config.CashAccount, amount) then
+    if not Framework.Server.RemovePlayerMoney(playerId, Config.CashAccount, amount) then
         return Fail(locale("error_not_enough_money"))
     end
 
     if MySQL.update.await(Queries.AddBalance, { amount, row.id }) == 0 then
-        exports['hype-core']:AddPlayerMoney(playerId, Config.CashAccount, amount)
+        Framework.Server.AddPlayerMoney(playerId, Config.CashAccount, amount)
         return Fail(locale("error_machine_not_found"))
     end
 
@@ -408,7 +408,7 @@ lib.callback.register("hype-vendingmachine:server:owner-deposit", function(sourc
         success = true,
         data = {
             balance = MySQL.scalar.await(Queries.GetMachineBalance, { row.id }),
-            wallet = exports['hype-core']:GetPlayerMoney(playerId, Config.CashAccount),
+            wallet = Framework.Server.GetPlayerMoney(playerId, Config.CashAccount),
         }
     }
 end)
@@ -424,7 +424,7 @@ lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(sour
         return Fail(locale("error_not_enough_balance"))
     end
 
-    if not exports['hype-core']:AddPlayerMoney(playerId, Config.CashAccount, amount) then
+    if not Framework.Server.AddPlayerMoney(playerId, Config.CashAccount, amount) then
         MySQL.update.await(Queries.AddBalance, { amount, row.id })
         Debug("error", "could not pay player %s their withdrawal of %s from machine %s, balance restored", playerId, amount, row.id)
         return Fail(locale("error_database"))
@@ -436,7 +436,7 @@ lib.callback.register("hype-vendingmachine:server:owner-withdraw", function(sour
         success = true,
         data = {
             balance = MySQL.scalar.await(Queries.GetMachineBalance, { row.id }),
-            wallet = exports['hype-core']:GetPlayerMoney(playerId, Config.CashAccount),
+            wallet = Framework.Server.GetPlayerMoney(playerId, Config.CashAccount),
         }
     }
 end)
@@ -669,12 +669,12 @@ lib.callback.register("hype-vendingmachine:server:owner-hire-staff", function(so
     if not permissions then return Fail(locale("error_invalid_permissions")) end
 
     local targetId = math.tointeger(tonumber(data.playerId))
-    if not targetId or not exports['hype-core']:IsPlayerOnline(targetId)
-        or not exports['hype-core']:IsPlayerNearCoords(targetId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
+    if not targetId or not IsPlayerOnline(targetId)
+        or not IsPlayerNearCoords(targetId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
         return Fail(locale("error_player_not_found"))
     end
 
-    local identifier = exports['hype-core']:GetPlayerIdentifier(targetId)
+    local identifier = Framework.Server.GetPlayerIdentifier(targetId)
     if not identifier then return Fail(locale("error_player_not_found")) end
 
     if identifier == row.owner or MySQL.single.await(Queries.GetStaffMember, { row.id, identifier }) then
@@ -722,7 +722,7 @@ lib.callback.register("hype-vendingmachine:server:owner-update-staff", function(
 end)
 
 local function sendStaffRemoved(identifier, row)
-    local memberSource = exports['hype-core']:GetPlayerSource(identifier)
+    local memberSource = Framework.Server.GetPlayerSource(identifier)
     if not memberSource then return end
 
     TriggerClientEvent("hype-vendingmachine:client:set-staff", memberSource, row.id, false)
@@ -772,7 +772,7 @@ lib.callback.register("hype-vendingmachine:server:owner-transfer", function(sour
     if not row then return Fail(identifier) end
 
     local targetId = type(data) == "table" and math.tointeger(tonumber(data.playerId))
-    local targetIdentifier = targetId and exports['hype-core']:IsPlayerOnline(targetId) and exports['hype-core']:GetPlayerIdentifier(targetId)
+    local targetIdentifier = targetId and IsPlayerOnline(targetId) and Framework.Server.GetPlayerIdentifier(targetId)
     if not targetIdentifier then return Fail(locale("error_player_not_found")) end
 
     if targetIdentifier == identifier then return Fail(locale("error_transfer_self")) end
@@ -820,7 +820,7 @@ lib.callback.register("hype-vendingmachine:server:owner-sell", function(source, 
 
     local payout = math.floor(row.price * Config.SellRefund / 100) + balance
     if payout > 0 then
-        exports['hype-core']:AddPlayerMoney(playerId, Config.PurchaseAccount, payout)
+        Framework.Server.AddPlayerMoney(playerId, Config.PurchaseAccount, payout)
     end
 
     Debug("success", "player %s sold machine %s for %s", playerId, row.id, payout)

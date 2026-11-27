@@ -1,4 +1,5 @@
 local Config <const> = require 'config.config'
+local ServerConfig <const> = require 'server.config'
 
 local VEND_SECONDS_PER_UNIT <const> = 15
 local VEND_GRACE_SECONDS <const> = 30
@@ -95,14 +96,14 @@ function ReadItems(list, idKey, maxQuantity)
 end
 
 function Notify(playerId, message, type)
-    exports['hype-core']:SendNotify(playerId, locale("notify_title"), message, 5000, type or "success")
+    Modules.Server.Notify.SendNotify(playerId, locale("notify_title"), message, 5000, type or "success")
 end
 
 function SendWebhookLog(kind, title, message)
-    local current = GetSettings()
-    if not current[kind] or current.webhook == "" then return end
+    local webhook = Trim(ServerConfig.Webhook)
+    if webhook == "" or not GetSettings()[kind] then return end
 
-    PerformHttpRequest(current.webhook, function() end, "POST", json.encode({
+    PerformHttpRequest(webhook, function() end, "POST", json.encode({
         username = locale("notify_title"),
         embeds = {
             {
@@ -115,7 +116,7 @@ function SendWebhookLog(kind, title, message)
 end
 
 function GetPlayerDisplayName(playerId)
-    return exports['hype-core']:GetCharacterName(playerId) or GetPlayerName(playerId) or "Unknown"
+    return Framework.Server.GetCharacterName(playerId) or GetPlayerName(playerId) or "Unknown"
 end
 
 local function formatStock(rows)
@@ -187,7 +188,7 @@ function GetNearbyMachine(playerId, machineId)
     local row = machineId and MySQL.single.await(Queries.GetMachine, { machineId })
     if not row then return nil, locale("error_machine_not_found") end
 
-    if not exports['hype-core']:IsPlayerNearCoords(playerId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
+    if not IsPlayerNearCoords(playerId, vector3(row.x, row.y, row.z), Config.Interaction.maxDistance) then
         return nil, locale("error_too_far")
     end
 
@@ -234,7 +235,7 @@ lib.callback.register("hype-vendingmachine:server:get-machines", function(source
         machines[index] = formatMachine(row)
     end
 
-    local identifier = exports['hype-core']:GetPlayerIdentifier(source)
+    local identifier = Framework.Server.GetPlayerIdentifier(source)
 
     local staff = {}
     if identifier then
@@ -280,7 +281,7 @@ lib.callback.register("hype-vendingmachine:server:get-purchase-data", function(s
             capacity = row.capacity,
             products = GetProducts(row.id),
             account = Config.PurchaseAccount,
-            balance = exports['hype-core']:GetPlayerMoney(source, Config.PurchaseAccount) or 0,
+            balance = Framework.Server.GetPlayerMoney(source, Config.PurchaseAccount) or 0,
         }
     }
 end)
@@ -296,20 +297,20 @@ lib.callback.register("hype-vendingmachine:server:buy-machine", function(source,
     local current = GetSettings()
     if not current.allowPlayerPurchase then return Fail(locale("error_purchase_disabled")) end
 
-    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId)
+    local identifier = Framework.Server.GetPlayerIdentifier(playerId)
     if not identifier then return Fail(locale("error_no_permission")) end
 
     if (MySQL.scalar.await(Queries.CountMachinesByOwner, { identifier }) or 0) >= current.maxMachinesPerPlayer then
         return Fail(locale("error_max_machines", current.maxMachinesPerPlayer))
     end
 
-    if row.price > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, Config.PurchaseAccount, row.price) then
+    if row.price > 0 and not Framework.Server.RemovePlayerMoney(playerId, Config.PurchaseAccount, row.price) then
         return Fail(locale("error_not_enough_money"))
     end
 
     if MySQL.update.await(Queries.BuyMachine, { identifier, GetPlayerDisplayName(playerId), row.id }) == 0 then
         if row.price > 0 then
-            exports['hype-core']:AddPlayerMoney(playerId, Config.PurchaseAccount, row.price)
+            Framework.Server.AddPlayerMoney(playerId, Config.PurchaseAccount, row.price)
         end
 
         return Fail(locale("error_not_for_sale"))
@@ -320,7 +321,7 @@ lib.callback.register("hype-vendingmachine:server:buy-machine", function(source,
     SyncMachine(row.id)
 
     SendWebhookLog("logPurchases", locale("log_title_purchase"),
-        locale("log_machine_bought", exports['hype-core']:FormatPlayerForLog(playerId), row.name, row.id, lib.math.groupdigits(row.price)))
+        locale("log_machine_bought", FormatPlayerForLog(playerId), row.name, row.id, lib.math.groupdigits(row.price)))
 
     return {
         success = true,
@@ -332,8 +333,8 @@ end)
 
 local function getWallet(playerId)
     return {
-        cash = exports['hype-core']:GetPlayerMoney(playerId, "cash") or 0,
-        bank = exports['hype-core']:GetPlayerMoney(playerId, "bank") or 0,
+        cash = Framework.Server.GetPlayerMoney(playerId, "cash") or 0,
+        bank = Framework.Server.GetPlayerMoney(playerId, "bank") or 0,
     }
 end
 
@@ -355,7 +356,7 @@ lib.callback.register("hype-vendingmachine:server:get-vending-data", function(so
 end)
 
 local function notifyOwner(row, sold, paid)
-    local ownerSource = row.owner and exports['hype-core']:GetPlayerSource(row.owner)
+    local ownerSource = row.owner and Framework.Server.GetPlayerSource(row.owner)
     if not ownerSource then return end
 
     local ownerSettings = GetOwnerSettings(row)
@@ -400,12 +401,12 @@ local function releaseStock(machineId, lines)
 end
 
 local function handOver(playerId, row, lines, account)
-    local identifier = exports['hype-core']:GetPlayerIdentifier(playerId) or tostring(playerId)
+    local identifier = Framework.Server.GetPlayerIdentifier(playerId) or tostring(playerId)
     local buyerName = GetPlayerDisplayName(playerId)
 
     local sold, sales, paid = {}, {}, 0
     for _, line in ipairs(lines) do
-        if exports['hype-core']:AddItem(playerId, line.item, line.quantity) then
+        if Modules.Server.Inventory.AddItem(playerId, line.item, line.quantity) then
             sold[#sold + 1] = line
             sales[#sales + 1] = { row.id, identifier, buyerName, line.item, line.quantity, line.total, account }
             paid = paid + line.total
@@ -413,7 +414,7 @@ local function handOver(playerId, row, lines, account)
             MySQL.update.await(Queries.RestoreStock, { line.quantity, line.quantity, row.id, line.item })
 
             if line.total > 0 then
-                exports['hype-core']:AddPlayerMoney(playerId, account, line.total)
+                Framework.Server.AddPlayerMoney(playerId, account, line.total)
             end
 
             Debug("warning", "player %s could not receive %sx %s from machine %s, refunded %s", playerId, line.quantity, line.item, row.id, line.total)
@@ -440,7 +441,7 @@ local function completeVend(vendId)
     pendingVends[vendId] = nil
     local playerId, row = vend.playerId, vend.row
 
-    if vend.total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, vend.account, vend.total) then
+    if vend.total > 0 and not Framework.Server.RemovePlayerMoney(playerId, vend.account, vend.total) then
         releaseStock(row.id, vend.lines)
         SyncStock(row)
         Notify(playerId, locale("error_not_enough_money"), "error")
@@ -503,7 +504,7 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
 
         if product.stock < quantity then return Fail(locale("error_out_of_stock", catalog.name)) end
 
-        if not exports['hype-core']:CanCarryItem(playerId, item, quantity) then
+        if not Modules.Server.Inventory.CanCarryItem(playerId, item, quantity) then
             return Fail(locale("error_cannot_carry", catalog.name))
         end
 
@@ -512,7 +513,7 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
         total = total + line.total
     end
 
-    if (exports['hype-core']:GetPlayerMoney(playerId, payment) or 0) < total then
+    if (Framework.Server.GetPlayerMoney(playerId, payment) or 0) < total then
         return Fail(locale("error_not_enough_money"))
     end
 
@@ -531,7 +532,7 @@ lib.callback.register("hype-vendingmachine:server:checkout", function(source, ma
         return { success = true, data = { products = GetProducts(row.id) } }
     end
 
-    if total > 0 and not exports['hype-core']:RemovePlayerMoney(playerId, payment, total) then
+    if total > 0 and not Framework.Server.RemovePlayerMoney(playerId, payment, total) then
         releaseStock(row.id, lines)
         return Fail(locale("error_not_enough_money"))
     end

@@ -344,7 +344,6 @@
                 "allow_purchase": "Players can buy machines",
                 "allow_purchase_description": "Machines marked for sale can be purchased in game.",
                 "logging": "Logging",
-                "webhook": "Discord webhook URL",
                 "log_purchases": "Log purchases",
                 "log_purchases_description": "Send every machine purchase to the webhook.",
                 "log_admin_actions": "Log admin actions",
@@ -352,9 +351,7 @@
                 "share": "Share machines",
                 "export": "Export machines",
                 "export_description": "Names, models, locations, prices and products as JSON. Import it from the Machines page on another server.",
-                "export_button": "Export",
-                "error_webhook_invalid": "The webhook must be a Discord webhook URL.",
-                "error_webhook_missing": "Add a webhook URL or turn logging off."
+                "export_button": "Export"
             },
             "export": {
                 "title": "Export machines",
