@@ -5,7 +5,7 @@ author 'vezironi'
 description 'Hype Vending Machine adds player-owned vending machines to FiveM. Owners buy machines, set prices, hire staff and earn from every sale, while stock is ordered from a supplier and delivered by hand with a cart. Admins place and manage every machine from an in-game panel.'
 
 scriptname 'hype-vendingmachine'
-version '1.0.0'
+version '1.0.1'
 
 dependencies {
     'ox_lib',
